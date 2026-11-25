@@ -59,11 +59,11 @@ export function CommandPalette() {
       <AnimatePresence>
         {open && (
           <div className="fixed inset-0 z-[90] flex items-start justify-center p-4 pt-[12vh]">
-            <motion.div className="absolute inset-0 bg-black/70" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setOpen(false)} />
+            <motion.div className="absolute inset-0 bg-black/50 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setOpen(false)} />
             <motion.div
               role="dialog" aria-modal="true" aria-label="Command palette"
               initial={{ opacity: 0, y: -12, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, scale: 0.97 }} transition={spring}
-              className="glass glass-strong relative w-full max-w-xl overflow-hidden" style={{ borderRadius: 8 }}
+              className="glass glass-strong relative w-full max-w-xl overflow-hidden" style={{ borderRadius: 20 }}
             >
               <div className="flex items-center gap-3 border-b border-hair px-5">
                 <Search size={18} className="text-muted" />

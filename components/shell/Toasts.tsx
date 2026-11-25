@@ -18,7 +18,7 @@ export function Toasts() {
               key={t.id} layout
               initial={{ opacity: 0, y: -16, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} transition={spring}
               className={cn("glass glass-strong pointer-events-auto flex w-full max-w-sm items-center gap-3 px-4 py-3 text-sm", t.kind === "fail" && "border-fail/60")}
-              style={{ borderRadius: 8 }}
+              style={{ borderRadius: 20 }}
               role={t.kind === "fail" ? "alert" : "status"}
               onClick={() => dismiss(t.id)}
             >

@@ -45,11 +45,11 @@ export function MobileTabs() {
 
   return (
     <>
-      <nav aria-label="Primary" className="fixed inset-x-0 bottom-0 z-40 flex items-end justify-between border-t border-hair bg-[var(--glass)] px-1 lg:hidden" style={{ paddingBottom: "max(0.25rem, env(safe-area-inset-bottom))" }}>
+      <nav aria-label="Primary" className="glass glass-strong fixed inset-x-3 bottom-3 z-40 flex items-end justify-between px-1 lg:hidden" style={{ borderRadius: 20, paddingBottom: "max(0.25rem, env(safe-area-inset-bottom))" }}>
         {tab(a)}
         {tab(b)}
         <Link href={centerHref} aria-label={t(find(centerHref).label)} className="relative -mt-6 flex w-16 shrink-0 flex-col items-center gap-0.5 pb-1 text-[11px] font-medium text-muted">
-          <span className="cta flex size-14 items-center justify-center rounded-lg ring-4 ring-[#10161d]">{canScan ? <ScanLine size={26} strokeWidth={1.75} /> : <FileBarChart size={24} strokeWidth={1.75} />}</span>
+          <span className="cta flex size-14 items-center justify-center rounded-full ring-4 ring-[#0a1630]">{canScan ? <ScanLine size={26} strokeWidth={1.75} /> : <FileBarChart size={24} strokeWidth={1.75} />}</span>
           {t(find(centerHref).label)}
         </Link>
         {tab(c)}
@@ -62,12 +62,12 @@ export function MobileTabs() {
         <div className="space-y-4 pb-2">
           <div className="grid grid-cols-2 gap-2">
             {rest.map((n) => (
-              <Link key={n.href} href={n.href} onClick={() => setMore(false)} className="flex min-h-12 items-center gap-3 rounded-md border border-hair px-4 text-sm font-medium">
+              <Link key={n.href} href={n.href} onClick={() => setMore(false)} className="flex min-h-12 items-center gap-3 rounded-xl bg-white/5 px-4 text-sm font-medium">
                 <n.icon size={18} strokeWidth={1.5} className="text-teal" /> {t(n.label)}
               </Link>
             ))}
           </div>
-          <select aria-label={t("Location")} value={active} onChange={(e) => setActive(e.target.value)} className="h-12 w-full rounded-md border border-hair-strong bg-bg px-3">
+          <select aria-label={t("Location")} value={active} onChange={(e) => setActive(e.target.value)} className="h-12 w-full rounded-xl border border-hair-strong bg-white/5 px-3">
             <option value="all" className="text-black">{t("All")} {t("Locations")}</option>
             {locations.map((l) => <option key={l.id} value={l.id} className="text-black">{lang === "ar" ? l.nameAr : l.name}</option>)}
           </select>

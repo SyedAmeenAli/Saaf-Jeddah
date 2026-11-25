@@ -43,7 +43,7 @@ function Inner() {
             <ul className="divide-y divide-hair md:hidden">
               {rows.slice(0, 40).map((c) => (
                 <li key={c.id}>
-                  <button type="button" onClick={() => open(c.id)} className="flex w-full flex-col gap-1 px-4 py-3 text-start hover:bg-hi">
+                  <button type="button" onClick={() => open(c.id)} className="flex w-full flex-col gap-1 px-4 py-3 text-start hover:bg-white/5">
                     <span className="flex items-center justify-between"><span className="font-mono text-sm font-semibold">{c.vehicleId}</span><StatusBadge kind={c.result === "pass" ? "pass" : "fail"}>{c.result === "pass" ? t("Pass") : t("Fail")}</StatusBadge></span>
                     <span className="text-sm">{POINTS[c.point].label}</span>
                     <span className="flex items-center justify-between text-xs text-muted"><span>{fmtDT(c.ts)} · {c.employeeId}</span><StateBadge status={c.status} /></span>

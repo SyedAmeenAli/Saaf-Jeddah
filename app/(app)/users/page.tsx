@@ -68,9 +68,9 @@ function Inner() {
         {cur && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="rounded-xl bg-hi p-3"><p className="text-xs text-muted">Employee</p><p className="font-mono font-medium">{cur.id}</p></div>
-              <div className="rounded-xl bg-hi p-3"><p className="text-xs text-muted">{t("Location")}</p><p className="font-medium">{cur.locationId}</p></div>
-              <div className="col-span-2 rounded-xl bg-hi p-3"><p className="text-xs text-muted">Qualification valid until</p><p className="font-medium">{fmtDate(cur.certExpiry)} · {days(cur.certExpiry) < 0 ? "expired, cannot sign" : `${days(cur.certExpiry)} days left`}</p></div>
+              <div className="rounded-xl bg-white/5 p-3"><p className="text-xs text-muted">Employee</p><p className="font-mono font-medium">{cur.id}</p></div>
+              <div className="rounded-xl bg-white/5 p-3"><p className="text-xs text-muted">{t("Location")}</p><p className="font-medium">{cur.locationId}</p></div>
+              <div className="col-span-2 rounded-xl bg-white/5 p-3"><p className="text-xs text-muted">Qualification valid until</p><p className="font-medium">{fmtDate(cur.certExpiry)} · {days(cur.certExpiry) < 0 ? "expired, cannot sign" : `${days(cur.certExpiry)} days left`}</p></div>
             </div>
             <div>
               <p className="mb-2 text-sm font-medium text-muted">{t("Role")}</p>

@@ -65,11 +65,11 @@ function ScanInner() {
     <>
       <PageHeader title={t("Scan & Inspect")} sub="Tap the NFC tag on the sampling point. The inspection form opens pre-filled." />
       {!canScan && (
-        <div className="glass mb-4 flex items-center gap-3 p-4 text-sm" style={{ borderRadius: 8 }}><Lock size={18} className="text-pending-fg" /> {t("Read-only for this role")}. Switch to Operator or Supervisor to perform sampling.</div>
+        <div className="glass mb-4 flex items-center gap-3 p-4 text-sm" style={{ borderRadius: 16 }}><Lock size={18} className="text-pending-fg" /> {t("Read-only for this role")}. Switch to Operator or Supervisor to perform sampling.</div>
       )}
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="space-y-4">
-          <div className="glass grid grid-cols-1 gap-4 p-5 md:grid-cols-3" style={{ borderRadius: 8 }}>
+          <div className="glass grid grid-cols-1 gap-4 p-5 md:grid-cols-3" style={{ borderRadius: 16 }}>
             <Field label={t("Vehicle")}>
               <select className={inputCls} value={vehicle.id} onChange={(e) => { setVid(e.target.value); setPhase("ready"); }}>
                 {pool.map((v) => <option key={v.id} value={v.id} className="text-black">{v.id} · {v.locationId}</option>)}
@@ -104,7 +104,7 @@ function ScanInner() {
                       <span key={i} className="absolute size-40 rounded-full border border-teal/60" style={{ animation: `ripple ${phase === "tapping" ? 0.9 : 2.8}s ease-out ${i * (phase === "tapping" ? 0.18 : 0.9)}s infinite` }} />
                     ))}
                     <motion.div animate={phase === "tapping" ? { scale: [1, 0.94, 1] } : {}} transition={{ duration: 0.5 }}
-                      className={cn("glass glass-strong relative flex size-28 items-center justify-center", phase === "read" && "!border-pass")} style={{ borderRadius: 8 }}>
+                      className={cn("glass glass-strong relative flex size-28 items-center justify-center", phase === "read" && "!border-pass")} style={{ borderRadius: 24 }}>
                       {phase === "read" ? (
                         <svg viewBox="0 0 24 24" className="size-12 text-pass-fg" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><motion.path d="M5 12.5l4.5 4.5L19 7" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.4 }} /></svg>
                       ) : <NfcTag className="size-14 text-teal" />}
@@ -114,7 +114,7 @@ function ScanInner() {
                   <div className="relative size-44 rounded-2xl">
                     {["start-0 top-0 border-s-2 border-t-2 rounded-tl-xl", "end-0 top-0 border-e-2 border-t-2 rounded-tr-xl", "start-0 bottom-0 border-s-2 border-b-2 rounded-bl-xl", "end-0 bottom-0 border-e-2 border-b-2 rounded-br-xl"].map((c) => <span key={c} className={cn("absolute size-8 border-teal", c)} />)}
                     <QrCode size={64} strokeWidth={1} className="absolute inset-0 m-auto text-white/40" />
-                    <span className="absolute inset-x-3 h-0.5 bg-teal" style={{ animation: "scanline 1.8s ease-in-out infinite alternate" }} />
+                    <span className="absolute inset-x-3 h-0.5 bg-teal shadow-[0_0_12px_var(--teal)]" style={{ animation: "scanline 1.8s ease-in-out infinite alternate" }} />
                   </div>
                 )}
               </div>
@@ -125,7 +125,7 @@ function ScanInner() {
                 {phase === "read" && <p className="mt-2 flex items-center justify-center gap-1.5 text-pass-fg"><Check size={14} /> {t("Tag read")}</p>}
               </div>
 
-              <div className="flex rounded-xl bg-hi p-1" role="group" aria-label="Scan mode">
+              <div className="flex rounded-xl bg-white/5 p-1" role="group" aria-label="Scan mode">
                 {([["barcode", "Scan Barcode", QrCode], ["nfc", "Tap NFC", Radio]] as const).map(([m, l, I]) => (
                   <button key={m} aria-pressed={mode === m} onClick={() => { setMode(m); setPhase("ready"); }} className={cn("flex h-10 items-center gap-2 rounded-lg px-4 text-sm font-medium", mode === m ? "bg-teal/20 text-teal" : "text-muted")}><I size={16} strokeWidth={1.5} />{l}</button>
                 ))}
@@ -145,14 +145,14 @@ function ScanInner() {
         </div>
 
         <aside className="space-y-4">
-          <div className="glass p-5" style={{ borderRadius: 8 }}>
+          <div className="glass p-5" style={{ borderRadius: 16 }}>
             <h3 className="mb-3 text-base font-semibold">{t("Samples due")}</h3>
             <ul className="space-y-2">
               {dueNow.length === 0 && <li className="text-sm text-muted">{t("All clear")}</li>}
               {dueNow.map((d) => (
                 <li key={d.id}>
                   <button onClick={() => { setVid(d.vehicleId); setPt(d.point); setOcc(d.occasion); setPhase("ready"); }}
-                    className={cn("flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-start", vehicle.id === d.vehicleId && point === d.point ? "bg-teal/15" : "bg-hi hover:bg-hi")}>
+                    className={cn("flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-start", vehicle.id === d.vehicleId && point === d.point ? "bg-teal/15" : "bg-white/5 hover:bg-white/10")}>
                     <span className="font-mono text-sm font-medium">{d.vehicleId}</span>
                     <span className="flex-1 text-xs text-muted">{POINTS[d.point].label}</span>
                     <StatusBadge kind={d.state === "overdue" ? "fail" : "pending"}>{d.state === "overdue" ? t("Overdue") : "Due"}</StatusBadge>
@@ -163,12 +163,12 @@ function ScanInner() {
           </div>
 
           {/* Microbial monitoring: separate module, not part of the daily VAC */}
-          <div className="glass p-5" style={{ borderRadius: 8 }}>
+          <div className="glass p-5" style={{ borderRadius: 16 }}>
             <div className="mb-2 flex items-center gap-2"><Beaker size={18} strokeWidth={1.5} className="text-info-fg" /><h3 className="text-base font-semibold">{t("Microbial monitoring")}</h3></div>
             <p className="text-xs text-muted">Scheduled periodic test. Separate from the daily visual check, which records visual observations only.</p>
             <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
-              <div className="rounded-xl bg-hi p-3"><dt className="text-xs text-muted">Last test</dt><dd className="font-medium">{fmtDate(micro.last)}</dd></div>
-              <div className="rounded-xl bg-hi p-3"><dt className="text-xs text-muted">Next due</dt><dd className="font-medium">{fmtDate(micro.next)}</dd></div>
+              <div className="rounded-xl bg-white/5 p-3"><dt className="text-xs text-muted">Last test</dt><dd className="font-medium">{fmtDate(micro.last)}</dd></div>
+              <div className="rounded-xl bg-white/5 p-3"><dt className="text-xs text-muted">Next due</dt><dd className="font-medium">{fmtDate(micro.next)}</dd></div>
             </dl>
             <Button className="mt-3 w-full" size="sm" onClick={() => toast("info", "Periodic microbial test logged (demo, lab results to follow)")} disabled={!canScan}><Check size={14} /> Log periodic sample</Button>
           </div>

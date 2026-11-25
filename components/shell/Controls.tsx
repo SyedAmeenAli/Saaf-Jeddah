@@ -17,7 +17,7 @@ export function ThemeToggle({ compact }: { compact?: boolean }) {
     <button
       onClick={() => setTheme(dark ? "light" : "dark")}
       aria-label={`${t("Theme")}: ${dark ? "dark" : "light"}`}
-      className="flex h-11 min-w-11 items-center justify-center gap-2 rounded-md bg-hi px-3 text-sm text-muted transition-colors hover:text-fg"
+      className="flex h-11 min-w-11 items-center justify-center gap-2 rounded-2xl bg-hi px-3 text-sm text-muted transition-colors hover:text-fg"
     >
       <motion.span key={theme} initial={{ rotate: -80, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} transition={spring}>
         {dark ? <Moon size={18} /> : <Sun size={18} />}
@@ -35,7 +35,7 @@ export function LangToggle({ compact }: { compact?: boolean }) {
     <button
       onClick={() => setLang(lang === "en" ? "ar" : "en")}
       aria-label={t("Language")}
-      className="flex h-11 min-w-11 items-center justify-center gap-2 rounded-md bg-hi px-3 text-sm text-muted transition-colors hover:text-fg"
+      className="flex h-11 min-w-11 items-center justify-center gap-2 rounded-2xl bg-hi px-3 text-sm text-muted transition-colors hover:text-fg"
     >
       <Languages size={18} />
       {!compact && <span>{lang === "en" ? "العربية" : "English"}</span>}
@@ -62,7 +62,7 @@ export function RoleSwitcher({ compact }: { compact?: boolean }) {
     );
   }
   return (
-    <div role="radiogroup" aria-label={t("Role")} className="grid grid-cols-2 gap-1 rounded-md bg-hi p-1">
+    <div role="radiogroup" aria-label={t("Role")} className="grid grid-cols-2 gap-1 rounded-2xl bg-hi p-1">
       {roles.map((r) => (
         <button key={r} role="radio" aria-checked={role === r} onClick={() => setRole(r)}
           className={cn("relative min-h-10 rounded-xl px-2 text-xs font-semibold transition-colors", role === r ? "text-fg" : "text-muted hover:text-fg")}>
@@ -88,7 +88,7 @@ export function SyncPill() {
       title="Demo: toggle offline mode. Submissions queue while offline and sync when back online."
       aria-label={`${label}. Toggle offline demo mode`}
       className="glass flex h-10 items-center gap-2 px-3 text-xs font-semibold"
-      style={{ borderRadius: 6 }}
+      style={{ borderRadius: 12 }}
     >
       <span className={tone}>
         {syncing ? <RefreshCw size={14} className="animate-spin" /> : offline ? <WifiOff size={14} /> : <Wifi size={14} />}
@@ -103,7 +103,7 @@ export function SignOut() {
   const logout = useStore((s) => s.logout);
   const t = useT();
   return (
-    <button onClick={logout} aria-label={t("Sign out")} className="flex h-11 min-w-11 items-center justify-center rounded-md bg-hi px-3 text-muted hover:text-fg">
+    <button onClick={logout} aria-label={t("Sign out")} className="flex h-11 min-w-11 items-center justify-center rounded-2xl bg-hi px-3 text-muted hover:text-fg">
       <LogOut size={18} />
     </button>
   );

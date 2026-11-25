@@ -35,9 +35,9 @@ export default function RolePage() {
             const I = ICON[r], on = role === r;
             return (
               <button key={r} role="radio" aria-checked={on} onClick={() => setRole(r)}
-                className={cn("glass group relative flex flex-col overflow-hidden text-start transition-all", on ? "!bg-teal/10 ring-1 ring-teal/70" : ".5 hover:bg-hi")} style={{ borderRadius: 8 }}>
+                className={cn("glass group relative flex flex-col overflow-hidden text-start transition-all", on ? "!bg-teal/10 ring-1 ring-teal/70" : "hover:-translate-y-0.5 hover:bg-white/10")} style={{ borderRadius: 18 }}>
                 <Photo crop={CROP[r]} className="h-24 w-full" scrim="from-[#050b18]/10 to-[#050b18]/85" bloom={false} />
-                {on && <span className="absolute end-3 top-3 flex size-6 items-center justify-center rounded-full bg-teal text-[#05110f]"><Check size={14} strokeWidth={3} /></span>}
+                {on && <span className="absolute end-3 top-3 flex size-6 items-center justify-center rounded-full bg-teal text-[#04121a]"><Check size={14} strokeWidth={3} /></span>}
                 <div className="-mt-6 flex flex-col gap-1.5 p-4 pt-0">
                   <span className={cn("flex size-11 items-center justify-center rounded-xl border backdrop-blur", on ? "border-teal/60 bg-teal/25 text-teal" : "border-white/15 bg-[#0a1630]/80 text-white/80")}><I size={22} strokeWidth={1.5} /></span>
                   <span className="mt-1 text-base font-semibold">{lang === "ar" ? ROLE_META[r].labelAr : ROLE_META[r].label}</span>

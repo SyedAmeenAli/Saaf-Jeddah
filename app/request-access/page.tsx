@@ -21,7 +21,7 @@ export default function RequestAccess() {
           </div>
           <Field label="Requested role"><select className={inputCls}>{ROLES.map(([, r]) => <option key={r} className="text-black">{r}</option>)}</select></Field>
           <Field label="Location"><select className={inputCls}><option className="text-black">Location 01 – North Apron</option><option className="text-black">Location 02 – South Apron</option><option className="text-black">Location 03 – Cargo Apron</option></select></Field>
-          <ul className="grid grid-cols-2 gap-2 text-xs text-muted">{ROLES.map(([I, r, d]) => <li key={r} className="flex gap-2 rounded-xl bg-hi p-2.5"><I size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-teal" /><span><b className="block text-fg">{r}</b>{d}</span></li>)}</ul>
+          <ul className="grid grid-cols-2 gap-2 text-xs text-muted">{ROLES.map(([I, r, d]) => <li key={r} className="flex gap-2 rounded-xl bg-white/5 p-2.5"><I size={16} strokeWidth={1.5} className="mt-0.5 shrink-0 text-teal" /><span><b className="block text-fg">{r}</b>{d}</span></li>)}</ul>
           <button className="cta flex h-12 w-full items-center justify-center gap-2 rounded-xl" type="submit"><Send size={16} /> Submit Request</button>
           <p className="flex items-center justify-center gap-1.5 text-xs text-faint"><ShieldCheck size={12} /> Only authorised operators can sign checks.</p>
         </form>

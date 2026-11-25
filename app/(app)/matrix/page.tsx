@@ -13,7 +13,7 @@ function Matrix({ type }: { type: VehicleType }) {
   const t = useT();
   const lang = useStore((s) => s.lang);
   return (
-    <div className="glass overflow-hidden" style={{ borderRadius: 8 }}>
+    <div className="glass overflow-hidden" style={{ borderRadius: 20 }}>
       <div className="flex items-center justify-between px-5 py-4">
         <h2 className="font-display text-xl font-semibold">{type === "refueller" ? t("Refuellers") : t("Hydrant dispensers")}</h2>
         <StatusBadge kind="info">{type === "refueller" ? "4 points" : "2 points"}</StatusBadge>

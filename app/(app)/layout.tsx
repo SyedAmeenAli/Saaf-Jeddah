@@ -28,16 +28,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   if (!ready || !loggedIn) {
     return <div className="flex min-h-dvh items-center justify-center"><Loader label="Loading SAFAA…" /></div>;
   }
-  const pad = desktop ? (collapsed ? SIDEBAR_W_COLLAPSED : SIDEBAR_W) : 0;
+  const pad = desktop ? (collapsed ? SIDEBAR_W_COLLAPSED : SIDEBAR_W) + 24 : 0;
 
   return (
     <div className="min-h-dvh">
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[200] focus:rounded-md focus:bg-teal focus:px-4 focus:py-2 focus:text-[#05110f]">Skip to content</a>
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[200] focus:rounded-full focus:bg-teal focus:px-4 focus:py-2 focus:text-[#04121a]">Skip to content</a>
       <RouteProgress />
       <Sidebar />
       <motion.div initial={false} animate={{ paddingInlineStart: pad }} transition={spring} className="flex min-h-dvh flex-col">
         <Topbar />
-        <main id="main" className="mx-auto w-full max-w-[1500px] flex-1 px-4 pb-32 pt-6 md:px-6 lg:pb-12">
+        <main id="main" className="mx-auto w-full max-w-[1500px] flex-1 px-3 pb-32 pt-6 md:px-6 lg:pb-12">
           <Suspense fallback={null}>{children}</Suspense>
         </main>
         <footer className="px-6 pb-28 text-center text-xs leading-relaxed text-faint lg:pb-8">

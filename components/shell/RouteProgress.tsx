@@ -17,7 +17,7 @@ export function RouteProgress() {
   return (
     <AnimatePresence>
       {key > 0 && (
-        <motion.div key={key} aria-hidden="true" className="pointer-events-none fixed inset-x-0 top-0 z-[150] h-[2px] origin-left bg-teal"
+        <motion.div key={key} aria-hidden="true" className="pointer-events-none fixed inset-x-0 top-0 z-[150] h-[2px] origin-left bg-gradient-to-r from-sky via-teal to-amber"
           initial={{ scaleX: 0, opacity: 1 }} animate={{ scaleX: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }} />
       )}
     </AnimatePresence>
