@@ -77,7 +77,7 @@ export function ReportPreview({ id }: { id: string }) {
       <div className="overflow-x-auto rounded-xl bg-white p-5 text-[#0b1426] shadow-2xl md:p-8" style={{ colorScheme: "light" }}>
         <div className="mb-4 flex flex-wrap items-start justify-between gap-3 border-b-2 border-[#0b1426] pb-3">
           <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#4a5873]">Fuel quality assurance record</p><h3 className="font-display text-xl font-bold">{def.title}</h3><p className="text-xs text-[#4a5873]">JIG-aligned form (demo layout). Illustrative demo data.</p></div>
-          <div className="text-end text-xs text-[#4a5873]"><p className="font-bold tracking-[0.25em] text-[#0b1426]">APSCO</p><ApscoWordmark className="!text-[#4a5873]" /><p>{fmtDT(stamp.getTime())}</p></div>
+          <div className="text-end text-xs text-[#4a5873]"><ApscoWordmark ink className="ms-auto h-9" /><p>{fmtDT(stamp.getTime())}</p></div>
         </div>
         <table className="w-full min-w-[56rem] border-collapse text-[11px]">
           <thead>

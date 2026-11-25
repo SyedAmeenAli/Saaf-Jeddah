@@ -131,7 +131,7 @@ export const useStore = create<State>((set, get) => ({
     const seed = makeSeed(vehicles, employees);
     let theme: Theme = "dark", lang: Lang = "en", role: Role = "operator", loggedIn = false, introSeen = false;
     try {
-      theme = "dark";
+      theme = localStorage.getItem("safaa.theme") === "light" ? "light" : "dark";
       lang = (localStorage.getItem("safaa.lang") as Lang) || "en";
       role = (localStorage.getItem("safaa.role") as Role) || "operator";
       loggedIn = localStorage.getItem("safaa.login") === "1";

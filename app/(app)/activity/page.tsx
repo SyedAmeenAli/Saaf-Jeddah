@@ -36,7 +36,7 @@ export default function Activity() {
             return (
               <Rise key={l.id}>
                 <ExpandCard id={`loc-${l.id}`} title={lang === "ar" ? l.nameAr : l.name}
-                  card={<div className="space-y-3 p-5"><div className="flex items-center justify-between text-sm font-semibold">{lang === "ar" ? l.nameAr : l.name}{st.open > 0 ? <StatusBadge kind="fail">{st.open} HOLD</StatusBadge> : <StatusBadge kind="pass">OK</StatusBadge>}</div><div className="h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${st.pct * 100}%`, background: "linear-gradient(90deg,#59dfce,#43c9df)" }} /></div><p className="text-xs text-muted">{Math.round(st.pct * 100)}% complete · {st.done} done · {st.pending} outstanding</p></div>}
+                  card={<div className="space-y-3 p-5"><div className="flex items-center justify-between text-sm font-semibold">{lang === "ar" ? l.nameAr : l.name}{st.open > 0 ? <StatusBadge kind="fail">{st.open} HOLD</StatusBadge> : <StatusBadge kind="pass">OK</StatusBadge>}</div><div className="h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${st.pct * 100}%`, background: "linear-gradient(90deg,#b58aff,#d7bcff)" }} /></div><p className="text-xs text-muted">{Math.round(st.pct * 100)}% complete · {st.done} done · {st.pending} outstanding</p></div>}
                   detail={() => <LocationDetail location={l} />} />
               </Rise>
             );

@@ -2,6 +2,24 @@
 export type Lang = "en" | "ar";
 
 export const AR: Record<string, string> = {
+  "Start sampling": "ابدأ أخذ العينات",
+  "overdue sampling task. Do these first.": "مهمة أخذ عينات متأخرة. ابدأ بها أولاً.",
+  "overdue sampling tasks. Do these first.": "مهام أخذ عينات متأخرة. ابدأ بها أولاً.",
+  "Today's sampling tasks": "مهام أخذ العينات اليوم",
+  open: "مفتوحة",
+  "All tasks for this shift are complete.": "اكتملت جميع مهام هذه الوردية.",
+  "My latest submissions": "آخر تقديماتي",
+  "No submissions yet today.": "لا توجد تقديمات اليوم بعد.",
+  "Failed result? Stop, tag the vehicle HOLD and call the supervisor.": "نتيجة غير مطابقة؟ توقف، وعلّم المركبة موقوفة واتصل بالمشرف.",
+  Due: "مستحق",
+  "My Records": "سجلاتي",
+  "Your Shift,": "ورديتك،",
+  "in Control.": "تحت السيطرة.",
+  "Maintain fuel quality. Ensure safe operations.": "حافظ على جودة الوقود. وفّر عمليات آمنة.",
+  "Today's Sampling": "عينات اليوم",
+  of: "من",
+  "On Hold": "موقوف",
+  Upcoming: "قادم",
   // brand
   "Every sample. Every point. Proven.": "كل عينة. كل نقطة. موثّقة.",
   "Fuel quality assurance": "ضمان جودة الوقود",

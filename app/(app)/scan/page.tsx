@@ -97,7 +97,7 @@ function ScanInner() {
           {hold && <HoldBanner vehicleId={vehicle.id} />}
 
           {/* Scan stage over the apron photograph */}
-          <Photo crop="truck" className="rounded-2xl border border-hair" scrim="from-[#050b18]/55 via-[#050b18]/60 to-[#050b18]/85">
+          <Photo crop="truck" className="rounded-2xl border border-hair" scrim="from-[#0d0818]/55 via-[#0d0818]/60 to-[#0d0818]/85">
             <div className="flex flex-col items-center gap-5 px-4 py-8 md:py-10">
               <h2 className="text-xl font-semibold">Scan Sampling Point</h2>
               <p className="-mt-3 text-sm text-muted">{mode === "nfc" ? "Tap the NFC tag at the sampling point" : "Align the barcode with the frame"}</p>

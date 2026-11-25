@@ -58,7 +58,7 @@ export function GlassIconButton({ label, children, onClick, className, size = 44
     <button type="button" onClick={onClick} aria-label={label} title={label}
       className={cn("group btn-secondary relative flex shrink-0 items-center justify-center rounded-2xl", active && "!border-teal/60 text-teal", className)} style={{ width: size, height: size, borderRadius: 14 }}>
       {children}
-      <span role="tooltip" className="pointer-events-none absolute -bottom-9 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-lg border border-hair bg-[#0b1928]/95 px-2 py-1 text-[11px] text-fg opacity-0 transition-opacity duration-150 group-hover:opacity-100 max-lg:hidden">{label}</span>
+      <span role="tooltip" className="pointer-events-none absolute -bottom-9 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-lg border border-hair bg-[#151025]/95 px-2 py-1 text-[11px] text-fg opacity-0 transition-opacity duration-150 group-hover:opacity-100 max-lg:hidden">{label}</span>
     </button>
   );
 }
@@ -119,8 +119,8 @@ export function Ring({ value, size = 160, stroke = 14, children, color = "url(#r
       <svg width={size} height={size} className="-rotate-90">
         <defs>
           <linearGradient id="ringg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#2dd4bf" />
-            <stop offset="1" stopColor="#3b82f6" />
+            <stop offset="0" stopColor="#d7bcff" />
+            <stop offset="1" stopColor="#8f5fe0" />
           </linearGradient>
         </defs>
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--hair-strong)" strokeWidth={stroke} opacity=".5" />

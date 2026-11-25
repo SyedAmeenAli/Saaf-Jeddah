@@ -113,7 +113,7 @@ export default function ManagerHome() {
                         <div><p className="text-xl font-semibold"><CountUp value={pr * 100} decimals={1} suffix="%" /></p><p className="text-[11px] text-muted">Pass rate</p></div>
                         <div><p className="text-xl font-semibold"><CountUp value={st.fleet} /></p><p className="text-[11px] text-muted">Fleet</p></div>
                       </div>
-                      <div className="h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${st.pct * 100}%`, background: st.open ? "#e6a84a" : "linear-gradient(90deg,#59dfce,#43c9df)" }} /></div>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${st.pct * 100}%`, background: st.open ? "#e6a84a" : "linear-gradient(90deg,#b58aff,#d7bcff)" }} /></div>
                     </div>
                   }
                   detail={() => <LocationDetail location={l} />} />

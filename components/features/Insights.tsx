@@ -29,7 +29,7 @@ export function TypeComparison() {
     const ids = new Set(vehicles.filter((v) => v.type === t).map((v) => v.id));
     const cs = checks.filter((c) => ids.has(c.vehicleId));
     const pass = cs.filter((c) => c.result === "pass").length;
-    return { label: t === "refueller" ? "Refuellers" : "Hydrant dispensers", value: rate(pass, cs.length), max: 1, display: pct(rate(pass, cs.length)), sub: `${ids.size} units · ${cs.length} samples · ${cs.length - pass} failed`, color: t === "refueller" ? "linear-gradient(90deg,#59dfce,#43c9df)" : "linear-gradient(90deg,#a6cffa,#6aa8f5)" };
+    return { label: t === "refueller" ? "Refuellers" : "Hydrant dispensers", value: rate(pass, cs.length), max: 1, display: pct(rate(pass, cs.length)), sub: `${ids.size} units · ${cs.length} samples · ${cs.length - pass} failed`, color: t === "refueller" ? "linear-gradient(90deg,#b58aff,#d7bcff)" : "linear-gradient(90deg,#cdb8f0,#6aa8f5)" };
   });
   return <MiniBars rows={rows} />;
 }
@@ -65,7 +65,7 @@ export function FleetHealth() {
   const { vehicles, holds, due, checks } = useScoped();
   const c = { ok: 0, pending: 0, due: 0, overdue: 0, hold: 0 };
   vehicles.forEach((v) => { c[vehicleStatus(v, holds, due, checks)]++; });
-  return <StackBar parts={[{ label: "Cleared", value: c.ok, color: "#2fbf8f" }, { label: "Awaiting review", value: c.pending, color: "#a6cffa" }, { label: "Due", value: c.due, color: "#e6a84a" }, { label: "Overdue", value: c.overdue, color: "#d8ad76" }, { label: "On hold", value: c.hold, color: "#ef6f6c" }]} />;
+  return <StackBar parts={[{ label: "Cleared", value: c.ok, color: "#2fbf8f" }, { label: "Awaiting review", value: c.pending, color: "#cdb8f0" }, { label: "Due", value: c.due, color: "#e6a84a" }, { label: "Overdue", value: c.overdue, color: "#ff405c" }, { label: "On hold", value: c.hold, color: "#ef6f6c" }]} />;
 }
 
 export function useEmployeeActivity() {

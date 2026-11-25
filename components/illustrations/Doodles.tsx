@@ -13,9 +13,9 @@ export function NfcTag({ className = "" }: { className?: string }) {
 /** Phone frame for the mobile showcase. */
 export function PhoneFrame({ children, className = "" }: { children?: React.ReactNode; className?: string }) {
   return (
-    <div className={`relative mx-auto w-[260px] shrink-0 rounded-[2.4rem] border border-white/20 bg-[#050b18]/80 p-2 shadow-[0_30px_80px_rgba(0,0,0,0.5)] ${className}`}>
+    <div className={`relative mx-auto w-[260px] shrink-0 rounded-[2.4rem] border border-white/20 bg-[#0d0818]/80 p-2 shadow-[0_30px_80px_rgba(0,0,0,0.5)] ${className}`}>
       <div className="absolute left-1/2 top-3 z-10 h-5 w-20 -translate-x-1/2 rounded-full bg-black" />
-      <div className="relative aspect-[9/19] overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#0a1630] to-[#050b18]">{children}</div>
+      <div className="relative aspect-[9/19] overflow-hidden rounded-[2rem] bg-gradient-to-b from-[#1a1030] to-[#0d0818]">{children}</div>
     </div>
   );
 }

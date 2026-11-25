@@ -17,8 +17,8 @@ export default function Splash() {
   ] as const;
   return (
     <div className="relative flex min-h-dvh flex-col">
-      <Photo crop="full" className="!fixed inset-0 -z-[1]" scrim="from-[#050b18]/40 via-[#050b18]/35 to-[#050b18]/90" />
-      <div className="pointer-events-none fixed inset-0 -z-[1] bg-gradient-to-r from-[#050b18]/85 via-[#050b18]/35 to-transparent" />
+      <Photo crop="full" className="!fixed inset-0 -z-[1]" scrim="from-[#0d0818]/40 via-[#0d0818]/35 to-[#0d0818]/90" />
+      <div className="pointer-events-none fixed inset-0 -z-[1] bg-gradient-to-r from-[#0d0818]/85 via-[#0d0818]/35 to-transparent" />
       <header className="flex items-center justify-between p-5 md:p-8">
         <div className="flex items-center gap-3"><ApscoWordmark /><span className="h-5 w-px bg-white/25" /><span className="flex items-center gap-1 text-sm text-white/80"><MapPin size={14} /> Jeddah, KSA</span></div>
         <LangPill />

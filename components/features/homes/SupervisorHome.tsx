@@ -110,7 +110,7 @@ export default function SupervisorHome() {
                     card={
                       <div className="p-4">
                         <div className="flex items-center justify-between text-sm"><span className="font-medium">{lang === "ar" ? l.nameAr : l.name}</span>{st.open > 0 ? <StatusBadge kind="fail">{st.open} HOLD</StatusBadge> : <StatusBadge kind="pass">OK</StatusBadge>}</div>
-                        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${st.pct * 100}%`, background: st.open ? "#e6a84a" : "linear-gradient(90deg,#59dfce,#43c9df)" }} /></div>
+                        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${st.pct * 100}%`, background: st.open ? "#e6a84a" : "linear-gradient(90deg,#b58aff,#d7bcff)" }} /></div>
                         <p className="mt-2 text-xs text-muted">{Math.round(st.pct * 100)}% complete · {st.done} done · {st.pending} outstanding</p>
                       </div>
                     }

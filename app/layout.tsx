@@ -13,10 +13,10 @@ export const metadata: Metadata = {
   description: "Every sample. Every point. Proven. A JIG-aligned digital fuel sampling and quality assurance demo for APSCO, Jeddah.",
   icons: { icon: "/icon.svg" },
 };
-export const viewport: Viewport = { themeColor: "#07111C", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#0d0818", width: "device-width", initialScale: 1 };
 
 // Applies persisted theme/lang before first paint (no flash).
-const boot = `try{var t='dark';var l=localStorage.getItem('safaa.lang')||'en';var d=document.documentElement;d.setAttribute('data-theme',t);d.lang=l;d.dir=l==='ar'?'rtl':'ltr'}catch(e){}`;
+const boot = `try{var t=localStorage.getItem('safaa.theme')==='light'?'light':'dark';var l=localStorage.getItem('safaa.lang')||'en';var d=document.documentElement;d.setAttribute('data-theme',t);d.lang=l;d.dir=l==='ar'?'rtl':'ltr'}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

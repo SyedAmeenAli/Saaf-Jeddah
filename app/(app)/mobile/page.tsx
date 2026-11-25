@@ -21,11 +21,11 @@ const Row = ({ I, l, v }: { I: typeof Truck; l: string; v: string }) => <div cla
 export default function MobileShowcase() {
   const frames: [string, React.ReactNode][] = [
     ["Welcome", (
-      <Photo key="a" crop="tower" className="h-full" scrim="from-[#050b18]/50 to-[#050b18]/95">
+      <Photo key="a" crop="tower" className="h-full" scrim="from-[#0d0818]/50 to-[#0d0818]/95">
         <div className="flex h-full flex-col items-center justify-between px-5 pb-6 pt-14 text-center"><span className="font-bold tracking-wider">APSCO</span><div className="flex flex-col items-center gap-2"><SafaaLogo stacked size={36} /><p className="text-[11px] text-white/80">Aviation Fuel Quality Assurance</p></div><div className="w-full"><Btn href="/login">Get Started <ArrowRight size={14} /></Btn></div></div>
       </Photo>)],
     ["NFC Sampling", (
-      <Photo key="b" crop="tanker" className="h-full" scrim="from-[#050b18]/50 to-[#050b18]/90">
+      <Photo key="b" crop="tanker" className="h-full" scrim="from-[#0d0818]/50 to-[#0d0818]/90">
         <Screen title="NFC Sampling"><div className="mt-8 flex flex-col items-center gap-4"><div className="glass flex size-28 items-center justify-center" style={{ borderRadius: 24 }}><NfcTag className="size-14 text-teal" /></div><p className="text-center text-muted">Bring your device close to the tag to start sampling</p></div></Screen>
       </Photo>)],
     ["Point detected", (

@@ -79,7 +79,7 @@ export function Topbar() {
           className="relative flex size-10 items-center justify-center rounded-xl bg-white/5 text-muted hover:text-fg"
         >
           <Bell size={18} strokeWidth={1.5} />
-          {unread > 0 && <span className="absolute end-2 top-2 size-2 rounded-full bg-fail ring-2 ring-[#0a1630]" />}
+          {unread > 0 && <span className="absolute end-2 top-2 size-2 rounded-full bg-fail ring-2 ring-[#1a1030]" />}
         </button>
         <Portal>
           <AnimatePresence>

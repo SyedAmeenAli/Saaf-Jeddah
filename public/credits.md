@@ -19,4 +19,6 @@ Inter, Sora, IBM Plex Sans Arabic.
 Next.js, React, Tailwind CSS, Framer Motion, Zustand, lucide-react, Recharts, jsPDF, jspdf-autotable, SheetJS (xlsx).
 
 ## Brand
-"APSCO" appears only as a neutral placeholder wordmark. The official APSCO logo is not reproduced.
+The official APSCO logo is `public/apsco-logo-en.svg`, downloaded unmodified from https://apsco.com.sa/ui/assets/img/apsco-logo-en.svg. `apsco-logo-en-reversed.svg` is the same geometry with only the purple ink changed to near-white for the dark theme. Confirm with APSCO that this reversed use is acceptable.
+
+

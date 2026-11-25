@@ -16,7 +16,7 @@ export function MiniBars({ rows, className }: { rows: BarRow[]; className?: stri
             <span className="tnum shrink-0 font-medium">{r.display ?? r.value}</span>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-white/10">
-            <motion.div className="h-full rounded-full" style={{ background: r.color ?? "linear-gradient(90deg,#59dfce,#43c9df)" }}
+            <motion.div className="h-full rounded-full" style={{ background: r.color ?? "linear-gradient(90deg,#b58aff,#d7bcff)" }}
               initial={{ width: 0 }} animate={{ width: `${Math.min(100, (r.value / (r.max ?? m)) * 100)}%` }} transition={{ duration: 0.9, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }} />
           </div>
           {r.sub && <p className="mt-1 text-xs text-faint">{r.sub}</p>}

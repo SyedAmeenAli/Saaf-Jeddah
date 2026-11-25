@@ -8,7 +8,7 @@ import { useStore } from "@/lib/store";
 import { useApplicable, useNow, useT } from "@/lib/hooks";
 import { DP_RANGE, OCCASIONS, OCCASION_ORDER, POINTS } from "@/lib/domain";
 import { cn, fmtDT, ymd } from "@/lib/utils";
-import { Button, Modal, StatusBadge, inputCls } from "@/components/ui/Glass";
+import { Button, Field, Modal, StatusBadge, inputCls } from "@/components/ui/Glass";
 import { ColorSwatchSelect, ResultToggle } from "./ResultToggle";
 import { SignBlock } from "./Sign";
 import { DispenserSvg, HOTSPOTS, TruckSvg } from "@/components/illustrations/Vehicles";
@@ -32,7 +32,7 @@ function Stepper({ at, onJump }: { at: number; onJump: (i: number) => void }) {
               <button type="button" disabled={i > at} onClick={() => onJump(i)} aria-current={cur ? "step" : undefined} aria-label={`${s}${done ? ", completed" : ""}`}
                 className="group flex flex-col items-center gap-1.5 disabled:cursor-default">
                 <span className={cn("relative flex size-8 items-center justify-center rounded-full border text-xs font-semibold transition-all",
-                  done ? "border-teal/60 bg-teal/25 text-teal" : cur ? "border-teal bg-gradient-to-b from-teal/40 to-teal/15 text-white shadow-[0_0_0_4px_rgba(89,223,206,0.14),0_8px_20px_-8px_rgba(89,223,206,0.7)]" : "border-hair bg-white/[0.04] text-faint")}>
+                  done ? "border-teal/60 bg-teal/25 text-teal" : cur ? "border-teal bg-gradient-to-b from-teal/40 to-teal/15 text-white shadow-[0_0_0_4px_rgba(181,138,255,0.14),0_8px_20px_-8px_rgba(181,138,255,0.7)]" : "border-hair bg-white/[0.04] text-faint")}>
                   {done ? <CheckI size={14} strokeWidth={3} /> : i + 1}
                 </span>
                 <span className={cn("hidden text-[11px] sm:block", cur ? "font-semibold text-fg" : "text-faint")}>{s}</span>
@@ -274,12 +274,12 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
 
                 {step === 4 && (
                   <>
-                    <Panel title={t("Chemical water detector (CWD)")} note="Record the kit details exactly as printed.">
+                    <Panel title={t("Chemical water detector (CWD)")} note="Record the kit details exactly as printed. Acceptance limits are those approved by APSCO Quality Control, not set by this demo.">
                       <ResultToggle label="CWD result" value={cwd} onChange={(v) => setCwd(v)} notDone passHint="No water" failHint="Water detected" />
                       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                        <input className={inputCls} value={kit} onChange={(e) => setKit(e.target.value)} aria-label="Kit type" placeholder="Kit type" />
-                        <input className={inputCls} value={batch} onChange={(e) => setBatch(e.target.value)} aria-label="Batch or lot" placeholder="Batch / lot" />
-                        <input className={inputCls} type="month" value={exp} onChange={(e) => setExp(e.target.value)} aria-label="Kit expiry" />
+                        <Field label="Test kit type"><input className={inputCls} value={kit} onChange={(e) => setKit(e.target.value)} aria-label="Kit type" placeholder="Kit type" /></Field>
+                        <Field label="Batch / lot number"><input className={inputCls} value={batch} onChange={(e) => setBatch(e.target.value)} aria-label="Batch or lot" placeholder="Printed on kit" /></Field>
+                        <Field label="Kit expiry"><input className={inputCls} type="month" value={exp} onChange={(e) => setExp(e.target.value)} aria-label="Kit expiry" /></Field>
                       </div>
                     </Panel>
                     <Panel title={t("Filter differential pressure")} note={`Placeholder range ${DP_RANGE.min}–${DP_RANGE.max} ${DP_RANGE.unit}, per approved procedure`}>

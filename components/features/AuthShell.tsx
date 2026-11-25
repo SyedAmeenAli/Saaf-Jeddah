@@ -22,7 +22,7 @@ export function LangPill() {
 export function AuthShell({ crop = "engine", title, subtitle, children, footer }: { crop?: Crop; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode }) {
   return (
     <div className="relative min-h-dvh">
-      <Photo crop={crop} className="!fixed inset-0 -z-[1]" scrim="from-[#050b18]/45 via-[#050b18]/60 to-[#050b18]/92" />
+      <Photo crop={crop} className="!fixed inset-0 -z-[1]" scrim="from-[#0d0818]/45 via-[#0d0818]/60 to-[#0d0818]/92" />
       <header className="flex items-center justify-between p-5 md:p-8">
         <Link href="/" className="flex items-center gap-3"><ApscoWordmark /><span className="h-5 w-px bg-white/25" /><span className="flex items-center gap-1 text-sm text-muted"><MapPin size={14} /> Jeddah</span></Link>
         <LangPill />
