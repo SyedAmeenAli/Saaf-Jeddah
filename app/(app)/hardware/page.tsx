@@ -23,7 +23,7 @@ export default function HardwarePage() {
       <PageHeader title={t("Hardware & setup")} sub="How SAFAA is deployed on the apron." />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Rise>
-          <Photo crop="tanker" className="rounded-2xl border border-hair" scrim="from-[#050b18]/60 to-[#050b18]/90">
+          <Photo crop="refuel" className="rounded-2xl border border-hair" scrim="from-[#050b18]/60 to-[#050b18]/90">
             <div className="p-6">
               <h2 className="mb-1 text-lg font-semibold">NFC tag + reader at the sampling point</h2>
               <p className="mb-4 text-sm text-muted">One passive tag per sampling point: 4 on a refueller, 2 on a hydrant dispenser.</p>

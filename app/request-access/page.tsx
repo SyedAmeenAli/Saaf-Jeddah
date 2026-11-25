@@ -10,7 +10,7 @@ const ROLES = [[HardHat, "Operator", "Perform sampling and record results"], [Us
 export default function RequestAccess() {
   const [sent, setSent] = useState(false);
   return (
-    <AuthShell crop="plane" title="Request Access" subtitle="For APSCO employees only" footer={<Link href="/login" className="text-teal hover:underline">Back to sign in</Link>}>
+    <AuthShell crop="truck" title="Request Access" subtitle="For APSCO employees only" footer={<Link href="/login" className="text-teal hover:underline">Back to sign in</Link>}>
       {sent ? (
         <div className="flex flex-col items-center gap-3 py-6 text-center"><span className="flex size-14 items-center justify-center rounded-full bg-pass/20 text-pass-fg"><Check size={28} /></span><p className="font-semibold">Request submitted</p><p className="text-sm text-muted">Your supervisor will review it. Demo only: nothing was sent.</p></div>
       ) : (

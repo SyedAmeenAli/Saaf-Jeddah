@@ -16,7 +16,7 @@ export default function Login() {
     router.push(next ? `/role?next=${encodeURIComponent(next)}` : "/role");
   };
   return (
-    <AuthShell crop="engine" title="Welcome back" subtitle="Sign in to your account"
+    <AuthShell crop="refuel" title="Welcome back" subtitle="Sign in to your account"
       footer={<Link href="/request-access" className="text-teal hover:underline">Request access</Link>}>
       <form onSubmit={go} className="space-y-4">
         <label className="relative block">

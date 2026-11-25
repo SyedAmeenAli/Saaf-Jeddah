@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 
 const BLUR = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjUiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjUiIGZpbGw9IiMwYTE2MzAiLz48L3N2Zz4=";
 
-export type Crop = "full" | "tanker" | "engine" | "plane" | "tower" | "skyline" | "apron" | "sky";
-/** Art-directed crops of the supplied apron photograph, pre-cut at native resolution. */
+export type Crop = "full" | "tanker" | "engine" | "plane" | "tower" | "skyline" | "apron" | "sky" | "refuel" | "truck";
+/** Crops of the supplied apron photograph plus a licensed Unsplash refuelling photo (see public/credits.md). */
 const SRC: Record<Crop, { src: string; pos: string }> = {
   full: { src: "hero-apron", pos: "50% 62%" },
   tanker: { src: "tanker", pos: "50% 55%" },
@@ -14,6 +14,8 @@ const SRC: Record<Crop, { src: string; pos: string }> = {
   plane: { src: "nose", pos: "50% 30%" },
   apron: { src: "apron", pos: "50% 60%" },
   sky: { src: "sky", pos: "50% 50%" },
+  refuel: { src: "refuel-scene", pos: "50% 55%" },
+  truck: { src: "refuel-truck", pos: "50% 55%" },
 };
 
 /** Photographic panel under a dark brand scrim. Gradient fallback behind, edge vignette and bloom on top. */
