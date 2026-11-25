@@ -3,8 +3,8 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { ArrowRight, BookLock, Boxes, Grid3x3, Lock, MapPin, Nfc, Plus, Users } from "lucide-react";
 import { useStore } from "@/lib/store";
-import { useNow, useT } from "@/lib/hooks";
-import { OCCASION_ORDER, applicablePoints, pointsForVehicle } from "@/lib/domain";
+import { useApplicable, useNow, useT } from "@/lib/hooks";
+import { OCCASION_ORDER, pointsForVehicle } from "@/lib/domain";
 import { Rise, Stagger, StatusBadge, CountUp } from "@/components/ui/Glass";
 import { ActivityList } from "@/components/features/Lists";
 import { cn } from "@/lib/utils";
@@ -17,15 +17,16 @@ export default function AdminHome() {
   const vehicles = useStore((s) => s.vehicles);
   const audit = useStore((s) => s.audit);
   const now = useNow(60000);
+  const applicable = useApplicable();
 
   const stats = useMemo(() => {
     const slots = vehicles.reduce((a, v) => a + pointsForVehicle(v.type).length, 0);
     const tagged = vehicles.reduce((a, v) => a + pointsForVehicle(v.type).filter((p) => v.tags[p]).length, 0);
     const missing = vehicles.map((v) => ({ v, n: pointsForVehicle(v.type).filter((p) => !v.tags[p]).length })).filter((x) => x.n > 0).sort((a, b) => b.n - a.n);
-    const matrix = OCCASION_ORDER.reduce((a, o) => a + applicablePoints(o, "refueller").length + applicablePoints(o, "dispenser").length, 0);
+    const matrix = OCCASION_ORDER.reduce((a, o) => a + applicable(o, "refueller").length + applicable(o, "dispenser").length, 0);
     const expired = employees.filter((e) => e.role === "operator" && e.certExpiry < now);
     return { slots, tagged, missing, matrix, expired };
-  }, [vehicles, employees, now]);
+  }, [vehicles, employees, now, applicable]);
   const cover = stats.slots ? stats.tagged / stats.slots : 1;
   const cfg = audit.filter((a) => a.action === "config" || a.action === "amendment").slice(0, 6);
 

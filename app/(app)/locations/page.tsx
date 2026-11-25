@@ -6,7 +6,6 @@ import { useCan, useT } from "@/lib/hooks";
 import { Button, Field, Modal, PageHeader, Rise, Stagger, StatusBadge, inputCls } from "@/components/ui/Glass";
 import { ExpandCard, ExpandGroup } from "@/components/ui/Expand";
 import { LocationDetail, LocationStats } from "@/components/features/Details";
-import { Photo } from "@/components/ui/Photo";
 
 export default function LocationsPage() {
   const t = useT();
@@ -39,11 +38,8 @@ export default function LocationsPage() {
                 id={l.id} title={nm}
                 card={
                   <div className="flex h-full flex-col overflow-hidden">
-                    <Photo crop={(["skyline", "tower", "apron"] as const)[Number(l.id.slice(-1)) % 3]} className="relative h-32 rounded-t-[16px]">
-                      
-                      <span className="absolute start-4 top-3 rounded-md bg-black/40 px-2 py-1 font-mono text-xs text-white backdrop-blur">{l.id}</span>
-                    </Photo>
-                    <div className="space-y-4 p-5">
+                    <div className="flex items-center justify-between px-5 pt-5"><span className="rounded-lg border border-hair bg-white/[0.06] px-2 py-1 font-mono text-xs text-muted">{l.id}</span></div>
+                    <div className="space-y-4 p-5 pt-3">
                       <div><h3 className="font-display text-lg font-semibold leading-snug">{nm}</h3><p className="text-xs text-muted">{l.zone}</p></div>
                       <div className="grid grid-cols-3 gap-2 text-center">
                         <div className="rounded-2xl bg-hi p-2"><Truck size={15} className="mx-auto text-sky" /><p className="font-display text-xl font-semibold">{st.fleet}</p><p className="text-[10px] text-muted">{t("Fleet size")}</p></div>

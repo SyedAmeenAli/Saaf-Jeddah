@@ -63,6 +63,7 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
   const { anyOpen } = useContext(Ctx);
   const isOpen = sp.get("open") === id;
   const { open, close } = useExpandNav();
+  const pathname = usePathname();
   const t = useT();
   const cardRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -82,6 +83,14 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
       prev?.focus({ preventScroll: true }); // restore focus to originating card
     };
   }, [isOpen, close]);
+
+  // If this card's source disappears while it is open (e.g. a hold was released), clear the stale ?open= param.
+  useEffect(() => {
+    if (!isOpen) return;
+    return () => {
+      if (window.location.pathname === pathname && new URLSearchParams(window.location.search).get("open") === id) { pushed = false; window.history.replaceState(null, "", pathname); }
+    };
+  }, [isOpen, id, pathname]);
 
   return (
     <>

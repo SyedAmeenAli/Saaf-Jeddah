@@ -37,3 +37,12 @@ export const ROLE_META: Record<string, { label: string; labelAr: string; desc: s
   manager: { label: "Manager", labelAr: "مدير", desc: "Read-only dashboards and reports", descAr: "لوحات وتقارير للقراءة فقط" },
   admin: { label: "Admin", labelAr: "مسؤول النظام", desc: "Manage locations, fleet, users, tags", descAr: "إدارة المواقع والأسطول والمستخدمين والعلامات" },
 };
+
+export type MatrixConfig = Record<OccasionId, PointId[]>;
+export const defaultMatrix = (): MatrixConfig => Object.fromEntries(OCCASION_ORDER.map((o) => [o, [...OCCASIONS[o].points]])) as MatrixConfig;
+/** Applicable points for an occasion on an equipment type, from an editable matrix. */
+export function applicableWith(m: MatrixConfig, occasion: OccasionId, type: VehicleType): PointId[] {
+  const o = OCCASIONS[occasion];
+  if (o.refuellerOnly && type !== "refueller") return [];
+  return (m[occasion] ?? o.points).filter((p) => type === "refueller" || !POINTS[p].tank);
+}

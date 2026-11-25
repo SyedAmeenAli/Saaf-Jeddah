@@ -5,8 +5,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Camera, Check as CheckI, Lock, Nfc, OctagonAlert, Send, ShieldAlert, X } from "lucide-react";
 import type { Check, OccasionId, PointId, Res, Vehicle } from "@/lib/types";
 import { useStore } from "@/lib/store";
-import { useNow, useT } from "@/lib/hooks";
-import { DP_RANGE, OCCASIONS, OCCASION_ORDER, POINTS, applicablePoints } from "@/lib/domain";
+import { useApplicable, useNow, useT } from "@/lib/hooks";
+import { DP_RANGE, OCCASIONS, OCCASION_ORDER, POINTS } from "@/lib/domain";
 import { cn, fmtDT, ymd } from "@/lib/utils";
 import { Button, Modal, StatusBadge, inputCls } from "@/components/ui/Glass";
 import { ColorSwatchSelect, ResultToggle } from "./ResultToggle";
@@ -87,6 +87,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
   open: boolean; onClose: () => void; vehicle: Vehicle; point: PointId; occasion: OccasionId; onDone: () => void;
 }) {
   const t = useT();
+  const applicable = useApplicable();
   const employees = useStore((s) => s.employees);
   const submit = useStore((s) => s.submitCheck);
   const nextSeq = useStore((s) => s.nextSeq);
@@ -119,9 +120,9 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
   useEffect(() => () => { if (photo) URL.revokeObjectURL(photo); }, [photo]);
 
   const occasions = useMemo(() => {
-    const l = OCCASION_ORDER.filter((o) => applicablePoints(o, vehicle.type).includes(point));
+    const l = OCCASION_ORDER.filter((o) => applicable(o, vehicle.type).includes(point));
     return l.includes(occ0) ? l : [occ0, ...l];
-  }, [vehicle.type, point, occ0]);
+  }, [vehicle.type, point, occ0, applicable]);
 
   const empRec = employees.find((e) => e.id.toLowerCase() === emp.trim().toLowerCase());
   const authorised = !!empRec && empRec.role !== "manager" && empRec.role !== "admin" && empRec.certExpiry > now;

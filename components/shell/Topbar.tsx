@@ -20,7 +20,8 @@ function Title() {
   const t = useT();
   const role = useStore((s) => s.role);
   const nav = ROLE_NAV[role].find((n) => pathname.startsWith(n.href)) ?? NAV.find((n) => pathname.startsWith(n.href));
-  const open = sp.get("open");
+  const rawOpen = sp.get("open");
+  const open = rawOpen && /^((REF|DSP)-\d+|LOC\d+)$/.test(rawOpen) ? rawOpen : null;
   return (
     <div className="min-w-0 leading-tight">
       <div className="flex items-center gap-1.5 truncate text-lg font-semibold">

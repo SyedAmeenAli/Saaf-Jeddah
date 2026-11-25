@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { BookLock, Bell, LogOut, MapPin, Palette, RotateCcw, Wifi } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { useT } from "@/lib/hooks";
-import { Button, Card, Chip, PageHeader, Switch, inputCls } from "@/components/ui/Glass";
+import { Button, Card, Chip, GlassDropdown, PageHeader, Switch } from "@/components/ui/Glass";
 
 function Row({ icon: I, title, desc, children }: { icon: typeof Bell; title: string; desc?: string; children: React.ReactNode }) {
   return (
@@ -43,10 +43,7 @@ export default function SettingsPage() {
             <div className="flex gap-2"><Chip active={lang === "en"} onClick={() => setLang("en")}>EN</Chip><Chip active={lang === "ar"} onClick={() => setLang("ar")}>عربي</Chip></div>
           </Row>
           <Row icon={MapPin} title={t("Location")} desc="Default scope for dashboards and lists">
-            <select aria-label="Default location" className={`${inputCls} !h-10 max-w-48`} value={active} onChange={(e) => setActive(e.target.value)}>
-              <option value="all" className="text-black">{t("All")} {t("Locations")}</option>
-              {locations.map((l) => <option key={l.id} value={l.id} className="text-black">{l.name}</option>)}
-            </select>
+            <div className="w-48"><GlassDropdown label="Default location" value={active} onChange={setActive} options={[["all", `${t("All")} ${t("Locations")}`], ...locations.map((l) => [l.id, l.name] as const)]} /></div>
           </Row>
           <Row icon={Bell} title="Failure alerts" desc="Toast and bell notification when a check fails"><Switch checked={prefs.notifyFail} onChange={(v) => setPref("notifyFail", v)} label="Failure alerts" /></Row>
           <Row icon={Bell} title="Overdue reminders" desc="Notify when a scheduled sample is overdue"><Switch checked={prefs.notifyOverdue} onChange={(v) => setPref("notifyOverdue", v)} label="Overdue reminders" /></Row>

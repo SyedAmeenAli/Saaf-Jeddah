@@ -2,7 +2,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { useStore } from "./store";
 import { translate } from "./i18n";
-import type { Role } from "./types";
+import type { OccasionId, Role, VehicleType } from "./types";
+import { applicableWith } from "./domain";
 
 export function useT() {
   const lang = useStore((s) => s.lang);
@@ -44,4 +45,10 @@ export function useNow(intervalMs = 30000) {
     return () => clearInterval(i);
   }, [intervalMs]);
   return now;
+}
+
+/** Applicable points for an occasion and equipment type, following the admin-edited matrix. */
+export function useApplicable() {
+  const matrix = useStore((s) => s.matrix);
+  return useCallback((o: OccasionId, t: VehicleType) => applicableWith(matrix, o, t), [matrix]);
 }

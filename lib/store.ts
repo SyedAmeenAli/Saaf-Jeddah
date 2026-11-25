@@ -3,7 +3,7 @@ import { create } from "zustand";
 import type {
   Amendment, AuditEntry, Check, DueItem, Employee, Hold, Location, Notice, OccasionId, PointId, Res, Role, Toast, Vehicle, VehicleType, MicroTest } from "./types";
 import { DEMO_USER, LOCATIONS, makeEmployees, makeSeed, makeVehicles, tagId } from "@/data/seed";
-import { POINTS, pointsForVehicle } from "./domain";
+import { POINTS, pointsForVehicle, defaultMatrix, type MatrixConfig } from "./domain";
 import { ymd } from "./utils";
 import type { Lang } from "./i18n";
 
@@ -38,6 +38,7 @@ interface State {
   amendments: Amendment[];
   micro: MicroTest[];
   perms: Record<Role, string[]>;
+  matrix: MatrixConfig;
   toasts: Toast[];
   paletteOpen: boolean;
   noticesOpen: boolean;
@@ -61,6 +62,7 @@ interface State {
   addLocation: (name: string, nameAr?: string) => void;
   addVehicle: (type: VehicleType, locationId: string) => string;
   assignTag: (vehicleId: string, point: PointId, tag: string) => void;
+  updateVehicle: (id: string, patch: { plate?: string; locationId?: string }) => void;
   nextSeq: (vehicleId: string, point: PointId) => number;
   submitCheck: (i: SubmitInput) => Check;
   approveCheck: (id: string) => void;
@@ -74,6 +76,7 @@ interface State {
   setPref: (k: "notifyFail" | "notifyOverdue" | "haptics" | "compact", v: boolean) => void;
   resetDemo: () => void;
   setPerm: (role: Role, cap: string, on: boolean) => void;
+  toggleMatrix: (occasion: OccasionId, point: PointId) => void;
   collectMicro: (id: string) => void;
   recordMicro: (id: string, result: Res, note: string) => void;
 }
@@ -116,6 +119,7 @@ export const useStore = create<State>((set, get) => ({
   amendments: [],
   micro: [],
   perms: { operator: ["sample"], supervisor: ["verify", "release", "amend", "export"], manager: ["export"], admin: ["admin", "export"] },
+  matrix: defaultMatrix(),
   toasts: [],
   paletteOpen: false,
   noticesOpen: false,
@@ -147,7 +151,7 @@ export const useStore = create<State>((set, get) => ({
       clearTimeout(timer);
       timer = setTimeout(() => {
         try {
-          const data = { locations: st.locations, vehicles: st.vehicles, employees: st.employees, checks: st.checks, due: st.due, holds: st.holds, audit: st.audit, notices: st.notices, amendments: st.amendments, micro: st.micro, perms: st.perms };
+          const data = { locations: st.locations, vehicles: st.vehicles, employees: st.employees, checks: st.checks, due: st.due, holds: st.holds, audit: st.audit, notices: st.notices, amendments: st.amendments, micro: st.micro, perms: st.perms, matrix: st.matrix };
           localStorage.setItem(PERSIST_KEY, JSON.stringify({ day: ymd(Date.now()), data }));
         } catch {}
       }, 500);
@@ -198,6 +202,7 @@ export const useStore = create<State>((set, get) => ({
   log: (e) => set((s) => ({ audit: [{ ...e, id: uid(), ts: Date.now() }, ...s.audit] })),
 
   addLocation: (name, nameAr) => {
+    if (get().role !== "admin") return; // configuration is admin-only
     const n = get().locations.length + 1;
     const id = `LOC${String(n).padStart(2, "0")}`;
     set((s) => ({ locations: [...s.locations, { id, name, nameAr: nameAr || name, zone: "Jeddah · Demo" }] }));
@@ -205,6 +210,7 @@ export const useStore = create<State>((set, get) => ({
     get().toast("pass", `Location ${id} added`);
   },
   addVehicle: (type, locationId) => {
+    if (get().role !== "admin") return ""; // configuration is admin-only
     const prefix = type === "refueller" ? "REF" : "DSP";
     const n = get().vehicles.filter((v) => v.type === type).length + 1;
     const id = `${prefix}-${String(n).padStart(3, "0")}`;
@@ -215,7 +221,16 @@ export const useStore = create<State>((set, get) => ({
     get().toast("pass", `${id} added to ${locationId}`);
     return id;
   },
+  updateVehicle: (id, patch) => {
+    const s = get();
+    const v = s.vehicles.find((x) => x.id === id);
+    if (!v || s.role !== "admin") return;
+    set({ vehicles: s.vehicles.map((x) => (x.id === id ? { ...x, ...patch } : x)) });
+    get().log({ actor: currentUserId(s.role), role: s.role, action: "config", target: id, detail: `Equipment updated${patch.plate ? `: plate ${patch.plate}` : ""}${patch.locationId ? `, location ${patch.locationId}` : ""}` });
+    get().toast("pass", `${id} updated`);
+  },
   assignTag: (vehicleId, point, tag) => {
+    if (get().role !== "admin") return; // configuration is admin-only
     set((s) => ({ vehicles: s.vehicles.map((v) => (v.id === vehicleId ? { ...v, tags: { ...v.tags, [point]: tag } } : v)) }));
     get().log({ actor: currentUserId(get().role), role: get().role, action: "config", target: vehicleId, detail: `Tag ${tag} assigned to ${POINTS[point].label}` });
     get().toast("pass", `Tag assigned: ${tag}`);
@@ -303,6 +318,7 @@ export const useStore = create<State>((set, get) => ({
     get().toast("info", "Amendment recorded. Original preserved.");
   },
   addUser: (name, nameAr, role, locationId) => {
+    if (get().role !== "admin") return "";
     const base = role === "operator" ? 1000 : role === "supervisor" ? 2000 : role === "manager" ? 3000 : 9000;
     const n = get().employees.filter((e) => e.role === role).length + 1 + base + 100;
     const id = `EMP-${n}`;
@@ -312,17 +328,27 @@ export const useStore = create<State>((set, get) => ({
     return id;
   },
   setUserRole: (id, role) => {
+    if (get().role !== "admin") return; // configuration is admin-only
     set((s) => ({ employees: s.employees.map((e) => (e.id === id ? { ...e, role } : e)) }));
     get().log({ actor: currentUserId(get().role), role: get().role, action: "config", target: id, detail: `Role set to ${role}` });
     get().toast("pass", `${id} is now ${role}`);
   },
   setCert: (id, days) => {
+    if (get().role !== "admin") return; // configuration is admin-only
     set((s) => ({ employees: s.employees.map((e) => (e.id === id ? { ...e, certExpiry: Date.now() + days * 86400000 } : e)) }));
     get().log({ actor: currentUserId(get().role), role: get().role, action: "config", target: id, detail: days > 0 ? `Qualification renewed (${days} days)` : "Qualification suspended" });
     get().toast(days > 0 ? "pass" : "info", days > 0 ? `${id} qualification renewed` : `${id} qualification suspended`);
   },
   prefs: { notifyFail: true, notifyOverdue: true, haptics: true, compact: false },
   setPref: (k, v) => set((s) => ({ prefs: { ...s.prefs, [k]: v } })),
+  toggleMatrix: (occasion, point) => {
+    const s = get();
+    if (s.role !== "admin") return;
+    const cur = s.matrix[occasion] ?? [];
+    const on = !cur.includes(point);
+    set({ matrix: { ...s.matrix, [occasion]: on ? [...cur, point] : cur.filter((p) => p !== point) } });
+    get().log({ actor: currentUserId(s.role), role: s.role, action: "config", target: occasion, detail: `Matrix: ${POINTS[point].label} ${on ? "required" : "not required"} for ${occasion}` });
+  },
   setPerm: (role, cap, on) => {
     const s = get();
     if (s.role !== "admin") return;
@@ -357,7 +383,7 @@ export const useStore = create<State>((set, get) => ({
     const employees = makeEmployees();
     const vehicles = makeVehicles();
     const seed = makeSeed(vehicles, employees);
-    set({ micro: makeMicro(vehicles), perms: { operator: ["sample"], supervisor: ["verify", "release", "amend", "export"], manager: ["export"], admin: ["admin", "export"] }, employees, vehicles, ...seed, notices: seed.notices, locations: LOCATIONS, amendments: [], activeLocation: "all", offline: false, queued: 0 });
+    set({ matrix: defaultMatrix(), micro: makeMicro(vehicles), perms: { operator: ["sample"], supervisor: ["verify", "release", "amend", "export"], manager: ["export"], admin: ["admin", "export"] }, employees, vehicles, ...seed, notices: seed.notices, locations: LOCATIONS, amendments: [], activeLocation: "all", offline: false, queued: 0 });
     get().toast("info", "Demo data reset");
   },
   releaseHold: (holdId) => {
