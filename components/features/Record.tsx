@@ -9,6 +9,7 @@ import { cn, fmtDT } from "@/lib/utils";
 import { Button, Field, Modal, StatusBadge, inputCls } from "@/components/ui/Glass";
 import { ResultBadge, StateBadge } from "./Details";
 import { SignModal } from "./Sign";
+import { T } from "@/components/ui/T";
 
 const tick = (r: string) => (r === "pass" ? "✓" : r === "fail" ? "✕" : "n/d");
 
@@ -66,7 +67,7 @@ export function RecordView({ check: c, onChange }: { check: Check; onChange?: ()
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-2">
         <ResultBadge c={c} /><StateBadge status={c.status} />
-        {c.kind === "resample" && <StatusBadge kind="info">Re-sample</StatusBadge>}
+        {c.kind === "resample" && <StatusBadge kind="info"><T>{"Re-sample"}</T></StatusBadge>}
         {locked && <StatusBadge kind="locked">{t("Locked record")}</StatusBadge>}
       </div>
       <p className="text-sm text-muted">{OCCASIONS[c.occasion].label} · {empName(employees, c.employeeId, lang)} · signed</p>
@@ -93,17 +94,17 @@ export function RecordView({ check: c, onChange }: { check: Check; onChange?: ()
       {locked && (
         <div className="rounded-2xl border border-hair-strong bg-hi p-4 text-sm">
           <p className="flex items-center gap-2 font-semibold"><Lock size={16} /> {t("Locked record")}</p>
-          <p className="mt-1 text-muted">Approved records are immutable. Corrections create an amendment that preserves the original.</p>
+          <p className="mt-1 text-muted"><T>{"Approved records are immutable. Corrections create an amendment that preserves the original."}</T></p>
           <div className="mt-3 flex flex-wrap gap-2">
             {can("amend") && <Button size="sm" onClick={() => { setTo(""); setAmWhy(""); setAmOpen(true); }}><PenLine size={14} /> {t("Create amendment")}</Button>}
-            <Button size="sm" onClick={() => toast("info", "Submitted records cannot be deleted. Use an amendment.")}><Trash2 size={14} /> Delete</Button>
-            {role === "admin" && <span className="self-center text-xs text-pending-fg">Admins cannot edit or delete submitted records.</span>}
+            <Button size="sm" onClick={() => toast("info", "Submitted records cannot be deleted. Use an amendment.")}><Trash2 size={14} /> <T>{"Delete"}</T></Button>
+            {role === "admin" && <span className="self-center text-xs text-pending-fg"><T>{"Admins cannot edit or delete submitted records."}</T></span>}
           </div>
         </div>
       )}
 
       <SignModal open={sign} onClose={() => setSign(false)} title={`${t("Countersign")}: ${c.vehicleId}`} confirmLabel={`${t("Approve")} & lock`} onConfirm={() => { approve(c.id); onChange?.(); }}>
-        <p className="text-sm text-muted">Approving locks <span className="font-mono">{c.sampleId}</span>. It cannot be edited afterwards, only amended.</p>
+        <p className="text-sm text-muted"><T>{"Approving locks"}</T> <span className="font-mono">{c.sampleId}</span><T>{". It cannot be edited afterwards, only amended."}</T></p>
       </SignModal>
 
       <Modal open={retOpen} onClose={() => setRetOpen(false)} title={t("Return")}>
@@ -115,10 +116,10 @@ export function RecordView({ check: c, onChange }: { check: Check; onChange?: ()
 
       <Modal open={amOpen} onClose={() => setAmOpen(false)} title={t("Create amendment")}>
         <div className="space-y-4">
-          <Field label="Field to correct"><select className={inputCls} value={field} onChange={(e) => setField(e.target.value)}><option value="dp" className="text-black">Differential pressure</option><option value="cwdBatch" className="text-black">CWD batch / lot</option><option value="employeeId" className="text-black">Employee number</option></select></Field>
+          <Field label="Field to correct"><select className={inputCls} value={field} onChange={(e) => setField(e.target.value)}><option value="dp" className="text-black"><T>{"Differential pressure"}</T></option><option value="cwdBatch" className="text-black"><T>{"CWD batch / lot"}</T></option><option value="employeeId" className="text-black"><T>{"Employee number"}</T></option></select></Field>
           <Field label="Corrected value"><input className={inputCls} value={to} onChange={(e) => setTo(e.target.value)} /></Field>
           <Field label="Reason (required)"><textarea className={cn(inputCls, "h-auto py-3")} rows={2} value={amWhy} onChange={(e) => setAmWhy(e.target.value)} /></Field>
-          <Button variant="primary" size="lg" className="w-full" disabled={!to.trim() || amWhy.trim().length < 5} onClick={() => { amend(c.id, field, to.trim(), amWhy.trim()); setAmOpen(false); }}>Record amendment</Button>
+          <Button variant="primary" size="lg" className="w-full" disabled={!to.trim() || amWhy.trim().length < 5} onClick={() => { amend(c.id, field, to.trim(), amWhy.trim()); setAmOpen(false); }}><T>{"Record amendment"}</T></Button>
         </div>
       </Modal>
     </div>

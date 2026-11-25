@@ -12,6 +12,7 @@ import { ExpandCard, ExpandGroup } from "@/components/ui/Expand";
 import { useSearchParams } from "next/navigation";
 import { ReviewDetail } from "@/components/features/ReviewDetail";
 import { StateBadge } from "@/components/features/Details";
+import { T } from "@/components/ui/T";
 
 const TABS = [["all", "All"], ["awaiting", "Awaiting supervisor"], ["failed", "Failed"], ["approved", "Locked"], ["returned", "Returned"]] as const;
 const mark = (r: string) => r === "pass" ? <Check size={14} className="text-pass-fg" aria-label="pass" /> : r === "fail" ? <X size={14} className="text-fail-fg" aria-label="fail" /> : <span className="text-faint">–</span>;
@@ -40,13 +41,13 @@ function Inner() {
   return (
     <ExpandGroup>
       <PageHeader title={mine ? t("My Records") : t("Inspections")} sub={mine ? "Samples you have submitted and where each one stands." : "Every sampling record. Open one to review, approve, return or amend."}
-        actions={(can("sample") || can("verify")) ? <Link href="/scan" className="cta inline-flex h-11 items-center gap-2 rounded-xl px-5 text-sm"><Plus size={16} /> New inspection</Link> : undefined} />
+        actions={(can("sample") || can("verify")) ? <Link href="/scan" className="cta inline-flex h-11 items-center gap-2 rounded-xl px-5 text-sm"><Plus size={16} /> <T>{"New inspection"}</T></Link> : undefined} />
       <Tabs tabs={TABS.map(([k, l]) => [k, l, count(k)] as const)} value={tab} onChange={setTab} />
       <div className="mb-4 flex"><SearchField value={q} onChange={setQ} placeholder="Sample ID, vehicle or employee…" /></div>
 
       {rows.length === 0 ? <div className="glass" style={{ borderRadius: 20 }}><Empty title={t("No records")} sub="Try another tab or clear the search." /></div> : (
         <div className="space-y-2">
-          <div className="hidden grid-cols-[1.7fr_1.2fr_.8fr_1fr_.6fr_.6fr_.7fr_1fr_.8fr] gap-3 px-5 text-xs text-muted xl:grid"><span>Sample ID</span><span>Date &amp; Time</span><span>Vehicle</span><span>Sampling Point</span><span>VAC</span><span>CWD</span><span>Result</span><span>Status</span><span>Employee</span></div>
+          <div className="hidden grid-cols-[1.7fr_1.2fr_.8fr_1fr_.6fr_.6fr_.7fr_1fr_.8fr] gap-3 px-5 text-xs text-muted xl:grid"><span><T>{"Sample ID"}</T></span><span><T>{"Date & Time"}</T></span><span><T>{"Vehicle"}</T></span><span><T>{"Sampling Point"}</T></span><span>VAC</span><span>CWD</span><span><T>{"Result"}</T></span><span><T>{"Status"}</T></span><span><T>{"Employee"}</T></span></div>
           {shown.map((c) => (
             <ExpandCard key={c.id} id={c.id} title={`${c.vehicleId} · ${POINTS[c.point].label}`}
               card={
@@ -67,7 +68,7 @@ function Inner() {
           ))}
         </div>
       )}
-      {rows.length > limit && <div className="mt-4 flex justify-center"><button type="button" onClick={() => setLimit(limit + 40)} className="btn-secondary h-10 rounded-2xl px-5 text-sm">Show 40 more</button></div>}
+      {rows.length > limit && <div className="mt-4 flex justify-center"><button type="button" onClick={() => setLimit(limit + 40)} className="btn-secondary h-10 rounded-2xl px-5 text-sm"><T>{"Show 40 more"}</T></button></div>}
       <p className="mt-3 text-xs text-faint">Showing {Math.min(rows.length, limit)} of {rows.length} records · {t("Demo data")}</p>
 
     </ExpandGroup>

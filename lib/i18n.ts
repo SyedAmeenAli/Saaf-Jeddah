@@ -1,4 +1,5 @@
 /** Simple i18n: dictionary keyed by the English string. Missing keys fall back to English. */
+import { AR_EXTRA } from "./i18n-extra";
 export type Lang = "en" | "ar";
 
 export const AR: Record<string, string> = {
@@ -199,6 +200,8 @@ export const AR: Record<string, string> = {
   "No records": "لا توجد سجلات",
   Filters: "عوامل التصفية",
 };
+for (const k of Object.keys(AR_EXTRA)) if (!(k in AR)) AR[k] = AR_EXTRA[k];
+
 
 export function translate(lang: Lang, s: string): string {
   return lang === "ar" ? AR[s] ?? s : s;

@@ -7,6 +7,7 @@ import { useNow } from "@/lib/hooks";
 import { OCCASIONS, OCCASION_ORDER } from "@/lib/domain";
 import { DAY, startOfDay } from "@/lib/utils";
 import { MiniBars, StackBar } from "./MiniBars";
+import { T } from "@/components/ui/T";
 
 const rate = (p: number, n: number) => (n ? p / n : 1);
 const pct = (x: number) => `${(x * 100).toFixed(1)}%`;
@@ -51,7 +52,7 @@ export function RepeatFailures() {
     checks.filter((c) => c.result === "fail" && c.ts > startOfDay(now) - 6 * DAY).forEach((c) => m.set(c.vehicleId, (m.get(c.vehicleId) ?? 0) + 1));
     return [...m.entries()].filter(([, n]) => n >= 1).sort((a, b) => b[1] - a[1]).slice(0, 6);
   }, [checks, now]);
-  if (!list.length) return <p className="py-6 text-center text-sm text-muted">No repeat failures in the last 7 days.</p>;
+  if (!list.length) return <p className="py-6 text-center text-sm text-muted"><T>{"No repeat failures in the last 7 days."}</T></p>;
   return (
     <ul className="divide-y divide-hair">
       {list.map(([v, n]) => (

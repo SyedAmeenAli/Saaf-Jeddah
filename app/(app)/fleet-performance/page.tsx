@@ -6,6 +6,7 @@ import { useT } from "@/lib/hooks";
 import { cn } from "@/lib/utils";
 import { Chip, PageHeader } from "@/components/ui/Glass";
 import { StatusPill } from "@/components/features/Details";
+import { T } from "@/components/ui/T";
 
 export default function FleetPerformance() {
   const t = useT();
@@ -22,11 +23,11 @@ export default function FleetPerformance() {
       <PageHeader title={t("Fleet Performance")} sub="Every vehicle ranked by pass rate over the last 7 days. Select a row for the vehicle record." />
       <div className="mb-4 flex flex-wrap gap-2">
         <Chip active={type === "all"} onClick={() => setType("all")}>All ({vehicles.length})</Chip>
-        <Chip active={type === "refueller"} onClick={() => setType("refueller")}>Refuellers</Chip>
-        <Chip active={type === "dispenser"} onClick={() => setType("dispenser")}>Hydrant dispensers</Chip>
+        <Chip active={type === "refueller"} onClick={() => setType("refueller")}><T>{"Refuellers"}</T></Chip>
+        <Chip active={type === "dispenser"} onClick={() => setType("dispenser")}><T>{"Hydrant dispensers"}</T></Chip>
       </div>
       <div className="glass overflow-x-auto p-4" style={{ borderRadius: 20 }}>
-        <table className="tbl min-w-[40rem]"><thead><tr><th>Vehicle</th><th>Type</th><th>Location</th><th className="text-end">Samples</th><th className="text-end">Failed</th><th className="w-48">Pass rate</th><th>Status</th></tr></thead>
+        <table className="tbl min-w-[40rem]"><thead><tr><th><T>{"Vehicle"}</T></th><th><T>{"Type"}</T></th><th><T>{"Location"}</T></th><th className="text-end"><T>{"Samples"}</T></th><th className="text-end"><T>{"Failed"}</T></th><th className="w-48"><T>{"Pass rate"}</T></th><th><T>{"Status"}</T></th></tr></thead>
           <tbody>{rows.map(({ v, n, fail, rate, status }) => (
             <tr key={v.id} className="row-link" onClick={() => router.push(`/fleet?open=${v.id}`)}>
               <td className="font-mono font-medium">{v.id}</td><td className="text-muted">{v.type === "refueller" ? "Refueller" : "Dispenser"}</td><td className="text-muted">{v.locationId}</td>

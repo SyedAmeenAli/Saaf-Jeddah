@@ -12,6 +12,7 @@ import { CheckList, DueListView } from "@/components/features/Lists";
 import { LocationDetail, LocationStats } from "@/components/features/Details";
 import { ExpandPanel } from "@/components/ui/ExpandPanel";
 import { EmployeeActivity, FleetHealth, OccasionCompletion, QualityByLocation, RepeatFailures, TypeComparison } from "@/components/features/Insights";
+import { T } from "@/components/ui/T";
 
 const TrendChart = dynamic(() => import("@/components/features/TrendChart"), { ssr: false, loading: () => <div className="skeleton h-48" /> });
 
@@ -68,7 +69,7 @@ export default function ManagerHome() {
               card={
                 <div className="h-full p-5">
                   <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                    <div><h3 className="text-base font-semibold">Sampling trend</h3><p className="text-xs text-muted">Pass and fail results per day{range !== "7" ? ". Days before the last 7 are illustrative." : ""}</p></div>
+                    <div><h3 className="text-base font-semibold"><T>{"Sampling trend"}</T></h3><p className="text-xs text-muted">Pass and fail results per day{range !== "7" ? ". Days before the last 7 are illustrative." : ""}</p></div>
                     <div onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}><Tabs className="!mb-0 !gap-1 [&>button]:!px-3" tabs={[["7", "7 days"], ["30", "30 days"], ["90", "90 days"]] as const} value={range} onChange={setRange} /></div>
                   </div>
                   <TrendChart key={range} data={series} height={260} bars={range !== "7"} />
@@ -78,7 +79,7 @@ export default function ManagerHome() {
                 <div className="mx-auto max-w-4xl space-y-5">
                   <TrendChart key={`d${range}`} data={series} height={340} bars />
                   <div className="glass overflow-x-auto p-4" style={{ borderRadius: 20 }}>
-                    <table className="tbl min-w-[24rem]"><thead><tr><th>Day</th><th className="text-end">Total</th><th className="text-end">Pass</th><th className="text-end">Fail</th></tr></thead><tbody>{series.slice(-14).map((r, i) => <tr key={i}><td>{r.day}</td><td className="text-end tnum">{r.total}</td><td className="text-end tnum text-pass-fg">{r.pass}</td><td className="text-end tnum text-fail-fg">{r.fail}</td></tr>)}</tbody></table>
+                    <table className="tbl min-w-[24rem]"><thead><tr><th><T>{"Day"}</T></th><th className="text-end"><T>{"Total"}</T></th><th className="text-end"><T>{"Pass"}</T></th><th className="text-end"><T>{"Fail"}</T></th></tr></thead><tbody>{series.slice(-14).map((r, i) => <tr key={i}><td>{r.day}</td><td className="text-end tnum">{r.total}</td><td className="text-end tnum text-pass-fg">{r.pass}</td><td className="text-end tnum text-fail-fg">{r.fail}</td></tr>)}</tbody></table>
                   </div>
                 </div>
               )} />
@@ -109,9 +110,9 @@ export default function ManagerHome() {
                     <div className="flex h-full flex-col gap-4 p-5">
                       <div className="flex items-center justify-between"><span className="flex items-center gap-2 text-sm font-semibold"><MapPin size={16} strokeWidth={1.5} className="text-teal" />{lang === "ar" ? l.nameAr : l.name}</span>{st.open > 0 ? <StatusBadge kind="fail">{st.open} HOLD</StatusBadge> : <StatusBadge kind="pass">OK</StatusBadge>}</div>
                       <div className="grid grid-cols-3 gap-2 text-center">
-                        <div><p className="text-xl font-semibold"><CountUp value={st.pct * 100} suffix="%" /></p><p className="text-[11px] text-muted">Completion</p></div>
-                        <div><p className="text-xl font-semibold"><CountUp value={pr * 100} decimals={1} suffix="%" /></p><p className="text-[11px] text-muted">Pass rate</p></div>
-                        <div><p className="text-xl font-semibold"><CountUp value={st.fleet} /></p><p className="text-[11px] text-muted">Fleet</p></div>
+                        <div><p className="text-xl font-semibold"><CountUp value={st.pct * 100} suffix="%" /></p><p className="text-[11px] text-muted"><T>{"Completion"}</T></p></div>
+                        <div><p className="text-xl font-semibold"><CountUp value={pr * 100} decimals={1} suffix="%" /></p><p className="text-[11px] text-muted"><T>{"Pass rate"}</T></p></div>
+                        <div><p className="text-xl font-semibold"><CountUp value={st.fleet} /></p><p className="text-[11px] text-muted"><T>{"Fleet"}</T></p></div>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${st.pct * 100}%`, background: st.open ? "#e6a84a" : "linear-gradient(90deg,#b58aff,#d7bcff)" }} /></div>
                     </div>

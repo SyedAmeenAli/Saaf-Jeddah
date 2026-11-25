@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/motion";
+import { T } from "@/components/ui/T";
 
 type V = "pass" | "fail" | null;
 
@@ -31,7 +32,7 @@ export function ResultToggle({ value, onChange, label, passHint, failHint, notDo
     <div className={cn("rounded-2xl border p-3 transition-colors", value === "fail" ? "border-fail/60 bg-fail/10" : value === "pass" ? "border-pass/40 bg-pass/5" : "border-hair bg-hi")} role="group" aria-label={label}>
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="text-sm font-semibold">{label}</span>
-        {value === null && <span className="text-xs text-pending-fg">Required</span>}
+        {value === null && <span className="text-xs text-pending-fg"><T>{"Required"}</T></span>}
       </div>
       <div className={cn("grid gap-2", notDone ? "grid-cols-3" : "grid-cols-2")}>
         <button type="button" aria-pressed={value === "pass"} onClick={() => pick("pass")}

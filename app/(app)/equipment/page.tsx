@@ -10,6 +10,7 @@ import { ExpandCard, ExpandGroup } from "@/components/ui/Expand";
 import { HoldBanner, VehicleDetail } from "@/components/features/Details";
 import { HoldChain } from "@/components/features/HoldChain";
 import { useStore } from "@/lib/store";
+import { T } from "@/components/ui/T";
 
 export default function EquipmentHolds() {
   const t = useT();
@@ -42,7 +43,7 @@ export default function EquipmentHolds() {
           })}
         </Stagger>
       )}
-      <p className="mt-6 text-center text-xs text-faint">Looking for the failed sample itself? <Link href="/holds" className="text-teal hover:underline">Open Failed Samples</Link></p>
+      <p className="mt-6 text-center text-xs text-faint"><T>{"Looking for the failed sample itself?"}</T> <Link href="/holds" className="text-teal hover:underline"><T>{"Open Failed Samples"}</T></Link></p>
     </ExpandGroup>
   );
 }

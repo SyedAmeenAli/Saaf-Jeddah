@@ -8,6 +8,7 @@ import type { Role } from "@/lib/types";
 import { Button, Card, Chip, Empty, Field, Modal, PageHeader, SearchField, StatusBadge, Tabs, inputCls } from "@/components/ui/Glass";
 import { useOpenId } from "@/components/ui/Expand";
 import { DAY, fmtDate } from "@/lib/utils";
+import { T } from "@/components/ui/T";
 
 const ROLES = ["all", "operator", "supervisor", "manager", "admin"] as const;
 const kindOf = (r: Role) => (r === "admin" ? "info" : r === "supervisor" ? "pending" : r === "manager" ? "locked" : "pass") as "info" | "pending" | "locked" | "pass";
@@ -38,7 +39,7 @@ function Inner() {
   return (
     <>
       <PageHeader title={t("Users")} sub="People, roles and operator qualification. Only authorised operators can sign checks."
-        actions={editable ? <Button variant="primary" onClick={() => setAdd(true)}><Plus size={16} /> Add user</Button> : <StatusBadge kind="info">{t("Read-only for this role")}</StatusBadge>} />
+        actions={editable ? <Button variant="primary" onClick={() => setAdd(true)}><Plus size={16} /> <T>{"Add user"}</T></Button> : <StatusBadge kind="info">{t("Read-only for this role")}</StatusBadge>} />
       <Tabs tabs={ROLES.map((r) => [r, r === "all" ? t("All") : ROLE_META[r].label, r === "all" ? employees.length : employees.filter((e) => e.role === r).length] as const)} value={tab} onChange={setTab} />
       <div className="mb-4 flex"><SearchField value={q} onChange={setQ} placeholder="Name or employee number…" /></div>
 
@@ -46,7 +47,7 @@ function Inner() {
         {rows.length === 0 ? <Empty title={t("No records")} /> : (
           <div className="overflow-x-auto p-5">
             <table className="tbl min-w-[36rem]">
-              <thead><tr><th>Employee</th><th>Name</th><th>{t("Role")}</th><th>{t("Location")}</th><th>Qualification</th></tr></thead>
+              <thead><tr><th><T>{"Employee"}</T></th><th><T>{"Name"}</T></th><th>{t("Role")}</th><th>{t("Location")}</th><th><T>{"Qualification"}</T></th></tr></thead>
               <tbody>
                 {rows.map((e) => {
                   const d = days(e.certExpiry);
@@ -68,9 +69,9 @@ function Inner() {
         {cur && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="rounded-xl bg-white/5 p-3"><p className="text-xs text-muted">Employee</p><p className="font-mono font-medium">{cur.id}</p></div>
+              <div className="rounded-xl bg-white/5 p-3"><p className="text-xs text-muted"><T>{"Employee"}</T></p><p className="font-mono font-medium">{cur.id}</p></div>
               <div className="rounded-xl bg-white/5 p-3"><p className="text-xs text-muted">{t("Location")}</p><p className="font-medium">{cur.locationId}</p></div>
-              <div className="col-span-2 rounded-xl bg-white/5 p-3"><p className="text-xs text-muted">Qualification valid until</p><p className="font-medium">{fmtDate(cur.certExpiry)} · {days(cur.certExpiry) < 0 ? "expired, cannot sign" : `${days(cur.certExpiry)} days left`}</p></div>
+              <div className="col-span-2 rounded-xl bg-white/5 p-3"><p className="text-xs text-muted"><T>{"Qualification valid until"}</T></p><p className="font-medium">{fmtDate(cur.certExpiry)} · {days(cur.certExpiry) < 0 ? "expired, cannot sign" : `${days(cur.certExpiry)} days left`}</p></div>
             </div>
             <div>
               <p className="mb-2 text-sm font-medium text-muted">{t("Role")}</p>
@@ -79,8 +80,8 @@ function Inner() {
             </div>
             {cur.role === "operator" && (
               <div className="flex flex-wrap gap-2">
-                <Button disabled={!editable} onClick={() => setCert(cur.id, 365)}><ShieldCheck size={16} /> Renew 12 months</Button>
-                <Button disabled={!editable} onClick={() => setCert(cur.id, -1)}><ShieldAlert size={16} /> Suspend</Button>
+                <Button disabled={!editable} onClick={() => setCert(cur.id, 365)}><ShieldCheck size={16} /> <T>{"Renew 12 months"}</T></Button>
+                <Button disabled={!editable} onClick={() => setCert(cur.id, -1)}><ShieldAlert size={16} /> <T>{"Suspend"}</T></Button>
               </div>
             )}
           </div>

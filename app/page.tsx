@@ -6,6 +6,7 @@ import { useT } from "@/lib/hooks";
 import { Photo } from "@/components/ui/Photo";
 import { SafaaMark, ApscoWordmark } from "@/components/shell/Brand";
 import { LangPill } from "@/components/features/AuthShell";
+import { T } from "@/components/ui/T";
 
 export default function Splash() {
   const t = useT();
@@ -20,7 +21,7 @@ export default function Splash() {
       <Photo crop="full" className="!fixed inset-0 -z-[1]" scrim="from-[#0d0818]/40 via-[#0d0818]/35 to-[#0d0818]/90" />
       <div className="pointer-events-none fixed inset-0 -z-[1] bg-gradient-to-r from-[#0d0818]/85 via-[#0d0818]/35 to-transparent" />
       <header className="flex items-center justify-between p-5 md:p-8">
-        <div className="flex items-center gap-3"><ApscoWordmark /><span className="h-5 w-px bg-white/25" /><span className="flex items-center gap-1 text-sm text-white/80"><MapPin size={14} /> Jeddah, KSA</span></div>
+        <div className="flex items-center gap-3"><ApscoWordmark /><span className="h-5 w-px bg-white/25" /><span className="flex items-center gap-1 text-sm text-white/80"><MapPin size={14} /> <T>{"Jeddah, KSA"}</T></span></div>
         <LangPill />
       </header>
       <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-5 pb-16 md:px-10">
@@ -42,7 +43,7 @@ export default function Splash() {
               </div>
             ))}
           </div>
-          <Link href="/login" className="cta mt-10 inline-flex h-12 items-center gap-2 rounded-xl px-7">Get Started <ArrowRight size={18} className="rtl:rotate-180" /></Link>
+          <Link href="/login" className="cta mt-10 inline-flex h-12 items-center gap-2 rounded-xl px-7"><T>{"Get Started"}</T> <ArrowRight size={18} className="rtl:rotate-180" /></Link>
         </div>
       </main>
     </div>

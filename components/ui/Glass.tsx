@@ -139,11 +139,12 @@ export function Ring({ value, size = 160, stroke = 14, children, color = "url(#r
 
 /* ---------- Page header ---------- */
 export function PageHeader({ title, sub, actions, visible = false }: { title: string; sub?: string; actions?: React.ReactNode; visible?: boolean }) {
+  const t = useT();
   return (
     <div className={cn("mb-5 flex flex-wrap items-end justify-between gap-4", !visible && !actions && "lg:hidden")}>
       <div className={cn(!visible && "lg:sr-only")}>
-        <h1 className="text-[28px] font-semibold leading-8 tracking-tight">{title}</h1>
-        {sub && <p className="mt-1 max-w-2xl text-sm text-muted">{sub}</p>}
+        <h1 className="text-[28px] font-semibold leading-8 tracking-tight">{t(title)}</h1>
+        {sub && <p className="mt-1 max-w-2xl text-sm text-muted">{t(sub)}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
@@ -201,7 +202,7 @@ export function Modal({ open, onClose, title, children, sheet = false, wide = fa
               style={{ borderRadius: 20 }}
             >
               <div className="flex items-center justify-between gap-3 px-6 pb-3 pt-5">
-                <h2 id={id} className="text-xl font-semibold">{title}</h2>
+                <h2 id={id} className="text-xl font-semibold">{t(title)}</h2>
                 <button onClick={onClose} aria-label={t("Close")} className="flex size-10 items-center justify-center rounded-full bg-hi text-muted hover:text-fg">
                   <XIcon size={18} />
                 </button>
@@ -219,20 +220,22 @@ export function Modal({ open, onClose, title, children, sheet = false, wide = fa
 /* ---------- Form bits ---------- */
 export const inputCls = "h-12 w-full rounded-2xl border border-hair bg-white/[0.06] px-4 text-sm text-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md placeholder:text-faint transition-colors focus:border-teal/70 focus:bg-white/[0.09] focus:outline-none";
 export function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
+  const t = useT();
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-muted">{label}</span>
+      <span className="mb-1.5 block text-sm font-medium text-muted">{t(label)}</span>
       {children}
-      {hint && <span className="mt-1 block text-xs text-faint">{hint}</span>}
+      {hint && <span className="mt-1 block text-xs text-faint">{t(hint)}</span>}
     </label>
   );
 }
 
 export function Empty({ title, sub }: { title: string; sub?: string }) {
+  const t = useT();
   return (
     <div className="flex flex-col items-center gap-2 py-12 text-center">
-      <p className="font-display text-lg font-medium">{title}</p>
-      {sub && <p className="max-w-sm text-sm text-muted">{sub}</p>}
+      <p className="font-display text-lg font-medium">{t(title)}</p>
+      {sub && <p className="max-w-sm text-sm text-muted">{t(sub)}</p>}
     </div>
   );
 }
@@ -253,11 +256,12 @@ export function Tabs<T extends string>({ tabs, value, onChange, className }: { t
 
 /* ---------- Card: titled glass section ---------- */
 export function Card({ title, action, children, className, pad = true }: { title?: React.ReactNode; action?: React.ReactNode; children: React.ReactNode; className?: string; pad?: boolean }) {
+  const t = useT();
   return (
     <section className={cn("glass", pad && "p-5", className)} style={{ borderRadius: 16 }}>
       {(title || action) && (
         <div className={cn("mb-3 flex items-center justify-between gap-3", !pad && "px-5 pt-5")}>
-          {title && <h2 className="text-base font-semibold">{title}</h2>}
+          {title && <h2 className="text-base font-semibold">{typeof title === "string" ? t(title) : title}</h2>}
           {action}
         </div>
       )}
@@ -268,10 +272,11 @@ export function Card({ title, action, children, className, pad = true }: { title
 
 /* ---------- Search field ---------- */
 export function SearchField({ value, onChange, placeholder, label = "Search" }: { value: string; onChange: (v: string) => void; placeholder?: string; label?: string }) {
+  const t = useT();
   return (
     <label className="flex h-10 min-w-48 flex-1 items-center gap-2 rounded-xl bg-white/5 px-3.5">
       <Search size={16} strokeWidth={1.5} className="text-muted" />
-      <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} aria-label={label} className="w-full bg-transparent text-sm placeholder:text-faint focus:outline-none" style={{ boxShadow: "none" }} />
+      <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder ? t(placeholder) : undefined} aria-label={t(label)} className="w-full bg-transparent text-sm placeholder:text-faint focus:outline-none" style={{ boxShadow: "none" }} />
     </label>
   );
 }

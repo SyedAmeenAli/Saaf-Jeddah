@@ -7,13 +7,14 @@ import { cn, fmtDT, fmtDate, ago } from "@/lib/utils";
 import { Button, Chip, CountUp, PageHeader, Rise, Stagger, StatusBadge, inputCls } from "@/components/ui/Glass";
 import { ExpandCard, ExpandGroup } from "@/components/ui/Expand";
 import type { MicroTest } from "@/lib/types";
+import { T } from "@/components/ui/T";
 
 type F = "all" | "due" | "lab" | "done" | "fail";
 
 function State({ m, now }: { m: MicroTest; now: number }) {
-  if (m.status === "complete") return m.result === "fail" ? <StatusBadge kind="fail">Failed</StatusBadge> : <StatusBadge kind="pass">Clear</StatusBadge>;
-  if (m.status === "collected") return <StatusBadge kind="info">In laboratory</StatusBadge>;
-  return m.dueTs < now ? <StatusBadge kind="pending">Overdue</StatusBadge> : <StatusBadge kind="info">Scheduled</StatusBadge>;
+  if (m.status === "complete") return m.result === "fail" ? <StatusBadge kind="fail"><T>{"Failed"}</T></StatusBadge> : <StatusBadge kind="pass"><T>{"Clear"}</T></StatusBadge>;
+  if (m.status === "collected") return <StatusBadge kind="info"><T>{"In laboratory"}</T></StatusBadge>;
+  return m.dueTs < now ? <StatusBadge kind="pending"><T>{"Overdue"}</T></StatusBadge> : <StatusBadge kind="info"><T>{"Scheduled"}</T></StatusBadge>;
 }
 
 function Detail({ m }: { m: MicroTest }) {
@@ -33,13 +34,13 @@ function Detail({ m }: { m: MicroTest }) {
       </ol>
       {live.note && <p className="rounded-2xl border border-hair bg-white/[0.04] p-3 text-sm text-muted">{live.note}</p>}
       <p className="text-xs text-faint">Method: {live.method}. Microbial monitoring is separate from the visual appearance check and is not proof of cleanliness for a single sample.</p>
-      {live.status === "scheduled" && (can("sample") || can("verify") ? <Button variant="primary" size="lg" onClick={() => collect(live.id)}><Beaker size={18} /> Mark sample collected</Button> : <p className="flex items-center gap-2 text-sm text-muted"><Lock size={14} /> Read-only for this role</p>)}
+      {live.status === "scheduled" && (can("sample") || can("verify") ? <Button variant="primary" size="lg" onClick={() => collect(live.id)}><Beaker size={18} /> <T>{"Mark sample collected"}</T></Button> : <p className="flex items-center gap-2 text-sm text-muted"><Lock size={14} /> <T>{"Read-only for this role"}</T></p>)}
       {live.status === "collected" && (can("verify") ? (
         <div className="space-y-3">
           <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={2} placeholder="Laboratory remarks" className={cn(inputCls, "h-auto py-3")} aria-label="Laboratory remarks" />
-          <div className="flex gap-2"><Button variant="primary" onClick={() => record(live.id, "pass", note)}><Check size={16} /> Record clear</Button><Button variant="danger" onClick={() => record(live.id, "fail", note || "Growth above limit")}><X size={16} /> Record failure</Button></div>
+          <div className="flex gap-2"><Button variant="primary" onClick={() => record(live.id, "pass", note)}><Check size={16} /> <T>{"Record clear"}</T></Button><Button variant="danger" onClick={() => record(live.id, "fail", note || "Growth above limit")}><X size={16} /> <T>{"Record failure"}</T></Button></div>
         </div>
-      ) : <p className="flex items-center gap-2 text-sm text-muted"><Send size={14} /> Sent to laboratory. A supervisor records the result.</p>)}
+      ) : <p className="flex items-center gap-2 text-sm text-muted"><Send size={14} /> <T>{"Sent to laboratory. A supervisor records the result."}</T></p>)}
     </div>
   );
 }
@@ -71,7 +72,7 @@ export default function Microbial() {
               card={<div className="flex items-center gap-3 p-4"><span className="min-w-0 flex-1"><span className="block font-mono text-[15px] font-semibold">{m.vehicleId}</span><span className="block truncate text-xs text-muted">{m.locationId} · {m.status === "complete" && m.resultTs ? `result ${ago(m.resultTs)}` : `due ${fmtDate(m.dueTs)}`}</span></span><State m={m} now={now} /></div>}
               detail={() => <Detail m={m} />} />
           ))}
-          {rows.length === 0 && <p className="glass p-8 text-center text-sm text-muted md:col-span-2 xl:col-span-3" style={{ borderRadius: 20 }}>Nothing in this view.</p>}
+          {rows.length === 0 && <p className="glass p-8 text-center text-sm text-muted md:col-span-2 xl:col-span-3" style={{ borderRadius: 20 }}><T>{"Nothing in this view."}</T></p>}
         </div>
       </Stagger>
     </ExpandGroup>

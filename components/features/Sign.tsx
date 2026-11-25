@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Eraser, KeyRound, PenLine } from "lucide-react";
 import { useT } from "@/lib/hooks";
 import { Button, Modal, inputCls } from "@/components/ui/Glass";
+import { T } from "@/components/ui/T";
 
 export function SignaturePad({ onInk, height = 140 }: { onInk: (has: boolean) => void; height?: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
@@ -61,7 +62,7 @@ export function SignaturePad({ onInk, height = 140 }: { onInk: (has: boolean) =>
       <div className="relative overflow-hidden rounded-2xl border border-dashed border-hair-strong bg-hi">
         <canvas ref={ref} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerLeave={up}
           className="sig-pad block w-full cursor-crosshair" style={{ height }} aria-label="Signature pad: draw your signature" />
-        {!has && <span className="pointer-events-none absolute inset-0 flex items-center justify-center gap-2 text-sm text-faint"><PenLine size={16} /> Sign here (finger or mouse)</span>}
+        {!has && <span className="pointer-events-none absolute inset-0 flex items-center justify-center gap-2 text-sm text-faint"><PenLine size={16} /> <T>{"Sign here (finger or mouse)"}</T></span>}
         <button type="button" onClick={clear} className="absolute end-2 top-2 flex h-9 items-center gap-1.5 rounded-full bg-hi px-3 text-xs font-medium text-muted hover:text-fg">
           <Eraser size={13} /> {t("Clear")}
         </button>
@@ -80,7 +81,7 @@ export function SignBlock({ onReady }: { onReady: (ok: boolean) => void }) {
     <div className="space-y-3">
       <SignaturePad onInk={setInk} />
       <label className="block">
-        <span className="mb-1.5 flex items-center gap-2 text-sm font-medium text-muted"><KeyRound size={14} /> {t("PIN confirm")} <span className="text-xs text-faint">(demo: any 4 digits)</span></span>
+        <span className="mb-1.5 flex items-center gap-2 text-sm font-medium text-muted"><KeyRound size={14} /> {t("PIN confirm")} <span className="text-xs text-faint"><T>{"(demo: any 4 digits)"}</T></span></span>
         <input
           inputMode="numeric" autoComplete="off" maxLength={4} value={pin} type="password" aria-label="PIN"
           onChange={(e) => setPin(e.target.value.replace(/\D/g, "").slice(0, 4))}

@@ -5,6 +5,7 @@ import { BookLock, Bell, LogOut, MapPin, Palette, RotateCcw, Wifi } from "lucide
 import { useStore } from "@/lib/store";
 import { useT } from "@/lib/hooks";
 import { Button, Card, Chip, GlassDropdown, PageHeader, Switch } from "@/components/ui/Glass";
+import { T } from "@/components/ui/T";
 
 function Row({ icon: I, title, desc, children }: { icon: typeof Bell; title: string; desc?: string; children: React.ReactNode }) {
   return (
@@ -54,15 +55,15 @@ export default function SettingsPage() {
           {(field || admin) && (
             <Card title={admin ? "System operations" : "Device"}>
               {field && <Row icon={Wifi} title="Offline mode (demo)" desc="Submissions queue on the device and sync when online"><Switch checked={offline} onChange={() => toggleOffline()} label="Offline mode" /></Row>}
-              {admin && <Row icon={BookLock} title="JIG standard version" desc="JIG 1 Issue 13 / JIG 2 Issue 13, rule set v1. Version-controlled and configurable for future issues."><Link href="/admin" className="text-sm text-teal hover:underline">Configure</Link></Row>}
+              {admin && <Row icon={BookLock} title="JIG standard version" desc="JIG 1 Issue 13 / JIG 2 Issue 13, rule set v1. Version-controlled and configurable for future issues."><Link href="/admin" className="text-sm text-teal hover:underline"><T>{"Configure"}</T></Link></Row>}
             </Card>
           )}
           <Card title={admin ? "Demo data and session" : "Session"}>
-            {admin && <p className="mb-3 text-sm text-muted">Everything here is illustrative. Reset to regenerate the seeded history relative to today.</p>}
-            {!admin && <p className="mb-3 text-sm text-muted">System configuration is managed by an administrator. Your role has no access to it.</p>}
+            {admin && <p className="mb-3 text-sm text-muted"><T>{"Everything here is illustrative. Reset to regenerate the seeded history relative to today."}</T></p>}
+            {!admin && <p className="mb-3 text-sm text-muted"><T>{"System configuration is managed by an administrator. Your role has no access to it."}</T></p>}
             <div className="flex flex-wrap gap-2">
-              {admin && <Button onClick={reset}><RotateCcw size={16} /> Reset demo data</Button>}
-              {admin && <Button onClick={() => router.push("/design")}>Design system</Button>}
+              {admin && <Button onClick={reset}><RotateCcw size={16} /> <T>{"Reset demo data"}</T></Button>}
+              {admin && <Button onClick={() => router.push("/design")}><T>{"Design system"}</T></Button>}
               <Button onClick={() => { logout(); router.push("/login"); }}><LogOut size={16} /> {t("Sign out")}</Button>
             </div>
           </Card>

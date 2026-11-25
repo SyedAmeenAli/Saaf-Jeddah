@@ -9,6 +9,7 @@ import { ExpandCard, ExpandGroup } from "@/components/ui/Expand";
 import { ResultBadge, StateBadge } from "@/components/features/Details";
 import { ReviewDetail } from "@/components/features/ReviewDetail";
 import type { Check as C } from "@/lib/types";
+import { T } from "@/components/ui/T";
 
 function Row({ c }: { c: C }) {
   return (
@@ -16,7 +17,7 @@ function Row({ c }: { c: C }) {
       <span className={cn("size-2.5 rounded-full", c.result === "fail" ? "bg-fail" : "bg-pending")} />
       <span className="min-w-24 font-mono text-sm font-semibold">{c.vehicleId}</span>
       <span className="min-w-0 flex-1 truncate text-sm text-muted">{POINTS[c.point].label} · {fmtTime(c.ts)} · {c.employeeId}</span>
-      {c.kind === "resample" && <StatusBadge kind="info">Re-sample</StatusBadge>}
+      {c.kind === "resample" && <StatusBadge kind="info"><T>{"Re-sample"}</T></StatusBadge>}
       <ResultBadge c={c} />
       <span className="text-xs text-faint">{ago(c.ts)}</span>
     </div>

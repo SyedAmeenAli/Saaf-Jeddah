@@ -5,6 +5,7 @@ import { useStore } from "@/lib/store";
 import { Photo, type Crop } from "@/components/ui/Photo";
 import { SafaaLogo, ApscoWordmark } from "@/components/shell/Brand";
 import { cn } from "@/lib/utils";
+import { T } from "@/components/ui/T";
 
 export function LangPill() {
   const lang = useStore((s) => s.lang);
@@ -24,7 +25,7 @@ export function AuthShell({ crop = "engine", title, subtitle, children, footer }
     <div className="relative min-h-dvh">
       <Photo crop={crop} className="!fixed inset-0 -z-[1]" scrim="from-[#0d0818]/45 via-[#0d0818]/60 to-[#0d0818]/92" />
       <header className="flex items-center justify-between p-5 md:p-8">
-        <Link href="/" className="flex items-center gap-3"><ApscoWordmark /><span className="h-5 w-px bg-white/25" /><span className="flex items-center gap-1 text-sm text-muted"><MapPin size={14} /> Jeddah</span></Link>
+        <Link href="/" className="flex items-center gap-3"><ApscoWordmark /><span className="h-5 w-px bg-white/25" /><span className="flex items-center gap-1 text-sm text-muted"><MapPin size={14} /> <T>{"Jeddah"}</T></span></Link>
         <LangPill />
       </header>
       <main className="mx-auto flex w-full max-w-[28rem] flex-col px-5 pb-16 pt-4 md:pt-10">
@@ -35,7 +36,7 @@ export function AuthShell({ crop = "engine", title, subtitle, children, footer }
           <div className="mt-6">{children}</div>
         </div>
         {footer && <div className="mt-5 text-center text-sm text-muted">{footer}</div>}
-        <p className="mt-6 text-center text-[11px] leading-relaxed text-faint">Illustrative demo data. Final checklist and acceptance criteria to be approved by APSCO Quality Control against controlled copies of the applicable standards.</p>
+        <p className="mt-6 text-center text-[11px] leading-relaxed text-faint"><T>{"Illustrative demo data. Final checklist and acceptance criteria to be approved by APSCO Quality Control against controlled copies of the applicable standards."}</T></p>
       </main>
     </div>
   );

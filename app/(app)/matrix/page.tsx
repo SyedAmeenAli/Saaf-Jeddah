@@ -8,6 +8,7 @@ import type { VehicleType } from "@/lib/types";
 import { PageHeader, Rise, Stagger, StatusBadge } from "@/components/ui/Glass";
 import { cn } from "@/lib/utils";
 import { spring } from "@/lib/motion";
+import { T } from "@/components/ui/T";
 
 function Matrix({ type }: { type: VehicleType }) {
   const t = useT();
@@ -76,7 +77,7 @@ export default function MatrixPage() {
         <Rise><Matrix type="refueller" /></Rise>
         <Rise><Matrix type="dispenser" /></Rise>
       </Stagger>
-      <p className="mt-4 text-xs text-faint md:hidden">TS tank sump · FS filter sump · FO filter outlet · TD tank drain</p>
+      <p className="mt-4 text-xs text-faint md:hidden"><T>{"TS tank sump · FS filter sump · FO filter outlet · TD tank drain"}</T></p>
       <p className="mt-3 flex items-center gap-2 text-sm text-muted"> {t("Proposed operational matrix, to be approved by APSCO QC.")}</p>
     </>
   );

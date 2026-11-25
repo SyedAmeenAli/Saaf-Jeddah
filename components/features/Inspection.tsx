@@ -14,6 +14,7 @@ import { SignBlock } from "./Sign";
 import { DispenserSvg, HOTSPOTS, TruckSvg } from "@/components/illustrations/Vehicles";
 import { PointCloseup, SampleJarSvg } from "@/components/illustrations/Equipment";
 import { spring } from "@/lib/motion";
+import { T } from "@/components/ui/T";
 
 type Tri = Res | null;
 const STEPS = ["Vehicle", "Sampling point", "Occasion", "VAC", "CWD", "Sign-off", "Review"] as const;
@@ -78,7 +79,7 @@ function PointDiagram({ vehicle, point }: { vehicle: Vehicle; point: PointId }) 
           );
         })}
       </div>
-      <p className="mt-2 text-center text-xs text-muted">Highlighted: <b className="text-teal">{POINTS[point].label}</b></p>
+      <p className="mt-2 text-center text-xs text-muted"><T>{"Highlighted:"}</T> <b className="text-teal">{POINTS[point].label}</b></p>
     </div>
   );
 }
@@ -168,7 +169,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
       <div className="flex gap-2">
         <Button variant="secondary" size="lg" onClick={() => (step === 0 ? close() : setStep(step - 1))} className="shrink-0"><ArrowLeft size={18} className="rtl:rotate-180" /> {step === 0 ? "Cancel" : "Back"}</Button>
         {step < STEPS.length - 1 ? (
-          <Button variant="primary" size="lg" className="flex-1" disabled={blockers.length > 0} onClick={() => setStep(step + 1)}>Continue <ArrowRight size={18} className="rtl:rotate-180" /></Button>
+          <Button variant="primary" size="lg" className="flex-1" disabled={blockers.length > 0} onClick={() => setStep(step + 1)}><T>{"Continue"}</T> <ArrowRight size={18} className="rtl:rotate-180" /></Button>
         ) : (
           <Button variant={anyFail ? "danger" : "primary"} size="lg" className="flex-1" disabled={allMissing.length > 0} onClick={send}>
             <Send size={18} /> {anyFail ? "Submit failed check & raise HOLD" : "Submit for supervisor verification"}{offline ? ` (${t("Offline")})` : ""}
@@ -208,8 +209,8 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
               </div>
             )}
             <div className="flex flex-wrap justify-center gap-2">
-              <Button variant="primary" onClick={close}>Next check</Button>
-              <Link href={`/records?open=${result.id}`}><Button>View record</Button></Link>
+              <Button variant="primary" onClick={close}><T>{"Next check"}</T></Button>
+              <Link href={`/records?open=${result.id}`}><Button><T>{"View record"}</T></Button></Link>
               <Link href={`/fleet?open=${vehicle.id}`}><Button>{vehicle.id}</Button></Link>
             </div>
           </motion.div>
@@ -224,7 +225,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
                     <div className="glass-2 flex items-center gap-4 rounded-3xl border border-hair p-4">
                       <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-teal/15 text-teal"><Nfc size={26} strokeWidth={1.5} /></span>
                       <div className="min-w-0"><p className="text-xs text-muted">{vehicle.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")} · {vehicle.locationId}</p><p className="font-display text-3xl font-semibold">{vehicle.id}</p><p className="font-mono text-xs text-muted">{vehicle.plate}</p></div>
-                      <StatusBadge kind="pass">Identified</StatusBadge>
+                      <StatusBadge kind="pass"><T>{"Identified"}</T></StatusBadge>
                     </div>
                     <div className="grid grid-cols-2 gap-2.5"><Fact l="Tag ID" v={tag ?? "Manual entry"} /><Fact l="Employee" v={emp} /></div>
                   </Panel>
@@ -261,14 +262,14 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
                     <div>
                       <p className="mb-1.5 text-sm font-semibold">{t("Colour")}</p>
                       <ColorSwatchSelect value={colour} onChange={(v) => setColour(v as Check["colour"])} />
-                      <label className="mt-2 flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" checked={colourChange} onChange={(e) => setColourChange(e.target.checked)} className="size-5 accent-[var(--teal)]" /> Colour changed compared with previous sample (flag)</label>
+                      <label className="mt-2 flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" checked={colourChange} onChange={(e) => setColourChange(e.target.checked)} className="size-5 accent-[var(--teal)]" /> <T>{"Colour changed compared with previous sample (flag)"}</T></label>
                     </div>
                     <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                       <ResultToggle label={t("Clarity & brightness")} value={clarity} onChange={(v) => setClarity(v as Res)} passHint="Clear & bright" failHint="Not clear" />
                       <ResultToggle label={t("Visible sediment")} value={sediment} onChange={(v) => setSediment(v as Res)} passHint="None visible" failHint="Sediment" />
                       <ResultToggle label={t("Visible free water / haze")} value={freeWater} onChange={(v) => setFreeWater(v as Res)} passHint="None visible" failHint="Water / haze" />
                     </div>
-                    <p className="text-xs text-faint">Microbial testing is a separate scheduled monitoring programme. See Microbial Monitoring.</p>
+                    <p className="text-xs text-faint"><T>{"Microbial testing is a separate scheduled monitoring programme. See Microbial Monitoring."}</T></p>
                   </Panel>
                 )}
 
@@ -284,7 +285,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
                     </Panel>
                     <Panel title={t("Filter differential pressure")} note={`Placeholder range ${DP_RANGE.min}–${DP_RANGE.max} ${DP_RANGE.unit}, per approved procedure`}>
                       <div className="flex flex-wrap items-center gap-4">
-                        <div className="relative w-40"><input inputMode="decimal" className={cn(inputCls, "pe-14 font-mono text-lg")} value={dp} onChange={(e) => setDp(e.target.value)} aria-label="Differential pressure in bar" /><span className="absolute end-4 top-1/2 -translate-y-1/2 text-sm text-muted">bar</span></div>
+                        <div className="relative w-40"><input inputMode="decimal" className={cn(inputCls, "pe-14 font-mono text-lg")} value={dp} onChange={(e) => setDp(e.target.value)} aria-label="Differential pressure in bar" /><span className="absolute end-4 top-1/2 -translate-y-1/2 text-sm text-muted"><T>{"bar"}</T></span></div>
                         <div className="min-w-48 flex-1">
                           <div className="relative h-3 rounded-full bg-gradient-to-r from-pending/60 via-pass/70 to-pending/60">
                             <motion.span className="absolute top-1/2 size-5 -translate-y-1/2 rounded-full border-2 border-white bg-fg shadow" animate={{ left: `${Math.min(100, Math.max(0, (dpNum / 1.5) * 100))}%` }} transition={spring} />
@@ -309,14 +310,14 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
                     {anyFail && (
                       <div className="space-y-3 rounded-3xl border border-fail/50 bg-fail/10 p-4">
                         <h3 className="flex items-center gap-2 font-display text-base font-semibold text-fail-fg"><OctagonAlert size={18} /> {t("Failure management")}</h3>
-                        <p className="text-sm">On submit: <b>HOLD — Do not fuel</b> on {vehicle.id}. Chain: <b>Failed check → Re-sample → Authorised release</b>. This result can never be overwritten.</p>
+                        <p className="text-sm"><T>{"On submit:"}</T> <b><T>{"HOLD — Do not fuel"}</T></b> on {vehicle.id}. Chain: <b><T>{"Failed check → Re-sample → Authorised release"}</T></b><T>{". This result can never be overwritten."}</T></p>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                           <label className="block text-sm font-medium">Failure type
                             <select value={failType} onChange={(e) => setFailType(e.target.value)} className={cn(inputCls, "mt-1.5")}>
                               {["Visible water", "Sediment", "Haze / not clear", "CWD indicated water", "Other"].map((x) => <option key={x} className="text-black">{x}</option>)}
                             </select>
                           </label>
-                          <fieldset><legend className="mb-1.5 text-sm font-medium">Immediate action</legend>
+                          <fieldset><legend className="mb-1.5 text-sm font-medium"><T>{"Immediate action"}</T></legend>
                             {["Isolate equipment / Do not use", "Report to QC", "Re-sample and re-test", "Notify maintenance"].map((x) => (
                               <label key={x} className="flex min-h-9 items-center gap-2 text-sm"><input type="checkbox" className="size-4 accent-[var(--teal)]" checked={!!acts[x]} onChange={(e) => setActs({ ...acts, [x]: e.target.checked })} />{x}</label>
                             ))}
@@ -327,7 +328,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
                     <Panel title={anyFail ? "Observation / remarks (mandatory)" : "Remarks and photograph (optional)"}>
                       <textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={2} placeholder={anyFail ? "Describe what was observed…" : "Add a remark if needed"} className={cn(inputCls, "h-auto py-3")} aria-label="Remarks" />
                       <label className="glass-2 flex min-h-14 cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-hair-strong px-4 text-sm text-muted hover:text-fg">
-                        <Camera size={20} /> <span>Add sample jar photo (stays in your browser)</span>
+                        <Camera size={20} /> <span><T>{"Add sample jar photo (stays in your browser)"}</T></span>
                         <input type="file" accept="image/*" capture="environment" className="sr-only" onChange={(e) => { const f = e.target.files?.[0]; if (f) setPhoto(URL.createObjectURL(f)); }} />
                       </label>
                       {photo && (
@@ -350,12 +351,12 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
                     </div>
                     <div className="glass-2 divide-y divide-hair rounded-3xl border border-hair">
                       {([["Clarity & brightness", clarity], ["Visible sediment", sediment], ["Visible free water / haze", freeWater], ["CWD", cwd === "na" ? null : cwd]] as const).map(([l, v]) => (
-                        <div key={l} className="flex items-center justify-between px-4 py-3 text-sm"><span>{l}</span>{v ? <StatusBadge kind={v === "pass" ? "pass" : "fail"}>{v === "pass" ? t("Pass") : t("Fail")}</StatusBadge> : <span className="text-faint">Not done</span>}</div>
+                        <div key={l} className="flex items-center justify-between px-4 py-3 text-sm"><span>{l}</span>{v ? <StatusBadge kind={v === "pass" ? "pass" : "fail"}>{v === "pass" ? t("Pass") : t("Fail")}</StatusBadge> : <span className="text-faint"><T>{"Not done"}</T></span>}</div>
                       ))}
-                      <div className="flex items-center justify-between px-4 py-3 text-sm"><span>Differential pressure</span><span className="font-mono">{dp} bar</span></div>
-                      <div className="flex items-center justify-between px-4 py-3 text-sm"><span>CWD kit / batch / expiry</span><span className="font-mono text-xs">{kit} · {batch || "–"} · {exp}</span></div>
+                      <div className="flex items-center justify-between px-4 py-3 text-sm"><span><T>{"Differential pressure"}</T></span><span className="font-mono">{dp} bar</span></div>
+                      <div className="flex items-center justify-between px-4 py-3 text-sm"><span><T>{"CWD kit / batch / expiry"}</T></span><span className="font-mono text-xs">{kit} · {batch || "–"} · {exp}</span></div>
                     </div>
-                    {anyFail ? <p className="flex items-center gap-2 rounded-2xl border border-fail/50 bg-fail/10 p-3 text-sm text-fail-fg"><OctagonAlert size={16} /> A failed result raises a HOLD on {vehicle.id}.</p> : <p className="flex items-center gap-2 text-sm text-muted"><CheckI size={16} className="text-pass-fg" /> All checks recorded. The sample will show as Awaiting Supervisor Review.</p>}
+                    {anyFail ? <p className="flex items-center gap-2 rounded-2xl border border-fail/50 bg-fail/10 p-3 text-sm text-fail-fg"><OctagonAlert size={16} /> A failed result raises a HOLD on {vehicle.id}.</p> : <p className="flex items-center gap-2 text-sm text-muted"><CheckI size={16} className="text-pass-fg" /> <T>{"All checks recorded. The sample will show as Awaiting Supervisor Review."}</T></p>}
                   </Panel>
                 )}
               </motion.div>

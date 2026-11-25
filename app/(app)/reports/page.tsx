@@ -11,6 +11,7 @@ import { cn, fmtDT, DAY } from "@/lib/utils";
 import { PageHeader, Rise, Stagger, StatusBadge, Tabs, inputCls } from "@/components/ui/Glass";
 import { ExpandCard, ExpandGroup } from "@/components/ui/Expand";
 import { ReportPreview } from "@/components/features/ReportPreview";
+import { T } from "@/components/ui/T";
 
 const TrendChart = dynamic(() => import("@/components/features/TrendChart"), { ssr: false, loading: () => <div className="h-56" /> });
 const ICONS = { calendar: CalendarDays, truck: Truck, user: User, alert: OctagonAlert, clock: Clock, chart: BarChart3, log: ScrollText, pin: MapPin };
@@ -40,9 +41,9 @@ export default function ReportsPage() {
 
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
       <div className="no-scrollbar mb-4 flex gap-2 overflow-x-auto sm:grid sm:grid-cols-3 sm:gap-3">
-        <select aria-label="Location" className={`${inputCls} min-w-44 shrink-0`} value={loc} onChange={(e) => setLoc(e.target.value)}><option value="all" className="text-black">All Locations</option>{locations.map((l) => <option key={l.id} value={l.id} className="text-black">{lang === "ar" ? l.nameAr : l.name}</option>)}</select>
-        <select aria-label="Vehicle type" className={`${inputCls} min-w-40 shrink-0`} value={vt} onChange={(e) => setVt(e.target.value)}><option value="all" className="text-black">All Vehicles</option><option value="refueller" className="text-black">Refuellers</option><option value="dispenser" className="text-black">Hydrant dispensers</option></select>
-        <select aria-label="Date range" className={`${inputCls} min-w-36 shrink-0`} value={days} onChange={(e) => setDays(Number(e.target.value))}><option value={1} className="text-black">Today</option><option value={3} className="text-black">Last 3 days</option><option value={7} className="text-black">Last 7 days</option></select>
+        <select aria-label="Location" className={`${inputCls} min-w-44 shrink-0`} value={loc} onChange={(e) => setLoc(e.target.value)}><option value="all" className="text-black"><T>{"All Locations"}</T></option>{locations.map((l) => <option key={l.id} value={l.id} className="text-black">{lang === "ar" ? l.nameAr : l.name}</option>)}</select>
+        <select aria-label="Vehicle type" className={`${inputCls} min-w-40 shrink-0`} value={vt} onChange={(e) => setVt(e.target.value)}><option value="all" className="text-black"><T>{"All Vehicles"}</T></option><option value="refueller" className="text-black"><T>{"Refuellers"}</T></option><option value="dispenser" className="text-black"><T>{"Hydrant dispensers"}</T></option></select>
+        <select aria-label="Date range" className={`${inputCls} min-w-36 shrink-0`} value={days} onChange={(e) => setDays(Number(e.target.value))}><option value={1} className="text-black"><T>{"Today"}</T></option><option value={3} className="text-black"><T>{"Last 3 days"}</T></option><option value={7} className="text-black"><T>{"Last 7 days"}</T></option></select>
       </div>
 
       <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -53,7 +54,7 @@ export default function ReportsPage() {
 
       <div className="glass mb-8 overflow-hidden p-5" style={{ borderRadius: 16 }}>
         {tab === "trends" ? <TrendChart data={tr} height={260} bars /> : tab === "compliance" ? (
-          <table className="tbl"><thead><tr><th>Location</th><th className="!text-end">Samples</th><th className="!text-end">Failed</th><th className="!text-end">Compliance</th></tr></thead>
+          <table className="tbl"><thead><tr><th><T>{"Location"}</T></th><th className="!text-end"><T>{"Samples"}</T></th><th className="!text-end"><T>{"Failed"}</T></th><th className="!text-end"><T>{"Compliance"}</T></th></tr></thead>
             <tbody>{locations.map((l) => { const r = rows.filter((c) => c.locationId === l.id), f = r.filter((c) => c.result === "fail").length; return <tr key={l.id} className="border-t border-hair"><td className="py-2.5">{lang === "ar" ? l.nameAr : l.name}</td><td className="text-end tnum">{r.length}</td><td className="text-end tnum">{f}</td><td className="text-end tnum">{r.length ? (((r.length - f) / r.length) * 100).toFixed(1) : "–"}%</td></tr>; })}</tbody></table>
         ) : (
           <>
@@ -69,7 +70,7 @@ export default function ReportsPage() {
         )}
       </div>
 
-      <h2 className="mb-3 text-xl font-semibold">Report forms</h2>
+      <h2 className="mb-3 text-xl font-semibold"><T>{"Report forms"}</T></h2>
       <Stagger className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {REPORTS.map((r) => {
           const I = ICONS[r.icon as keyof typeof ICONS] ?? BarChart3;

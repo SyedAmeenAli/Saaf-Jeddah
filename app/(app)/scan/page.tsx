@@ -14,6 +14,7 @@ import { NfcTag } from "@/components/illustrations/Doodles";
 import { InspectionSheet } from "@/components/features/Inspection";
 import { HoldBanner } from "@/components/features/Details";
 import { cn } from "@/lib/utils";
+import { T } from "@/components/ui/T";
 
 type Phase = "ready" | "tapping" | "read";
 type Mode = "nfc" | "barcode";
@@ -99,7 +100,7 @@ function ScanInner() {
           {/* Scan stage over the apron photograph */}
           <Photo crop="truck" className="rounded-2xl border border-hair" scrim="from-[#0d0818]/55 via-[#0d0818]/60 to-[#0d0818]/85">
             <div className="flex flex-col items-center gap-5 px-4 py-8 md:py-10">
-              <h2 className="text-xl font-semibold">Scan Sampling Point</h2>
+              <h2 className="text-xl font-semibold"><T>{"Scan Sampling Point"}</T></h2>
               <p className="-mt-3 text-sm text-muted">{mode === "nfc" ? "Tap the NFC tag at the sampling point" : "Align the barcode with the frame"}</p>
 
               <div className="relative flex size-52 items-center justify-center">
@@ -138,7 +139,7 @@ function ScanInner() {
               <Button variant="primary" size="lg" onClick={tap} disabled={!canScan || phase !== "ready" || !pts.length} className="min-w-52">
                 {mode === "nfc" ? t("Simulate tap") : "Simulate scan"}
               </Button>
-              <button onClick={() => setManual(!manual)} className="flex items-center gap-2 text-sm text-muted hover:text-fg"><Keyboard size={16} strokeWidth={1.5} /> Enter tag ID manually</button>
+              <button onClick={() => setManual(!manual)} className="flex items-center gap-2 text-sm text-muted hover:text-fg"><Keyboard size={16} strokeWidth={1.5} /> <T>{"Enter tag ID manually"}</T></button>
               {manual && (
                 <div className="flex w-full max-w-sm gap-2">
                   <input className={cn(inputCls, "font-mono")} value={tag} onChange={(e) => setTag(e.target.value)} placeholder={vehicle.tags[point]} aria-label="Tag ID" />
@@ -170,12 +171,12 @@ function ScanInner() {
           {/* Microbial monitoring: its own module with its own sample records */}
           <Link href="/microbial" className="glass sheen hover-glow block p-5" style={{ borderRadius: 20 }}>
             <div className="mb-2 flex items-center gap-2"><Beaker size={18} strokeWidth={1.5} className="text-info-fg" /><h3 className="text-base font-semibold">{t("Microbial monitoring")}</h3></div>
-            <p className="text-xs text-muted">A separate scheduled programme with its own sample records. It is not part of the visual check.</p>
+            <p className="text-xs text-muted"><T>{"A separate scheduled programme with its own sample records. It is not part of the visual check."}</T></p>
             <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
-              <div className="rounded-xl bg-white/5 p-3"><dt className="text-xs text-muted">To collect</dt><dd className="font-medium">{microDue}</dd></div>
-              <div className="rounded-xl bg-white/5 p-3"><dt className="text-xs text-muted">Overdue</dt><dd className="font-medium">{microOver}</dd></div>
+              <div className="rounded-xl bg-white/5 p-3"><dt className="text-xs text-muted"><T>{"To collect"}</T></dt><dd className="font-medium">{microDue}</dd></div>
+              <div className="rounded-xl bg-white/5 p-3"><dt className="text-xs text-muted"><T>{"Overdue"}</T></dt><dd className="font-medium">{microOver}</dd></div>
             </dl>
-            <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-teal">Open microbial monitoring →</span>
+            <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-teal"><T>{"Open microbial monitoring →"}</T></span>
           </Link>
         </aside>
       </div>

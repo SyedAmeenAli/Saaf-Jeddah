@@ -5,6 +5,7 @@ import { useT } from "@/lib/hooks";
 import { Button, PageHeader, Rise, Stagger, StatusBadge } from "@/components/ui/Glass";
 import { Photo } from "@/components/ui/Photo";
 import { TruckSvg } from "@/components/illustrations/Vehicles";
+import { T } from "@/components/ui/T";
 
 const STEPS = [
   { i: Nfc, t: "Tap", d: "Operator taps the NFC tag fixed at the sampling point with an approved reader or phone." },
@@ -25,28 +26,28 @@ export default function HardwarePage() {
         <Rise>
           <Photo crop="refuel" className="rounded-2xl border border-hair" scrim="from-[#0d0818]/60 to-[#0d0818]/90">
             <div className="p-6">
-              <h2 className="mb-1 text-lg font-semibold">NFC tag + reader at the sampling point</h2>
-              <p className="mb-4 text-sm text-muted">One passive tag per sampling point: 4 on a refueller, 2 on a hydrant dispenser.</p>
+              <h2 className="mb-1 text-lg font-semibold"><T>{"NFC tag + reader at the sampling point"}</T></h2>
+              <p className="mb-4 text-sm text-muted"><T>{"One passive tag per sampling point: 4 on a refueller, 2 on a hydrant dispenser."}</T></p>
               <div className="relative mx-auto max-w-md"><TruckSvg className="w-full" />
                 <span className="absolute flex size-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-teal bg-teal/20 text-teal" style={{ left: "74.5%", top: "81%" }}><Nfc size={16} strokeWidth={1.5} /></span></div>
-              <ul className="mt-4 space-y-1.5 text-sm text-muted"><li>Tag read by an intrinsically safe phone or reader, selected for the site.</li><li>Tag ID is printed on a stainless plate with a QR code as a fallback.</li></ul>
+              <ul className="mt-4 space-y-1.5 text-sm text-muted"><li><T>{"Tag read by an intrinsically safe phone or reader, selected for the site."}</T></li><li><T>{"Tag ID is printed on a stainless plate with a QR code as a fallback."}</T></li></ul>
             </div>
           </Photo>
         </Rise>
         <Rise>
           <div className="space-y-4">
             <div className="glass p-5" style={{ borderRadius: 16 }}>
-              <div className="mb-2 flex items-center gap-3"><HardHat size={20} strokeWidth={1.5} className="text-pending-fg" /><h2 className="text-base font-semibold">Hazardous-zone requirement</h2></div>
-              <p className="text-sm leading-relaxed text-muted">All hardware (phones, readers, tags and mounts) must be certified for the site&apos;s classified hazardous zone and verified with APSCO&apos;s HSE team and applicable Saudi regulatory requirements before use on the apron. This demo makes no certification claims for any device.</p>
+              <div className="mb-2 flex items-center gap-3"><HardHat size={20} strokeWidth={1.5} className="text-pending-fg" /><h2 className="text-base font-semibold"><T>{"Hazardous-zone requirement"}</T></h2></div>
+              <p className="text-sm leading-relaxed text-muted"><T>{"All hardware (phones, readers, tags and mounts) must be certified for the site's classified hazardous zone and verified with APSCO's HSE team and applicable Saudi regulatory requirements before use on the apron. This demo makes no certification claims for any device."}</T></p>
             </div>
             <div className="glass p-5" style={{ borderRadius: 16 }}>
-              <div className="mb-2 flex items-center gap-3"><CloudOff size={20} strokeWidth={1.5} className="text-info-fg" /><h2 className="text-base font-semibold">Offline-first sync</h2></div>
-              <p className="text-sm text-muted">Apron coverage can be patchy. Checks are saved on the device and queued, then synced automatically when connectivity returns.</p>
+              <div className="mb-2 flex items-center gap-3"><CloudOff size={20} strokeWidth={1.5} className="text-info-fg" /><h2 className="text-base font-semibold"><T>{"Offline-first sync"}</T></h2></div>
+              <p className="text-sm text-muted"><T>{"Apron coverage can be patchy. Checks are saved on the device and queued, then synced automatically when connectivity returns."}</T></p>
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <Button onClick={toggle}>{offline ? "Go online (sync)" : "Go offline (demo)"}</Button>
                 <StatusBadge kind={offline ? "pending" : "pass"}>{offline ? `Offline · ${queued} queued` : "Online · Synced"}</StatusBadge>
               </div>
-              <p className="mt-2 text-xs text-faint">Go offline, submit a check from Sampling, then come back online to watch it sync.</p>
+              <p className="mt-2 text-xs text-faint"><T>{"Go offline, submit a check from Sampling, then come back online to watch it sync."}</T></p>
             </div>
           </div>
         </Rise>

@@ -1,5 +1,6 @@
 "use client";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { T } from "@/components/ui/T";
 
 export default function Donut({ data, total, height = 170 }: { data: { name: string; value: number; color: string }[]; total: number; height?: number }) {
   return (
@@ -12,7 +13,7 @@ export default function Donut({ data, total, height = 170 }: { data: { name: str
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"><span className="text-2xl font-semibold tnum">{total}</span><span className="text-[11px] text-muted">Total</span></div>
+      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center"><span className="text-2xl font-semibold tnum">{total}</span><span className="text-[11px] text-muted"><T>{"Total"}</T></span></div>
     </div>
   );
 }

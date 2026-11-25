@@ -9,6 +9,7 @@ import { cn, fmtDT, fmtTime, ago } from "@/lib/utils";
 import { StatusBadge } from "@/components/ui/Glass";
 import { ResultBadge, StateBadge } from "./Details";
 import { targetHref } from "@/lib/links";
+import { T } from "@/components/ui/T";
 
 export function CheckList({ checks, limit = 30 }: { checks: Check[]; limit?: number }) {
   const t = useT();
@@ -20,7 +21,7 @@ export function CheckList({ checks, limit = 30 }: { checks: Check[]; limit?: num
           <Link href={`/fleet?open=${c.vehicleId}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-2xl bg-hi px-4 py-3 hover:bg-teal/10">
             <span className="min-w-28 font-mono text-sm font-semibold">{c.vehicleId}</span>
             <span className="flex-1 text-sm text-muted">{POINTS[c.point].label} · {fmtTime(c.ts)} · {c.employeeId}</span>
-            {c.kind === "resample" && <StatusBadge kind="info">Re-sample</StatusBadge>}
+            {c.kind === "resample" && <StatusBadge kind="info"><T>{"Re-sample"}</T></StatusBadge>}
             <ResultBadge c={c} />
             <span className="hidden sm:block"><StateBadge status={c.status} /></span>
           </Link>

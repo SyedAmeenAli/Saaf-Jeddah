@@ -14,6 +14,7 @@ import { Button, StatusBadge, GlassCard, type StatusKind } from "@/components/ui
 import { DispenserSvg, HOTSPOTS, TruckSvg } from "@/components/illustrations/Vehicles";
 import { HoldChain } from "./HoldChain";
 import { spring } from "@/lib/motion";
+import { T } from "@/components/ui/T";
 
 export function ResultBadge({ c }: { c: Pick<Check, "result" | "status"> }) {
   const t = useT();
@@ -155,7 +156,7 @@ export function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-sm font-semibold">{POINTS[c.point].label}</span>
                   <ResultBadge c={c} />
-                  {c.kind === "resample" && <StatusBadge kind="info">Re-sample</StatusBadge>}
+                  {c.kind === "resample" && <StatusBadge kind="info"><T>{"Re-sample"}</T></StatusBadge>}
                 </div>
                 <p className="text-xs text-muted">{fmtDT(c.ts)} · {c.employeeId} · {OCCASIONS[c.occasion].label}</p>
               </li>
@@ -213,8 +214,8 @@ export function LocationDetail({ location }: { location: Location }) {
 
 export function StatusPill({ s }: { s: ReturnType<typeof vehicleStatus> }) {
   if (s === "hold") return <StatusBadge kind="fail">HOLD</StatusBadge>;
-  if (s === "overdue") return <StatusBadge kind="fail">Overdue</StatusBadge>;
-  if (s === "due") return <StatusBadge kind="pending">Due</StatusBadge>;
-  if (s === "pending") return <StatusBadge kind="pending">Verify</StatusBadge>;
+  if (s === "overdue") return <StatusBadge kind="fail"><T>{"Overdue"}</T></StatusBadge>;
+  if (s === "due") return <StatusBadge kind="pending"><T>{"Due"}</T></StatusBadge>;
+  if (s === "pending") return <StatusBadge kind="pending"><T>{"Verify"}</T></StatusBadge>;
   return <StatusBadge kind="pass">OK</StatusBadge>;
 }

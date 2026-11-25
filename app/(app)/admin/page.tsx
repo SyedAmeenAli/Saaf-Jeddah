@@ -7,6 +7,7 @@ import { useCan, useT } from "@/lib/hooks";
 import { OCCASION_ORDER, OCCASIONS, POINTS, POINT_ORDER, ROLE_META, applicablePoints } from "@/lib/domain";
 import { Button, Field, PageHeader, StatusBadge, inputCls } from "@/components/ui/Glass";
 import { cn } from "@/lib/utils";
+import { T } from "@/components/ui/T";
 
 const ICON = { users: Users, locations: MapPin, vehicles: Truck, tags: Nfc, matrix: Grid3x3, jig: BookLock } as const;
 type Tab = "users" | "locations" | "vehicles" | "tags" | "matrix" | "jig";
@@ -36,7 +37,7 @@ export function AdminConsole({ only, title, sub }: { only?: Tab; title?: string;
   const tabs: [Tab, string][] = [["users", t("Users & roles")], ["locations", t("Locations")], ["vehicles", t("Vehicles")], ["tags", t("Tag management")], ["matrix", t("Matrix editor")], ["jig", "Settings · JIG version"]];
   return (
     <>
-      <PageHeader title={title ?? t("Admin")} sub={sub ?? "Manage locations, vehicles, users, tags and the sampling matrix."} actions={!editable ? <StatusBadge kind="info">{t("Read-only for this role")}</StatusBadge> : <StatusBadge kind="locked">Submitted records stay locked</StatusBadge>} />
+      <PageHeader title={title ?? t("Admin")} sub={sub ?? "Manage locations, vehicles, users, tags and the sampling matrix."} actions={!editable ? <StatusBadge kind="info">{t("Read-only for this role")}</StatusBadge> : <StatusBadge kind="locked"><T>{"Submitted records stay locked"}</T></StatusBadge>} />
       <div className={cn("mb-5 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6", only && "hidden")} role="tablist">
         {tabs.map(([k, l]) => {
           const I = ICON[k];
@@ -51,10 +52,10 @@ export function AdminConsole({ only, title, sub }: { only?: Tab; title?: string;
 
       <div className="glass p-5 md:p-6" style={{ borderRadius: 20 }}>
         {tab === "users" && (
-          <div className="overflow-x-auto"><table className="tbl min-w-[32rem]"><thead><tr><th className="py-2 text-start">ID</th><th className="text-start">Name</th><th className="text-start">{t("Role")}</th><th className="text-start">{t("Location")}</th></tr></thead>
+          <div className="overflow-x-auto"><table className="tbl min-w-[32rem]"><thead><tr><th className="py-2 text-start">ID</th><th className="text-start"><T>{"Name"}</T></th><th className="text-start">{t("Role")}</th><th className="text-start">{t("Location")}</th></tr></thead>
             <tbody>{employees.map((e) => <tr key={e.id} className="border-t border-hair cursor-pointer hover:bg-white/5" tabIndex={0} onClick={() => router.push(`/users?open=${e.id}`)} onKeyDown={(ev) => { if (ev.key === "Enter") router.push(`/users?open=${e.id}`); }}><td className="py-2.5 font-mono">{e.id}</td><td>{lang === "ar" ? e.nameAr : e.name}</td>
               <td><StatusBadge kind={e.role === "admin" ? "info" : e.role === "supervisor" ? "pending" : e.role === "manager" ? "locked" : "pass"}>{ROLE_META[e.role].label}</StatusBadge></td><td className="font-mono text-xs">{e.locationId}</td></tr>)}</tbody></table>
-            <div className="mt-3 flex items-center justify-between"><p className="flex items-center gap-2 text-xs text-muted"><Users size={13} /> {employees.length} users · Demo data</p><Button onClick={() => router.push("/users")}>Manage users</Button></div></div>
+            <div className="mt-3 flex items-center justify-between"><p className="flex items-center gap-2 text-xs text-muted"><Users size={13} /> {employees.length} users · Demo data</p><Button onClick={() => router.push("/users")}><T>{"Manage users"}</T></Button></div></div>
         )}
         {tab === "locations" && (
           <div className="space-y-3">
@@ -73,21 +74,21 @@ export function AdminConsole({ only, title, sub }: { only?: Tab; title?: string;
             <Field label={t("Vehicle")}><select className={inputCls} value={vid} onChange={(e) => setVid(e.target.value)}>{vehicles.map((x) => <option key={x.id} className="text-black">{x.id}</option>)}</select></Field>
             <Field label={t("Sampling point")}><select className={inputCls} value={pt} onChange={(e) => setPt(e.target.value as typeof pt)}>{POINT_ORDER.filter((p) => v?.type === "refueller" || !POINTS[p].tank).map((p) => <option key={p} value={p} className="text-black">{POINTS[p].label}</option>)}</select></Field>
             <Field label={`${t("NFC tag")} ID`} hint={`Current: ${v?.tags[pt] ?? "none"}`}><input className={cn(inputCls, "font-mono")} value={tag} onChange={(e) => setTag(e.target.value.toUpperCase())} placeholder="NFC-XXXXXXXX" /></Field>
-            <Button variant="primary" disabled={!editable || tag.length < 6} onClick={() => { assignTag(vid, pt, tag); setTag(""); }}><Nfc size={16} /> Assign tag</Button>
+            <Button variant="primary" disabled={!editable || tag.length < 6} onClick={() => { assignTag(vid, pt, tag); setTag(""); }}><Nfc size={16} /> <T>{"Assign tag"}</T></Button>
           </div>
         )}
         {tab === "matrix" && (
           <div className="overflow-x-auto"><table className="tbl min-w-[34rem]"><thead><tr><th className="py-2 text-start">{t("Occasion")}</th>{POINT_ORDER.map((p) => <th key={p}>{POINTS[p].label}</th>)}</tr></thead>
             <tbody>{OCCASION_ORDER.map((o) => <tr key={o} className="border-t border-hair"><td className="py-2.5">{OCCASIONS[o].label}</td>
               {POINT_ORDER.map((p) => { const k = `${o}-${p}`; const base = applicablePoints(o, "refueller").includes(p); const on = custom[k] ?? base; return <td key={p} className="text-center"><input type="checkbox" aria-label={`${OCCASIONS[o].label} ${POINTS[p].label}`} checked={on} disabled={!editable} onChange={(e) => { setCustom({ ...custom, [k]: e.target.checked }); toast("info", "Matrix editor is UI-only in this demo"); }} className="size-5 accent-[var(--teal)]" /></td>; })}</tr>)}</tbody></table>
-            <p className="mt-3 text-xs text-muted">UI only. Changes here are not persisted. Matrix must be approved by APSCO QC.</p></div>
+            <p className="mt-3 text-xs text-muted"><T>{"UI only. Changes here are not persisted. Matrix must be approved by APSCO QC."}</T></p></div>
         )}
         {tab === "jig" && (
           <div className="space-y-4">
             <div className="flex items-start gap-4 rounded-2xl bg-hi p-5"><BookLock className="mt-1 text-teal" /><div>
-              <p className="font-display text-xl font-semibold">JIG 1 Issue 13 / JIG 2 Issue 13</p><p className="text-sm text-muted">Rule set v1 · JIG-aligned</p></div></div>
-            <p className="text-sm text-muted">Rules are version-controlled and configurable for future issues. Each submitted record stores the rule-set version it was captured under, so history stays valid when a new issue is adopted.</p>
-            <p className="flex items-center gap-2 text-xs text-faint"><Lock size={12} /> Final checklist and acceptance criteria to be approved by APSCO Quality Control against controlled copies of the applicable standards.</p>
+              <p className="font-display text-xl font-semibold"><T>{"JIG 1 Issue 13 / JIG 2 Issue 13"}</T></p><p className="text-sm text-muted"><T>{"Rule set v1 · JIG-aligned"}</T></p></div></div>
+            <p className="text-sm text-muted"><T>{"Rules are version-controlled and configurable for future issues. Each submitted record stores the rule-set version it was captured under, so history stays valid when a new issue is adopted."}</T></p>
+            <p className="flex items-center gap-2 text-xs text-faint"><Lock size={12} /> <T>{"Final checklist and acceptance criteria to be approved by APSCO Quality Control against controlled copies of the applicable standards."}</T></p>
           </div>
         )}
       </div>

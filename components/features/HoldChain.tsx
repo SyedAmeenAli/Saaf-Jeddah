@@ -11,6 +11,7 @@ import { cn, fmtDT } from "@/lib/utils";
 import { Button } from "@/components/ui/Glass";
 import { SignModal } from "./Sign";
 import { spring } from "@/lib/motion";
+import { T } from "@/components/ui/T";
 
 /** Failed check → Re-sample → Authorised release, as three separate linked events. */
 export function HoldChain({ hold }: { hold: Hold }) {
@@ -56,10 +57,10 @@ export function HoldChain({ hold }: { hold: Hold }) {
             <Button variant="primary"><FlaskConical size={16} /> Start re-sample ({POINTS[hold.point].label})</Button>
           </Link>
         )}
-        {hold.state === "hold" && !(can("sample") || can("verify")) && <p className="text-sm text-muted">Waiting for an operator to take a linked re-sample.</p>}
+        {hold.state === "hold" && !(can("sample") || can("verify")) && <p className="text-sm text-muted"><T>{"Waiting for an operator to take a linked re-sample."}</T></p>}
         {hold.state === "resampled" && can("release") && <Button variant="primary" onClick={() => setSign(true)}><ShieldCheck size={16} /> {t("Release")} (sign)</Button>}
-        {hold.state === "resampled" && !can("release") && <p className="text-sm text-pending-fg">Re-sample passed. Release requires a Supervisor signature.</p>}
-        {hold.state === "released" && <p className="inline-flex items-center gap-2 text-sm text-pass-fg"><Check size={16} /> Released. Chain closed. <Lock size={14} /></p>}
+        {hold.state === "resampled" && !can("release") && <p className="text-sm text-pending-fg"><T>{"Re-sample passed. Release requires a Supervisor signature."}</T></p>}
+        {hold.state === "released" && <p className="inline-flex items-center gap-2 text-sm text-pass-fg"><Check size={16} /> <T>{"Released. Chain closed."}</T> <Lock size={14} /></p>}
       </div>
       <SignModal open={sign} onClose={() => setSign(false)} title="Authorised release" confirmLabel={`${hold.vehicleId}: release for fuelling`} onConfirm={() => release(hold.id)}>
         <p className="text-sm text-muted">{hold.vehicleId} · {POINTS[hold.point].label}. Confirm the re-sample passed and countersign to lift the HOLD.</p>

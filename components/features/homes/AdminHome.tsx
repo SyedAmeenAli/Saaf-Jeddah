@@ -8,6 +8,7 @@ import { OCCASION_ORDER, pointsForVehicle } from "@/lib/domain";
 import { Rise, Stagger, StatusBadge, CountUp } from "@/components/ui/Glass";
 import { ActivityList } from "@/components/features/Lists";
 import { cn } from "@/lib/utils";
+import { T } from "@/components/ui/T";
 
 /** Admin: a configuration console. Registry health, gaps to fix, recent config changes. Table-first. */
 export default function AdminHome() {
@@ -45,9 +46,9 @@ export default function AdminHome() {
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="eyebrow">{t("Administration")}</p>
-            <h1 className="mt-1 text-[28px] font-semibold leading-tight md:text-[34px]">System overview</h1>
+            <h1 className="mt-1 text-[28px] font-semibold leading-tight md:text-[34px]"><T>{"System overview"}</T></h1>
           </div>
-          <StatusBadge kind="locked"><Lock size={11} className="me-1" />Submitted records stay locked</StatusBadge>
+          <StatusBadge kind="locked"><Lock size={11} className="me-1" /><T>{"Submitted records stay locked"}</T></StatusBadge>
         </div>
       </Rise>
 
@@ -69,15 +70,15 @@ export default function AdminHome() {
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-5">
         <Rise className="xl:col-span-3">
           <section className="glass p-5" style={{ borderRadius: 20 }}>
-            <div className="mb-3 flex items-center justify-between"><h2 className="text-base font-semibold">Needs configuration</h2><Link href="/points" className="inline-flex items-center gap-1 text-xs text-teal hover:underline">Open tag registry <ArrowRight size={12} className="rtl:rotate-180" /></Link></div>
+            <div className="mb-3 flex items-center justify-between"><h2 className="text-base font-semibold"><T>{"Needs configuration"}</T></h2><Link href="/points" className="inline-flex items-center gap-1 text-xs text-teal hover:underline"><T>{"Open tag registry"}</T> <ArrowRight size={12} className="rtl:rotate-180" /></Link></div>
             {stats.missing.length === 0 && stats.expired.length === 0 ? (
-              <p className="py-8 text-center text-sm text-muted">Every sampling point has a tag and every operator is authorised.</p>
+              <p className="py-8 text-center text-sm text-muted"><T>{"Every sampling point has a tag and every operator is authorised."}</T></p>
             ) : (
               <div className="overflow-x-auto">
-                <table className="tbl min-w-[28rem]"><thead><tr><th>Item</th><th>Issue</th><th /></tr></thead>
+                <table className="tbl min-w-[28rem]"><thead><tr><th><T>{"Item"}</T></th><th><T>{"Issue"}</T></th><th /></tr></thead>
                   <tbody>
-                    {stats.missing.slice(0, 5).map(({ v, n }) => <tr key={v.id}><td className="font-mono font-medium">{v.id}</td><td className="text-muted">{n} sampling point{n > 1 ? "s" : ""} without a tag</td><td className="text-end"><Link href={`/points?v=${v.id}`} className="btn-secondary inline-flex h-8 items-center rounded-xl px-3 text-xs">Assign</Link></td></tr>)}
-                    {stats.expired.slice(0, 4).map((e) => <tr key={e.id}><td className="font-mono font-medium">{e.id}</td><td className="text-muted">{e.name}: authorisation expired</td><td className="text-end"><Link href="/users" className="btn-secondary inline-flex h-8 items-center rounded-xl px-3 text-xs">Review</Link></td></tr>)}
+                    {stats.missing.slice(0, 5).map(({ v, n }) => <tr key={v.id}><td className="font-mono font-medium">{v.id}</td><td className="text-muted">{n} sampling point{n > 1 ? "s" : ""} without a tag</td><td className="text-end"><Link href={`/points?v=${v.id}`} className="btn-secondary inline-flex h-8 items-center rounded-xl px-3 text-xs"><T>{"Assign"}</T></Link></td></tr>)}
+                    {stats.expired.slice(0, 4).map((e) => <tr key={e.id}><td className="font-mono font-medium">{e.id}</td><td className="text-muted">{e.name}: authorisation expired</td><td className="text-end"><Link href="/users" className="btn-secondary inline-flex h-8 items-center rounded-xl px-3 text-xs"><T>{"Review"}</T></Link></td></tr>)}
                   </tbody>
                 </table>
               </div>
@@ -87,22 +88,22 @@ export default function AdminHome() {
 
         <Rise className="xl:col-span-2">
           <section className="glass h-full p-5" style={{ borderRadius: 20 }}>
-            <h2 className="mb-3 text-base font-semibold">Quick actions</h2>
+            <h2 className="mb-3 text-base font-semibold"><T>{"Quick actions"}</T></h2>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
               {[["/users", "Add employee", Users], ["/assets", "Register vehicle", Boxes], ["/locations", "Add location", MapPin], ["/points", "Assign NFC tag", Nfc]].map(([h, l, I]) => {
                 const Ic = I as typeof Users;
                 return <Link key={h as string} href={h as string} className="btn-secondary flex h-12 items-center gap-3 rounded-2xl px-4 text-sm font-medium"><Plus size={14} className="text-teal" /><Ic size={16} strokeWidth={1.5} className="text-muted" />{l as string}</Link>;
               })}
             </div>
-            <p className="mt-4 rounded-2xl border border-hair bg-white/[0.03] p-3 text-xs leading-relaxed text-muted"><Lock size={12} className={cn("me-1.5 inline text-faint")} />Administrators configure the system. A submitted quality record can only be changed through an auditable amendment that preserves the original.</p>
+            <p className="mt-4 rounded-2xl border border-hair bg-white/[0.03] p-3 text-xs leading-relaxed text-muted"><Lock size={12} className={cn("me-1.5 inline text-faint")} /><T>{"Administrators configure the system. A submitted quality record can only be changed through an auditable amendment that preserves the original."}</T></p>
           </section>
         </Rise>
       </div>
 
       <Rise>
         <section className="glass p-5" style={{ borderRadius: 20 }}>
-          <h2 className="mb-3 text-base font-semibold">Recent configuration changes</h2>
-          {cfg.length ? <ActivityList entries={cfg} /> : <p className="py-6 text-center text-sm text-muted">No configuration changes yet. Add a user, vehicle or tag to see it logged here.</p>}
+          <h2 className="mb-3 text-base font-semibold"><T>{"Recent configuration changes"}</T></h2>
+          {cfg.length ? <ActivityList entries={cfg} /> : <p className="py-6 text-center text-sm text-muted"><T>{"No configuration changes yet. Add a user, vehicle or tag to see it logged here."}</T></p>}
         </section>
       </Rise>
     </Stagger>

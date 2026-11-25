@@ -4,6 +4,7 @@ import { MotionConfig } from "framer-motion";
 import { useStore } from "@/lib/store";
 import { Aurora } from "@/components/ui/Aurora";
 import { Toasts } from "@/components/shell/Toasts";
+import { startDomTranslate } from "@/lib/domTranslate";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const init = useStore((s) => s.init);
@@ -20,6 +21,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     d.lang = lang;
     d.dir = lang === "ar" ? "rtl" : "ltr";
   }, [theme, lang, ready]);
+
+  useEffect(() => {
+    if (!ready || lang !== "ar") return;
+    return startDomTranslate();
+  }, [lang, ready]);
 
   useEffect(() => {
     const on = () => document.documentElement.classList.toggle("hidden-tab", document.hidden);

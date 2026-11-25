@@ -6,6 +6,7 @@ import { useT } from "@/lib/hooks";
 import type { AuditEntry } from "@/lib/types";
 import { Chip, PageHeader, SearchField, StatusBadge } from "@/components/ui/Glass";
 import { ActivityList } from "@/components/features/Lists";
+import { T } from "@/components/ui/T";
 
 const ACTIONS: ("all" | AuditEntry["action"])[] = ["all", "submission", "approval", "return", "amendment", "hold", "resample", "release", "config"];
 
@@ -17,7 +18,7 @@ export default function AuditPage() {
   const rows = useMemo(() => audit.filter((x) => (a === "all" || x.action === a) && `${x.actor} ${x.target} ${x.detail}`.toLowerCase().includes(q.toLowerCase())), [audit, a, q]);
   return (
     <>
-      <PageHeader title={t("Audit log")} sub="Append-only. Entries cannot be edited or deleted." actions={<StatusBadge kind="locked">Append-only</StatusBadge>} />
+      <PageHeader title={t("Audit log")} sub="Append-only. Entries cannot be edited or deleted." actions={<StatusBadge kind="locked"><T>{"Append-only"}</T></StatusBadge>} />
       <div className="glass mb-4 flex flex-wrap items-center gap-2 p-3" style={{ borderRadius: 24 }}>
         <SearchField value={q} onChange={setQ} placeholder="Actor, target, detail…" />
         <div className="no-scrollbar flex gap-2 overflow-x-auto">{ACTIONS.map((x) => <Chip key={x} active={a === x} onClick={() => setA(x)} className="capitalize">{x === "all" ? t("All") : x}</Chip>)}</div>

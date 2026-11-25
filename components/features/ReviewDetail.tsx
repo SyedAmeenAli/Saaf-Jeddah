@@ -6,6 +6,7 @@ import { HoldBanner } from "./Details";
 import { HoldChain } from "./HoldChain";
 import { RecordView } from "./Record";
 import type { Check } from "@/lib/types";
+import { T } from "@/components/ui/T";
 
 /** Full-screen detail for a sampling record. Failed records get the investigation timeline first. */
 export function ReviewDetail({ check }: { check: Check }) {
@@ -18,7 +19,7 @@ export function ReviewDetail({ check }: { check: Check }) {
       {live.result === "fail" && h && (
         <>
           {h.state !== "released" && <HoldBanner vehicleId={`${h.vehicleId} · ${POINTS[h.point].label}`} />}
-          <div className="glass p-4" style={{ borderRadius: 20 }}><p className="mb-3 text-sm font-semibold">Failure investigation</p><HoldChain hold={h} /></div>
+          <div className="glass p-4" style={{ borderRadius: 20 }}><p className="mb-3 text-sm font-semibold"><T>{"Failure investigation"}</T></p><HoldChain hold={h} /></div>
         </>
       )}
       <RecordView check={live} onChange={close} />

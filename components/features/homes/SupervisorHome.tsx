@@ -14,6 +14,7 @@ import { HoldChain } from "@/components/features/HoldChain";
 import { RecordView } from "@/components/features/Record";
 import { CheckList, DueListView } from "@/components/features/Lists";
 import type { Check } from "@/lib/types";
+import { T } from "@/components/ui/T";
 
 /** Supervisor: a quality-assurance workspace. Leads with what needs a decision. */
 export default function SupervisorHome() {
@@ -46,7 +47,7 @@ export default function SupervisorHome() {
     const h = allHolds.find((x) => x.vehicleId === c.vehicleId && x.point === c.point && x.state !== "released") ?? allHolds.find((x) => x.events.some((e) => e.checkId === c.id));
     return (
       <div className="mx-auto max-w-3xl space-y-5">
-        {c.result === "fail" && h && <><HoldBanner vehicleId={`${h.vehicleId} · ${POINTS[h.point].label}`} /><div className="glass p-4" style={{ borderRadius: 20 }}><p className="mb-3 text-sm font-semibold">Failure investigation</p><HoldChain hold={h} /></div></>}
+        {c.result === "fail" && h && <><HoldBanner vehicleId={`${h.vehicleId} · ${POINTS[h.point].label}`} /><div className="glass p-4" style={{ borderRadius: 20 }}><p className="mb-3 text-sm font-semibold"><T>{"Failure investigation"}</T></p><HoldChain hold={h} /></div></>}
         <RecordView check={c} />
       </div>
     );
@@ -61,7 +62,7 @@ export default function SupervisorHome() {
               <p className="eyebrow">{new Date().toLocaleDateString(lang === "ar" ? "ar-SA" : "en-GB", { weekday: "long", day: "numeric", month: "long" })}</p>
               <h1 className="mt-1 text-[28px] font-semibold leading-tight md:text-[34px]">{awaiting.length ? `${awaiting.length} samples need your review` : "Review queue is clear"}, {name}</h1>
             </div>
-            <Link href="/approvals" className="cta inline-flex h-11 items-center gap-2 px-5 text-sm" style={{ borderRadius: 16 }}>Open review queue <ArrowRight size={16} className="rtl:rotate-180" /></Link>
+            <Link href="/approvals" className="cta inline-flex h-11 items-center gap-2 px-5 text-sm" style={{ borderRadius: 16 }}><T>{"Open review queue"}</T> <ArrowRight size={16} className="rtl:rotate-180" /></Link>
           </div>
         </Rise>
 
@@ -80,7 +81,7 @@ export default function SupervisorHome() {
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-5">
           <Rise className="xl:col-span-3">
             <section aria-label="Review queue">
-              <div className="mb-2 flex items-center justify-between px-1"><h2 className="text-lg font-semibold">Review queue</h2><Link href="/approvals" className="text-xs text-teal hover:underline">View all {awaiting.length}</Link></div>
+              <div className="mb-2 flex items-center justify-between px-1"><h2 className="text-lg font-semibold"><T>{"Review queue"}</T></h2><Link href="/approvals" className="text-xs text-teal hover:underline">View all {awaiting.length}</Link></div>
               <div className="space-y-2.5">
                 {awaiting.slice(0, 6).map((c) => (
                   <ExpandCard key={c.id} id={`rv-${c.id}`} title={`${c.sampleId}`}
@@ -95,14 +96,14 @@ export default function SupervisorHome() {
                     }
                     detail={() => renderDetail(c)} />
                 ))}
-                {awaiting.length === 0 && <p className="glass p-8 text-center text-sm text-muted" style={{ borderRadius: 20 }}>Nothing waiting for review.</p>}
+                {awaiting.length === 0 && <p className="glass p-8 text-center text-sm text-muted" style={{ borderRadius: 20 }}><T>{"Nothing waiting for review."}</T></p>}
               </div>
             </section>
           </Rise>
 
           <Rise className="xl:col-span-2">
             <section aria-label="Location activity" className="space-y-2.5">
-              <h2 className="px-1 text-lg font-semibold">Location activity</h2>
+              <h2 className="px-1 text-lg font-semibold"><T>{"Location activity"}</T></h2>
               {locations.map((l) => {
                 const st = LocationStats(l.id, allVehicles, allChecks, allDue, allHolds);
                 return (
@@ -123,9 +124,9 @@ export default function SupervisorHome() {
 
         <Rise>
           <section aria-label="Recent submissions">
-            <h2 className="mb-2 px-1 text-lg font-semibold">Recent submissions</h2>
+            <h2 className="mb-2 px-1 text-lg font-semibold"><T>{"Recent submissions"}</T></h2>
             <div className="glass overflow-x-auto p-4" style={{ borderRadius: 20 }}>
-              <table className="tbl min-w-[32rem]"><thead><tr><th>Time</th><th>Vehicle</th><th>Sampling point</th><th>Result</th><th>Operator</th></tr></thead>
+              <table className="tbl min-w-[32rem]"><thead><tr><th><T>{"Time"}</T></th><th><T>{"Vehicle"}</T></th><th><T>{"Sampling point"}</T></th><th><T>{"Result"}</T></th><th><T>{"Operator"}</T></th></tr></thead>
                 <tbody>{recent.map((c) => <tr key={c.id}><td className="tnum text-muted">{fmtTime(c.ts)}</td><td className="font-mono text-[13px]">{c.vehicleId}</td><td>{POINTS[c.point].label}</td><td><ResultBadge c={c} /></td><td className="font-mono text-xs text-muted">{c.employeeId}</td></tr>)}</tbody>
               </table>
             </div>

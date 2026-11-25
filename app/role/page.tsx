@@ -9,6 +9,7 @@ import { Photo } from "@/components/ui/Photo";
 import { SafaaLogo } from "@/components/shell/Brand";
 import { LangPill } from "@/components/features/AuthShell";
 import { cn } from "@/lib/utils";
+import { T } from "@/components/ui/T";
 
 const CROP = { operator: "tanker", supervisor: "tower", manager: "skyline", admin: "engine" } as const;
 const ICON = { operator: HardHat, supervisor: Users, manager: BarChart3, admin: Settings2 };
@@ -29,7 +30,7 @@ export default function RolePage() {
       <header className="flex items-center justify-between p-5 md:p-8"><SafaaLogo /><LangPill /></header>
       <main className="mx-auto max-w-4xl px-5 pb-16 pt-6 text-center">
         <h1 className="text-3xl font-semibold">{lang === "ar" ? "اختر دورك" : "Select Your Role"}</h1>
-        <p className="mt-1 text-muted">Demo mode. You can switch role at any time from the sidebar.</p>
+        <p className="mt-1 text-muted"><T>{"Demo mode. You can switch role at any time from the sidebar."}</T></p>
         <div role="radiogroup" aria-label="Role" className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {(Object.keys(ROLE_META) as Role[]).map((r) => {
             const I = ICON[r], on = role === r;
@@ -47,7 +48,7 @@ export default function RolePage() {
             );
           })}
         </div>
-        <button onClick={go} className="cta mt-8 inline-flex h-12 items-center gap-2 rounded-xl px-10">Continue <ArrowRight size={18} className="rtl:rotate-180" /></button>
+        <button onClick={go} className="cta mt-8 inline-flex h-12 items-center gap-2 rounded-xl px-10"><T>{"Continue"}</T> <ArrowRight size={18} className="rtl:rotate-180" /></button>
       </main>
     </div>
   );

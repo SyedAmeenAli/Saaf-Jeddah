@@ -4,6 +4,7 @@ import { useT } from "@/lib/hooks";
 import { cn, fmtDate } from "@/lib/utils";
 import { PageHeader, StatusBadge } from "@/components/ui/Glass";
 import { useEmployeeActivity } from "@/components/features/Insights";
+import { T } from "@/components/ui/T";
 
 export default function Employees() {
   const t = useT();
@@ -13,7 +14,7 @@ export default function Employees() {
     <>
       <PageHeader title={t("Employee Performance")} sub="Sampling activity and authorisation status for every operator. Read-only." />
       <div className="glass overflow-x-auto p-4" style={{ borderRadius: 20 }}>
-        <table className="tbl min-w-[40rem]"><thead><tr><th>Employee</th><th>Location</th><th className="text-end">Samples (7d)</th><th className="text-end">Failed</th><th>Pass rate</th><th>Authorisation</th></tr></thead>
+        <table className="tbl min-w-[40rem]"><thead><tr><th><T>{"Employee"}</T></th><th><T>{"Location"}</T></th><th className="text-end"><T>{"Samples (7d)"}</T></th><th className="text-end"><T>{"Failed"}</T></th><th><T>{"Pass rate"}</T></th><th><T>{"Authorisation"}</T></th></tr></thead>
           <tbody>{rows.map(({ e, n, fail, rate, expired }) => (
             <tr key={e.id}>
               <td><span className="font-medium">{lang === "ar" ? e.nameAr : e.name}</span><span className="ms-2 font-mono text-xs text-muted">{e.id}</span></td>
