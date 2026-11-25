@@ -18,7 +18,7 @@ export default function Splash() {
   return (
     <div className="relative flex min-h-dvh flex-col">
       <Photo crop="full" className="!fixed inset-0 -z-[1]" scrim="from-[#050b18]/40 via-[#050b18]/35 to-[#050b18]/90" />
-      <div className="pointer-events-none fixed inset-0 -z-[1] bg-gradient-to-r from-[#050b18]/85 via-[#050b18]/35 to-transparent" />
+      <div className="pointer-events-none fixed inset-0 -z-[1] bg-gradient-to-r from-[#0a0e13]/90 via-[#0a0e13]/50 to-transparent" />
       <header className="flex items-center justify-between p-5 md:p-8">
         <div className="flex items-center gap-3"><ApscoWordmark /><span className="h-5 w-px bg-white/25" /><span className="flex items-center gap-1 text-sm text-white/80"><MapPin size={14} /> Jeddah, KSA</span></div>
         <LangPill />
@@ -36,7 +36,7 @@ export default function Splash() {
           <p className="mt-3 text-lg italic text-white/80">{t("Every sample. Every point. Proven.")}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             {pills.map(([I, a, b]) => (
-              <div key={a} className="glass flex items-center gap-3 px-4 py-2.5 text-sm" style={{ borderRadius: 14 }}>
+              <div key={a} className="glass flex items-center gap-3 px-4 py-2.5 text-sm" style={{ borderRadius: 6 }}>
                 <I size={20} strokeWidth={1.5} className="text-teal" />
                 <span className="leading-tight"><span className="block font-medium">{a}</span><span className="block text-xs text-muted">{b}</span></span>
               </div>

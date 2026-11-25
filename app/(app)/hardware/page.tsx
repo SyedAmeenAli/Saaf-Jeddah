@@ -35,11 +35,11 @@ export default function HardwarePage() {
         </Rise>
         <Rise>
           <div className="space-y-4">
-            <div className="glass p-5" style={{ borderRadius: 16 }}>
+            <div className="glass p-5" style={{ borderRadius: 8 }}>
               <div className="mb-2 flex items-center gap-3"><HardHat size={20} strokeWidth={1.5} className="text-pending-fg" /><h2 className="text-base font-semibold">Hazardous-zone requirement</h2></div>
               <p className="text-sm leading-relaxed text-muted">All hardware (phones, readers, tags and mounts) must be certified for the site&apos;s classified hazardous zone and verified with APSCO&apos;s HSE team and applicable Saudi regulatory requirements before use on the apron. This demo makes no certification claims for any device.</p>
             </div>
-            <div className="glass p-5" style={{ borderRadius: 16 }}>
+            <div className="glass p-5" style={{ borderRadius: 8 }}>
               <div className="mb-2 flex items-center gap-3"><CloudOff size={20} strokeWidth={1.5} className="text-info-fg" /><h2 className="text-base font-semibold">Offline-first sync</h2></div>
               <p className="text-sm text-muted">Apron coverage can be patchy. Checks are saved on the device and queued, then synced automatically when connectivity returns.</p>
               <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -56,7 +56,7 @@ export default function HardwarePage() {
       <Stagger className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {STEPS.map((s, i) => (
           <Rise key={s.t}>
-            <div className="glass relative h-full p-5" style={{ borderRadius: 16 }}>
+            <div className="glass relative h-full p-5" style={{ borderRadius: 8 }}>
               <span className="absolute end-4 top-3 text-4xl font-semibold text-white/5" aria-hidden="true">{i + 1}</span>
               <span className="mb-3 flex size-10 items-center justify-center rounded-full bg-teal/15 text-teal"><s.i size={20} strokeWidth={1.5} /></span>
               <h3 className="text-base font-semibold">{s.t}</h3><p className="mt-1 text-sm text-muted">{s.d}</p>

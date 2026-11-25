@@ -28,7 +28,7 @@ export function AuthShell({ crop = "engine", title, subtitle, children, footer }
         <LangPill />
       </header>
       <main className="mx-auto flex w-full max-w-[28rem] flex-col px-5 pb-16 pt-4 md:pt-10">
-        <div className="glass glass-strong p-6 md:p-8" style={{ borderRadius: 24 }}>
+        <div className="glass glass-strong p-6 md:p-8" style={{ borderRadius: 8 }}>
           <div className="mb-6 flex flex-col items-center"><SafaaLogo stacked size={40} /></div>
           <h1 className="text-center text-2xl font-semibold">{title}</h1>
           {subtitle && <p className="mt-1 text-center text-sm text-muted">{subtitle}</p>}

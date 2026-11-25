@@ -28,8 +28,8 @@ export function StateBadge({ status }: { status: Check["status"] }) {
 export function HoldBanner({ vehicleId, compact = false }: { vehicleId: string; compact?: boolean }) {
   const t = useT();
   return (
-    <div className={cn("flex items-center gap-3 rounded-2xl border border-fail/60 bg-fail/20 font-semibold text-fail-fg", compact ? "px-3 py-1.5 text-xs" : "px-4 py-3 text-base")} role="alert">
-      <OctagonAlert size={compact ? 14 : 22} />
+    <div className={cn("flex items-center gap-3 rounded-md border border-fail/40 border-s-[3px] border-s-fail bg-fail/10 font-medium text-fail-fg", compact ? "px-3 py-1.5 text-xs" : "px-4 py-2.5 text-sm")} role="alert">
+      <OctagonAlert size={compact ? 14 : 18} strokeWidth={1.75} />
       HOLD — {t("HOLD: Do not fuel").replace("HOLD: ", "").replace("إيقاف: ", "")}
       {!compact && <span className="ms-auto font-mono text-xs opacity-80">{vehicleId}</span>}
     </div>
@@ -58,7 +58,7 @@ export function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
     <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.25fr_1fr]">
       <div className="space-y-5">
         {activeHold && <HoldBanner vehicleId={vehicle.id} />}
-        <div className="glass relative overflow-hidden p-4 md:p-6" style={{ borderRadius: 20 }}>
+        <div className="glass relative overflow-hidden p-4 md:p-6" style={{ borderRadius: 8 }}>
           <div className="mb-2 flex items-center justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-muted">{vehicle.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")} · {vehicle.locationId}</p>
@@ -93,7 +93,7 @@ export function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
             {pts.map((p) => {
               const lr = last(p);
               return (
-                <button key={p} onClick={() => setSel(p)} className={cn("flex items-center gap-3 rounded-2xl border px-3 py-2.5 text-start transition-colors", sel === p ? "border-teal bg-teal/10" : "border-hair bg-hi")}>
+                <button key={p} onClick={() => setSel(p)} className={cn("flex items-center gap-3 rounded-md border px-3 py-2.5 text-start transition-colors", sel === p ? "border-teal bg-teal/10" : "border-hair bg-hi")}>
                   <span className="flex-1">
                     <span className="block text-sm font-semibold">{lang === "ar" ? POINTS[p].labelAr : POINTS[p].label}</span>
                     <span className="block text-xs text-muted">{lr ? ago(lr.ts) : t("No result yet")}</span>
@@ -103,13 +103,13 @@ export function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
               );
             })}
             {vehicle.type === "dispenser" && (
-              <div className="flex items-center gap-3 rounded-2xl border border-dashed border-hair px-3 py-2.5 text-sm text-faint sm:col-span-2">Tank sump / tank drain: {t("Not applicable")} (no tank on hydrant dispensers)</div>
+              <div className="flex items-center gap-3 rounded-md border border-dashed border-hair px-3 py-2.5 text-sm text-faint sm:col-span-2">Tank sump / tank drain: {t("Not applicable")} (no tank on hydrant dispensers)</div>
             )}
           </div>
 
           <AnimatePresence mode="wait">
             <motion.div key={sel} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
-              className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-hi p-4">
+              className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-md bg-hi p-4">
               <div>
                 <p className="text-xs uppercase tracking-wider text-muted">{t("Last result")} · {lang === "ar" ? POINTS[sel].labelAr : POINTS[sel].label}</p>
                 {lc ? (
@@ -124,7 +124,7 @@ export function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
         </div>
 
         {vh.length > 0 && (
-          <div className="glass p-5 md:p-6" style={{ borderRadius: 20 }}>
+          <div className="glass p-5 md:p-6" style={{ borderRadius: 8 }}>
             <h3 className="mb-4 font-display text-lg font-semibold">{t("Failure management")}</h3>
             <div className="space-y-6">{vh.map((h) => <HoldChain key={h.id} hold={h} />)}</div>
           </div>
@@ -132,11 +132,11 @@ export function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
       </div>
 
       <div className="space-y-5">
-        <div className="glass p-5" style={{ borderRadius: 20 }}>
+        <div className="glass p-5" style={{ borderRadius: 8 }}>
           <h3 className="mb-3 flex items-center gap-2 font-display text-lg font-semibold"><Nfc size={18} className="text-teal" /> {t("NFC tag")}</h3>
           <ul className="space-y-2 text-sm">
             {pts.map((p) => (
-              <li key={p} className="flex items-center gap-3 rounded-xl bg-hi px-3 py-2">
+              <li key={p} className="flex items-center gap-3 rounded-md bg-hi px-3 py-2">
                 <QrCode size={18} className="text-muted" />
                 <span className="flex-1 text-muted">{POINTS[p].label}</span>
                 <span className="font-mono text-xs">{vehicle.tags[p]}</span>
@@ -145,7 +145,7 @@ export function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
           </ul>
           <p className="mt-3 flex items-center gap-1.5 text-xs text-faint"><Radio size={12} /> Plate {vehicle.plate} · Demo data</p>
         </div>
-        <div className="glass p-5" style={{ borderRadius: 20 }}>
+        <div className="glass p-5" style={{ borderRadius: 8 }}>
           <h3 className="mb-4 font-display text-lg font-semibold">{t("History")}</h3>
           <ol className="relative max-h-[28rem] space-y-3 overflow-y-auto ps-5 pe-1">
             <span className="absolute bottom-2 start-[0.45rem] top-2 w-px bg-hair-strong" />
@@ -198,7 +198,7 @@ export function LocationDetail({ location }: { location: Location }) {
         {list.map((v) => {
           const s = vehicleStatus(v, holds, due, checks);
           return (
-            <Link key={v.id} href={`/fleet?open=${v.id}`} className="flex items-center gap-3 rounded-2xl bg-hi px-4 py-3 hover:bg-teal/10">
+            <Link key={v.id} href={`/fleet?open=${v.id}`} className="flex items-center gap-3 rounded-md bg-hi px-4 py-3 hover:bg-teal/10">
               <span className="font-mono text-sm font-semibold">{v.id}</span>
               <span className="flex-1 text-xs text-muted">{v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")}</span>
               <StatusPill s={s} />

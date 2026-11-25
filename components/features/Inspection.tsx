@@ -188,7 +188,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion, onDon
               <div className="flex flex-wrap items-center gap-4">
                 <div className="relative w-40"><input inputMode="decimal" className={cn(inputCls, "pe-14 font-mono text-lg")} value={dp} onChange={(e) => setDp(e.target.value)} aria-label="Differential pressure in bar" /><span className="absolute end-4 top-1/2 -translate-y-1/2 text-sm text-muted">bar</span></div>
                 <div className="min-w-48 flex-1">
-                  <div className="relative h-3 rounded-full bg-gradient-to-r from-pending/60 via-pass/70 to-pending/60">
+                  <div className="relative h-3 rounded-full bg-hair">
                     <motion.span className="absolute top-1/2 size-5 -translate-y-1/2 rounded-full border-2 border-white bg-fg shadow" animate={{ left: `${Math.min(100, Math.max(0, (dpNum / 1.5) * 100))}%` }} transition={spring} />
                   </div>
                   <p className={cn("mt-2 text-xs font-semibold", dpIn ? "text-pass-fg" : "text-pending-fg")}>{dpIn ? "✓ In range" : "Outside placeholder range: confirm per procedure"}</p>

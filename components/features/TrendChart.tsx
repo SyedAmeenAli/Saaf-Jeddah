@@ -12,7 +12,7 @@ export default function TrendChart({ data, height = 200, bars = false }: P) {
       <ResponsiveContainer width="100%" height="100%">
         {bars ? (
           <BarChart {...common}>
-            <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2dd4bf" /><stop offset="1" stopColor="#3b82f6" /></linearGradient></defs>
+            <defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#36c7b3" /><stop offset="1" stopColor="#36c7b3" /></linearGradient></defs>
             <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
             <XAxis dataKey="day" {...axis} /><YAxis {...axis} allowDecimals={false} />{tip}
             <Bar dataKey="pass" stackId="a" fill="url(#bg)" radius={[0, 0, 4, 4]} animationDuration={900} />
@@ -21,8 +21,8 @@ export default function TrendChart({ data, height = 200, bars = false }: P) {
         ) : (
           <AreaChart {...common}>
             <defs>
-              <linearGradient id="gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#2dd4bf" stopOpacity={0.35} /><stop offset="1" stopColor="#2dd4bf" stopOpacity={0} /></linearGradient>
-              <linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ef4444" stopOpacity={0.35} /><stop offset="1" stopColor="#ef4444" stopOpacity={0} /></linearGradient>
+              <linearGradient id="gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#36c7b3" stopOpacity={0.14} /><stop offset="1" stopColor="#36c7b3" stopOpacity={0} /></linearGradient>
+              <linearGradient id="gf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ef4444" stopOpacity={0.14} /><stop offset="1" stopColor="#ef4444" stopOpacity={0} /></linearGradient>
             </defs>
             <CartesianGrid stroke="rgba(255,255,255,0.06)" vertical={false} />
             <XAxis dataKey="day" {...axis} /><YAxis {...axis} allowDecimals={false} />{tip}

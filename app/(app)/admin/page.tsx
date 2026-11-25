@@ -39,7 +39,7 @@ export default function AdminPage() {
         {tabs.map(([k, l]) => {
           const I = ICON[k];
           return (
-            <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={cn("glass flex flex-col items-start gap-3 p-4 text-start transition-colors", tab === k ? "!border-teal bg-teal/10" : "hover:bg-white/10")} style={{ borderRadius: 16 }}>
+            <button key={k} role="tab" aria-selected={tab === k} onClick={() => setTab(k)} className={cn("glass flex flex-col items-start gap-3 p-4 text-start transition-colors", tab === k ? "!border-teal bg-teal/10" : "hover:bg-hi")} style={{ borderRadius: 8 }}>
               <I size={22} strokeWidth={1.5} className={tab === k ? "text-teal" : "text-muted"} />
               <span className="text-sm font-semibold">{l}</span>
             </button>
@@ -47,10 +47,10 @@ export default function AdminPage() {
         })}
       </div>
 
-      <div className="glass p-5 md:p-6" style={{ borderRadius: 20 }}>
+      <div className="glass p-5 md:p-6" style={{ borderRadius: 8 }}>
         {tab === "users" && (
           <div className="overflow-x-auto"><table className="tbl min-w-[32rem]"><thead><tr><th className="py-2 text-start">ID</th><th className="text-start">Name</th><th className="text-start">{t("Role")}</th><th className="text-start">{t("Location")}</th></tr></thead>
-            <tbody>{employees.map((e) => <tr key={e.id} className="border-t border-hair cursor-pointer hover:bg-white/5" tabIndex={0} onClick={() => router.push(`/users?open=${e.id}`)} onKeyDown={(ev) => { if (ev.key === "Enter") router.push(`/users?open=${e.id}`); }}><td className="py-2.5 font-mono">{e.id}</td><td>{lang === "ar" ? e.nameAr : e.name}</td>
+            <tbody>{employees.map((e) => <tr key={e.id} className="border-t border-hair cursor-pointer hover:bg-hi" tabIndex={0} onClick={() => router.push(`/users?open=${e.id}`)} onKeyDown={(ev) => { if (ev.key === "Enter") router.push(`/users?open=${e.id}`); }}><td className="py-2.5 font-mono">{e.id}</td><td>{lang === "ar" ? e.nameAr : e.name}</td>
               <td><StatusBadge kind={e.role === "admin" ? "info" : e.role === "supervisor" ? "pending" : e.role === "manager" ? "locked" : "pass"}>{ROLE_META[e.role].label}</StatusBadge></td><td className="font-mono text-xs">{e.locationId}</td></tr>)}</tbody></table>
             <div className="mt-3 flex items-center justify-between"><p className="flex items-center gap-2 text-xs text-muted"><Users size={13} /> {employees.length} users · Demo data</p><Button onClick={() => router.push("/users")}>Manage users</Button></div></div>
         )}

@@ -33,8 +33,8 @@ export default function Login() {
           <Link href="/reset-password" className="text-teal hover:underline">Forgot password?</Link>
         </div>
         <button type="submit" className="cta flex h-12 w-full items-center justify-center gap-2 rounded-xl">Sign In <ArrowRight size={18} className="rtl:rotate-180" /></button>
-        <div className="flex items-center gap-3 text-xs text-faint"><span className="h-px flex-1 bg-white/10" />or<span className="h-px flex-1 bg-white/10" /></div>
-        <button type="button" onClick={() => router.push("/role")} className="glass flex h-12 w-full items-center justify-center text-sm font-medium hover:bg-white/10" style={{ borderRadius: 12 }}>Use Company SSO (demo)</button>
+        <div className="flex items-center gap-3 text-xs text-faint"><span className="h-px flex-1 bg-hair-strong" />or<span className="h-px flex-1 bg-hair-strong" /></div>
+        <button type="button" onClick={() => router.push("/role")} className="glass flex h-12 w-full items-center justify-center text-sm font-medium hover:bg-hi" style={{ borderRadius: 6 }}>Use Company SSO (demo)</button>
         <p className="text-center text-xs text-faint">Demo: any credentials work. Pick a role on the next screen.</p>
       </form>
     </AuthShell>

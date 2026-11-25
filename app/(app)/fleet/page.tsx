@@ -43,7 +43,7 @@ export default function FleetPage() {
         sub={`${rows.length} / ${vehicles.length} · ${t("Refuellers")} + ${t("Hydrant dispensers")} · ${t("Demo data")}`}
         actions={can("admin") ? <Button variant="primary" onClick={() => setModal(true)}><Plus size={18} /> {t("Add vehicle")}</Button> : <span className="text-xs text-muted">{t("Read-only for this role")}</span>}
       />
-      <div className="glass mb-5 flex flex-wrap items-center gap-2 p-3" style={{ borderRadius: 24 }}>
+      <div className="glass mb-5 flex flex-wrap items-center gap-2 p-3" style={{ borderRadius: 8 }}>
         <SearchField value={q} onChange={setQ} placeholder={`${t("Search")} REF-014…`} />
         <div className="no-scrollbar flex gap-2 overflow-x-auto">
           <Chip active={type === "all"} onClick={() => setType("all")}>{t("All")} ({vehicles.length})</Chip>
@@ -71,7 +71,7 @@ export default function FleetPage() {
                 card={grid ? (
                   <div className="flex h-full flex-col gap-3 p-4">
                     <div className="flex items-center justify-between"><span className="font-display text-lg font-semibold">{v.id}</span><StatusPill s={s} /></div>
-                    <div className="rounded-2xl bg-gradient-to-b from-hi to-transparent px-3 pt-2">{v.type === "refueller" ? <TruckSvg className="h-24 w-full" /> : <DispenserSvg className="h-24 w-full" />}</div>
+                    <div className="rounded-md border border-hair bg-bg px-3 pt-2">{v.type === "refueller" ? <TruckSvg className="h-24 w-full" /> : <DispenserSvg className="h-24 w-full" />}</div>
                     {s === "hold" && <HoldBanner vehicleId={v.id} compact />}
                     <div className="mt-auto flex items-center justify-between text-xs text-muted"><span>{v.locationId} · {v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")}</span><span>{last ? ago(last.ts) : "–"}</span></div>
                   </div>

@@ -23,13 +23,13 @@ export default function TrainingPage() {
       <div className="mb-5 grid grid-cols-3 gap-3">
         {[[t("In date"), n.in, "pass", ShieldCheck], [t("Expiring"), n.exp, "pending", Clock], [t("Expired"), n.out, "fail", ShieldAlert]].map(([l, v, k, I]) => {
           const Icon = I as typeof ShieldCheck;
-          return <div key={l as string} className="glass flex items-center gap-3 p-4" style={{ borderRadius: 24 }}><Icon size={22} className={k === "pass" ? "text-pass-fg" : k === "pending" ? "text-pending-fg" : "text-fail-fg"} /><div><p className="font-display text-3xl font-semibold">{v as number}</p><p className="text-xs text-muted">{l as string}</p></div></div>;
+          return <div key={l as string} className="glass flex items-center gap-3 p-4" style={{ borderRadius: 8 }}><Icon size={22} className={k === "pass" ? "text-pass-fg" : k === "pending" ? "text-pending-fg" : "text-fail-fg"} /><div><p className="font-display text-3xl font-semibold">{v as number}</p><p className="text-xs text-muted">{l as string}</p></div></div>;
         })}
       </div>
       <Stagger className="glass divide-y divide-hair overflow-hidden" >
         {rows.map(({ e, d, st }) => (
           <Rise key={e.id}>
-            <Link href={`/users?open=${e.id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-3.5 hover:bg-white/5">
+            <Link href={`/users?open=${e.id}`} className="flex flex-wrap items-center gap-x-4 gap-y-1 px-5 py-3.5 hover:bg-hi">
               <span className="w-24 font-mono text-sm font-semibold">{e.id}</span>
               <span className="min-w-40 flex-1 text-sm">{lang === "ar" ? e.nameAr : e.name} <span className="text-xs text-muted">· {e.locationId}</span></span>
               <span className="text-xs text-muted">Qualification valid until {fmtDate(e.certExpiry)}</span>

@@ -9,7 +9,7 @@ import { Button, Card, Chip, PageHeader, Switch, inputCls } from "@/components/u
 function Row({ icon: I, title, desc, children }: { icon: typeof Bell; title: string; desc?: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-4 border-t border-hair py-3.5 first:border-0 first:pt-0 last:pb-0">
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white/5 text-teal"><I size={18} strokeWidth={1.5} /></span>
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-hi text-teal"><I size={18} strokeWidth={1.5} /></span>
       <div className="min-w-0 flex-1"><p className="text-sm font-medium">{title}</p>{desc && <p className="text-xs text-muted">{desc}</p>}</div>
       {children}
     </div>

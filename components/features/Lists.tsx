@@ -65,7 +65,7 @@ export function ActivityList({ entries, full = false }: { entries: AuditEntry[];
         const I = ICON[a.action] ?? FileText;
         const e = employees.find((x) => x.id === a.actor);
         return (
-          <li key={a.id}><Link href={targetHref(a.target)} className="flex gap-3 rounded-xl px-2 py-2 hover:bg-white/5">
+          <li key={a.id}><Link href={targetHref(a.target)} className="flex gap-3 rounded-xl px-2 py-2 hover:bg-hi">
             <span className={cn("mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full", TONE[a.action])}><I size={15} /></span>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm"><span className="font-semibold capitalize">{a.action}</span> <span className="text-muted">· {a.target}</span></p>

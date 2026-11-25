@@ -103,10 +103,9 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
             e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
             e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
           }}
-          whileHover={{ y: -4 }}
           transition={spring}
-          className="glass sheen hover-glow h-full cursor-pointer text-start"
-          style={{ borderRadius: 20 }}
+          className="glass hover-glow h-full cursor-pointer text-start"
+          style={{ borderRadius: 8 }}
         >
           {card}
         </motion.div>
@@ -117,7 +116,7 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
           {isOpen && (
             <div className="fixed inset-0 z-[70]">
               <motion.div
-                className="absolute inset-0 bg-black/55 backdrop-blur-md"
+                className="absolute inset-0 bg-black/70"
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 onClick={close}
               />
@@ -131,7 +130,7 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
                 tabIndex={-1}
                 transition={spring}
                 className="glass glass-strong absolute inset-x-0 bottom-0 top-6 flex flex-col overflow-hidden outline-none md:inset-6 lg:inset-x-[6%] lg:inset-y-6"
-                style={{ borderRadius: 20 }}
+                style={{ borderRadius: 8 }}
               >
                 <motion.div
                   className="flex shrink-0 cursor-grab touch-none flex-col items-center pt-2 md:hidden"
@@ -145,11 +144,11 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
                   className="flex min-h-0 flex-1 flex-col"
                 >
                   <div className="flex shrink-0 items-center gap-3 px-4 pb-2 pt-3 md:px-6 md:pt-5">
-                    <button onClick={close} className="glass inline-flex h-11 items-center gap-2 rounded-full ps-3 pe-4 text-sm font-semibold hover:bg-hi" style={{ borderRadius: 9999 }}>
-                      <ArrowLeft size={18} className="rtl:rotate-180" />
+                    <button onClick={close} className="glass inline-flex h-9 items-center gap-2 rounded-md ps-2.5 pe-3.5 text-[13px] font-medium hover:bg-hi" style={{ borderRadius: 6 }}>
+                      <ArrowLeft size={16} className="rtl:rotate-180" />
                       {t("Back")}
                     </button>
-                    <h2 id={titleId} className="min-w-0 flex-1 truncate font-display text-lg font-semibold md:text-xl">{title}</h2>
+                    <h2 id={titleId} className="min-w-0 flex-1 truncate font-display text-base font-semibold md:text-lg">{title}</h2>
                     {headerRight}
                   </div>
                   <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-8 md:px-6">{detail()}</div>

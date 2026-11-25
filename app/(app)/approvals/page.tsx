@@ -24,7 +24,7 @@ function Row({ c, onOpen, canSwipe }: { c: C; onOpen: () => void; canSwipe: bool
       <motion.div className="absolute inset-0 flex items-center justify-start rounded-3xl bg-pass/30 ps-6 text-pass-fg" style={{ opacity: bgA }} aria-hidden="true"><Check /> {t("Approve")}</motion.div>
       <motion.div className="absolute inset-0 flex items-center justify-end rounded-3xl bg-pending/30 pe-6 text-pending-fg" style={{ opacity: bgR }} aria-hidden="true">{t("Return")} <Undo2 className="ms-2" /></motion.div>
       <motion.button
-        drag={canSwipe ? "x" : false} dragConstraints={{ left: 0, right: 0 }} dragElastic={0.5} style={{ x, borderRadius: 24 }}
+        drag={canSwipe ? "x" : false} dragConstraints={{ left: 0, right: 0 }} dragElastic={0.5} style={{ x, borderRadius: 8 }}
         onDragEnd={(_, i) => { if (i.offset.x > 90) setQuick("approve"); else if (i.offset.x < -90) setQuick("return"); }}
         onClick={onOpen}
         className="glass relative flex w-full flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3.5 text-start"
@@ -65,7 +65,7 @@ export default function ApprovalsPage() {
     <>
       <PageHeader title={t("Approval inbox")} sub={`${awaiting.length} ${t("Awaiting supervisor")} · swipe right to approve, left to return, or tap to open`} actions={!can("verify") ? <StatusBadge kind="info">{t("Read-only for this role")}</StatusBadge> : undefined} />
       {awaiting.length === 0 ? (
-        <div className="glass flex flex-col items-center p-10" style={{ borderRadius: 20 }}><Empty title="Inbox zero" sub="Every submitted check has been verified." /></div>
+        <div className="glass flex flex-col items-center p-10" style={{ borderRadius: 8 }}><Empty title="Inbox zero" sub="Every submitted check has been verified." /></div>
       ) : (
         <ul className="space-y-3">{awaiting.map((c) => <Row key={c.id} c={c} canSwipe={can("verify")} onOpen={() => setOpen(c.id)} />)}</ul>
       )}
@@ -74,7 +74,7 @@ export default function ApprovalsPage() {
       <ul className="space-y-2">
         {locked.map((c) => (
           <li key={c.id}>
-            <button onClick={() => setOpen(c.id)} className="glass flex w-full flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3 text-start" style={{ borderRadius: 20 }}>
+            <button onClick={() => setOpen(c.id)} className="glass flex w-full flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3 text-start" style={{ borderRadius: 8 }}>
               <Lock size={14} className="text-muted" />
               <span className="min-w-24 font-mono text-sm font-semibold">{c.vehicleId}</span>
               <span className="flex-1 text-sm text-muted">{POINTS[c.point].label} · {c.sampleId}</span>

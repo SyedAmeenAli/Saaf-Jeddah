@@ -1,6 +1,6 @@
 "use client";
 import { forwardRef, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
-import { motion, useMotionValue, useSpring, animate, AnimatePresence, type HTMLMotionProps } from "framer-motion";
+import { motion, animate, AnimatePresence, type HTMLMotionProps } from "framer-motion";
 import { createPortal } from "react-dom";
 import { Check, Clock, X, Lock, Search, X as XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -9,12 +9,12 @@ import { useT } from "@/lib/hooks";
 
 /* ---------- Card with cursor-following sheen ---------- */
 export const GlassCard = forwardRef<HTMLDivElement, HTMLMotionProps<"div"> & { lift?: boolean; sheen?: boolean }>(function GlassCard(
-  { className, lift = false, sheen = true, onPointerMove, style, ...p }, ref,
+  { className, lift = false, sheen = false, onPointerMove, style, ...p }, ref,
 ) {
   return (
     <motion.div
       ref={ref}
-      whileHover={lift ? { y: -4 } : undefined}
+      
       transition={spring}
       onPointerMove={(e) => {
         const r = e.currentTarget.getBoundingClientRect();
@@ -23,7 +23,7 @@ export const GlassCard = forwardRef<HTMLDivElement, HTMLMotionProps<"div"> & { l
         onPointerMove?.(e);
       }}
       className={cn("glass", sheen && "sheen", lift && "hover-glow", className)}
-      style={{ borderRadius: 20, ...style }}
+      style={{ borderRadius: 8, ...style }}
       {...p}
     />
   );
@@ -36,26 +36,18 @@ type BtnProps = Omit<HTMLMotionProps<"button">, "children"> & {
   children?: React.ReactNode;
 };
 export function Button({ variant = "glass", size = "md", className, children, ...p }: BtnProps) {
-  const x = useMotionValue(0), y = useMotionValue(0);
-  const sx = useSpring(x, spring), sy = useSpring(y, spring);
-  const sizes = { sm: "h-9 px-3 text-sm", md: "h-11 px-5 text-sm", lg: "h-12 px-7 text-sm" };
+  const sizes = { sm: "h-8 px-3 text-[13px]", md: "h-10 px-4 text-sm", lg: "h-11 px-6 text-sm" };
   const variants = {
     primary: "cta",
-    glass: "glass hover:bg-white/10",
+    glass: "glass hover:bg-hi hover:border-hair-strong",
     ghost: "hover:bg-hi text-muted hover:text-fg",
     danger: "bg-fail text-white",
   };
   return (
     <motion.button
-      style={{ x: sx, y: sy, borderRadius: 12 }}
-      onPointerMove={(e) => {
-        const r = e.currentTarget.getBoundingClientRect();
-        x.set(((e.clientX - r.left) / r.width - 0.5) * 6);
-        y.set(((e.clientY - r.top) / r.height - 0.5) * 6);
-      }}
-      onPointerLeave={() => { x.set(0); y.set(0); }}
-      whileTap={{ scale: 0.97 }}
-      className={cn("inline-flex min-h-11 items-center justify-center gap-2 rounded-xl font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-45", sizes[size], variants[variant], className)}
+      style={{ borderRadius: 6 }}
+      whileTap={{ scale: 0.98 }}
+      className={cn("inline-flex min-h-11 items-center justify-center gap-2 rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-45", sizes[size], variants[variant], className)}
       {...p}
     >
       {children}
@@ -71,8 +63,8 @@ export function Chip({ active, children, onClick, className, icon }: { active?: 
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "inline-flex min-h-10 items-center gap-1.5 whitespace-nowrap rounded-full border px-4 text-sm font-medium transition-all",
-        active ? "border-teal bg-teal/20 text-fg shadow-[0_0_20px_-6px_var(--teal)]" : "border-hair bg-hi text-muted hover:text-fg",
+        "inline-flex h-8 items-center gap-1.5 whitespace-nowrap rounded-md border px-3 text-[13px] font-medium transition-colors",
+        active ? "border-teal/70 bg-teal/10 text-teal" : "border-hair bg-transparent text-muted hover:border-hair-strong hover:text-fg",
         className,
       )}
     >
@@ -85,17 +77,17 @@ export function Chip({ active, children, onClick, className, icon }: { active?: 
 /* ---------- Status badge: always colour + icon ---------- */
 export type StatusKind = "pass" | "fail" | "pending" | "info" | "locked";
 const SK = {
-  pass: { c: "text-pass-fg bg-pass/15 border-pass/40", I: Check },
-  fail: { c: "text-fail-fg bg-fail/15 border-fail/40", I: X },
-  pending: { c: "text-pending-fg bg-pending/15 border-pending/40", I: Clock },
-  info: { c: "text-info-fg bg-info/15 border-info/40", I: Clock },
+  pass: { c: "text-pass-fg bg-pass/10 border-pass/30", I: Check },
+  fail: { c: "text-fail-fg bg-fail/10 border-fail/35", I: X },
+  pending: { c: "text-pending-fg bg-pending/10 border-pending/30", I: Clock },
+  info: { c: "text-info-fg bg-info/10 border-info/30", I: Clock },
   locked: { c: "text-fg bg-hi border-hair-strong", I: Lock },
 };
 export function StatusBadge({ kind, children, className }: { kind: StatusKind; children: React.ReactNode; className?: string }) {
   const { c, I } = SK[kind];
   return (
-    <span className={cn("inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold", c, className)}>
-      <I size={12} strokeWidth={2.5} aria-hidden="true" />
+    <span className={cn("inline-flex items-center gap-1 rounded-[4px] border px-1.5 py-px font-mono text-[11px] font-medium uppercase tracking-wide", c, className)}>
+      <I size={11} strokeWidth={2.5} aria-hidden="true" />
       {children}
     </span>
   );
@@ -112,7 +104,7 @@ export function CountUp({ value, decimals = 0, suffix = "", className }: { value
 }
 
 /* ---------- Progress ring ---------- */
-export function Ring({ value, size = 160, stroke = 14, children, color = "url(#ringg)" }: { value: number; size?: number; stroke?: number; children?: React.ReactNode; color?: string }) {
+export function Ring({ value, size = 160, stroke = 14, children, color = "var(--teal)" }: { value: number; size?: number; stroke?: number; children?: React.ReactNode; color?: string }) {
   const r = (size - stroke) / 2, c = 2 * Math.PI * r;
   return (
     <div className="relative" style={{ width: size, height: size }}>
@@ -123,9 +115,9 @@ export function Ring({ value, size = 160, stroke = 14, children, color = "url(#r
             <stop offset="1" stopColor="#3b82f6" />
           </linearGradient>
         </defs>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--hair-strong)" strokeWidth={stroke} opacity=".5" />
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--hair-strong)" strokeWidth={stroke} />
         <motion.circle
-          cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="round"
+          cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke} strokeLinecap="butt"
           strokeDasharray={c}
           initial={{ strokeDashoffset: c }}
           animate={{ strokeDashoffset: c * (1 - Math.min(1, Math.max(0, value))) }}
@@ -142,7 +134,7 @@ export function PageHeader({ title, sub, actions, visible = false }: { title: st
   return (
     <div className={cn("mb-5 flex flex-wrap items-end justify-between gap-4", !visible && !actions && "lg:hidden")}>
       <div className={cn(!visible && "lg:sr-only")}>
-        <h1 className="text-[28px] font-semibold leading-8 tracking-tight">{title}</h1>
+        <h1 className="text-[22px] font-semibold leading-7 tracking-tight">{title}</h1>
         {sub && <p className="mt-1 max-w-2xl text-sm text-muted">{sub}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -190,7 +182,7 @@ export function Modal({ open, onClose, title, children, sheet = false, wide = fa
       <AnimatePresence>
         {open && (
           <div className={cn("fixed inset-0 z-[80] flex justify-center", sheet ? "items-end md:items-center" : "items-center", "p-0 md:p-6")}>
-            <motion.div className="absolute inset-0 bg-black/50 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
+            <motion.div className="absolute inset-0 bg-black/70" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
             <motion.div
               ref={ref} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby={id}
               initial={sheet ? { y: "100%" } : { opacity: 0, scale: 0.94, y: 12 }}
@@ -198,7 +190,7 @@ export function Modal({ open, onClose, title, children, sheet = false, wide = fa
               exit={sheet ? { y: "100%" } : { opacity: 0, scale: 0.96 }}
               transition={spring}
               className={cn("glass glass-strong relative flex max-h-[92dvh] w-full flex-col overflow-hidden outline-none", wide ? "max-w-3xl" : "max-w-lg", sheet && "rounded-b-none md:rounded-b-[28px]")}
-              style={{ borderRadius: 20 }}
+              style={{ borderRadius: 8 }}
             >
               <div className="flex items-center justify-between gap-3 px-6 pb-3 pt-5">
                 <h2 id={id} className="text-xl font-semibold">{title}</h2>
@@ -217,11 +209,11 @@ export function Modal({ open, onClose, title, children, sheet = false, wide = fa
 }
 
 /* ---------- Form bits ---------- */
-export const inputCls = "h-12 w-full rounded-xl border border-hair-strong bg-white/5 px-4 text-sm text-fg placeholder:text-faint focus:border-teal focus:outline-none";
+export const inputCls = "h-11 w-full rounded-md border border-hair-strong bg-bg px-3.5 text-sm text-fg placeholder:text-faint focus:border-teal focus:outline-none";
 export function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-sm font-medium text-muted">{label}</span>
+      <span className="mb-1.5 block font-mono text-[11px] font-medium uppercase tracking-wider text-faint">{label}</span>
       {children}
       {hint && <span className="mt-1 block text-xs text-faint">{hint}</span>}
     </label>
@@ -240,10 +232,10 @@ export function Empty({ title, sub }: { title: string; sub?: string }) {
 /* ---------- Tabs: one pattern for every tabbed screen ---------- */
 export function Tabs<T extends string>({ tabs, value, onChange, className }: { tabs: readonly (readonly [T, string, number?])[]; value: T; onChange: (v: T) => void; className?: string }) {
   return (
-    <div className={cn("no-scrollbar mb-4 flex gap-1 overflow-x-auto rounded-xl bg-white/5 p-1", className)} role="tablist">
+    <div className={cn("no-scrollbar mb-4 flex gap-6 overflow-x-auto border-b border-hair", className)} role="tablist">
       {tabs.map(([k, l, n]) => (
         <button key={k} type="button" role="tab" aria-selected={value === k} onClick={() => onChange(k)}
-          className={cn("h-10 shrink-0 flex-1 rounded-lg px-4 text-sm font-medium transition-colors", value === k ? "bg-teal/20 text-teal" : "text-muted hover:text-fg")}>
+          className={cn("-mb-px h-10 shrink-0 border-b-2 text-sm font-medium transition-colors", value === k ? "border-teal text-fg" : "border-transparent text-muted hover:text-fg")}>
           {l}{n !== undefined ? ` (${n})` : ""}
         </button>
       ))}
@@ -254,10 +246,10 @@ export function Tabs<T extends string>({ tabs, value, onChange, className }: { t
 /* ---------- Card: titled glass section ---------- */
 export function Card({ title, action, children, className, pad = true }: { title?: React.ReactNode; action?: React.ReactNode; children: React.ReactNode; className?: string; pad?: boolean }) {
   return (
-    <section className={cn("glass", pad && "p-5", className)} style={{ borderRadius: 16 }}>
+    <section className={cn("glass", pad && "p-5", className)} style={{ borderRadius: 8 }}>
       {(title || action) && (
         <div className={cn("mb-3 flex items-center justify-between gap-3", !pad && "px-5 pt-5")}>
-          {title && <h2 className="text-base font-semibold">{title}</h2>}
+          {title && <h2 className="font-mono text-[11px] font-medium uppercase tracking-wider text-muted">{title}</h2>}
           {action}
         </div>
       )}
@@ -269,7 +261,7 @@ export function Card({ title, action, children, className, pad = true }: { title
 /* ---------- Search field ---------- */
 export function SearchField({ value, onChange, placeholder, label = "Search" }: { value: string; onChange: (v: string) => void; placeholder?: string; label?: string }) {
   return (
-    <label className="flex h-10 min-w-48 flex-1 items-center gap-2 rounded-xl bg-white/5 px-3.5">
+    <label className="flex h-9 min-w-48 flex-1 items-center gap-2 rounded-md border border-hair bg-bg px-3">
       <Search size={16} strokeWidth={1.5} className="text-muted" />
       <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} aria-label={label} className="w-full bg-transparent text-sm placeholder:text-faint focus:outline-none" style={{ boxShadow: "none" }} />
     </label>
@@ -280,7 +272,7 @@ export function SearchField({ value, onChange, placeholder, label = "Search" }: 
 export function Switch({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
     <button type="button" role="switch" aria-checked={checked} aria-label={label} onClick={() => onChange(!checked)}
-      className={cn("relative h-7 w-12 shrink-0 rounded-full border transition-colors", checked ? "border-teal bg-teal/30" : "border-hair-strong bg-white/5")}>
+      className={cn("relative h-7 w-12 shrink-0 rounded-full border transition-colors", checked ? "border-teal bg-teal/30" : "border-hair-strong bg-bg")}>
       <span className={cn("absolute top-0.5 size-5 rounded-full bg-white shadow transition-all", checked ? "start-6" : "start-0.5")} />
     </button>
   );

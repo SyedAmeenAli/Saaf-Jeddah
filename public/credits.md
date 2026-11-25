@@ -8,7 +8,7 @@ photographer, source URL and licence, and confirm the licence allows commercial 
 image with a visible airline logo or an identifiable person.
 
 ## Fonts (via next/font, SIL Open Font License)
-Inter, Sora, IBM Plex Sans Arabic.
+Inter, IBM Plex, IBM Plex Sans Arabic.
 
 ## Libraries
 Next.js, React, Tailwind CSS, Framer Motion, Zustand, lucide-react, Recharts, jsPDF, jspdf-autotable, SheetJS (xlsx).

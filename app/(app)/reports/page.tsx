@@ -47,17 +47,17 @@ export default function ReportsPage() {
 
       <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
         {[["Total samples", rows.length, ""], [t("Passed"), rows.length - failed, "text-pass-fg"], [t("Failed"), failed, "text-fail-fg"], [t("Pass rate"), rows.length ? `${(((rows.length - failed) / rows.length) * 100).toFixed(1)}%` : "–", ""]].map(([l, v, c]) => (
-          <div key={l as string} className="glass p-4" style={{ borderRadius: 16 }}><p className="text-xs text-muted">{l}</p><p className={cn("text-[28px] font-semibold leading-9 tnum", c as string)}>{v}</p></div>
+          <div key={l as string} className="glass p-4" style={{ borderRadius: 8 }}><p className="text-xs text-muted">{l}</p><p className={cn("text-[28px] font-semibold leading-9 tnum", c as string)}>{v}</p></div>
         ))}
       </div>
 
-      <div className="glass mb-8 overflow-hidden p-5" style={{ borderRadius: 16 }}>
+      <div className="glass mb-8 overflow-hidden p-5" style={{ borderRadius: 8 }}>
         {tab === "trends" ? <TrendChart data={tr} height={260} bars /> : tab === "compliance" ? (
           <table className="tbl"><thead><tr><th>Location</th><th className="!text-end">Samples</th><th className="!text-end">Failed</th><th className="!text-end">Compliance</th></tr></thead>
             <tbody>{locations.map((l) => { const r = rows.filter((c) => c.locationId === l.id), f = r.filter((c) => c.result === "fail").length; return <tr key={l.id} className="border-t border-hair"><td className="py-2.5">{lang === "ar" ? l.nameAr : l.name}</td><td className="text-end tnum">{r.length}</td><td className="text-end tnum">{f}</td><td className="text-end tnum">{r.length ? (((r.length - f) / r.length) * 100).toFixed(1) : "–"}%</td></tr>; })}</tbody></table>
         ) : (
           <>
-          <ul className="space-y-2 md:hidden">{shown.map((c) => (<li key={c.id} className="rounded-xl bg-white/5 p-3.5"><div className="flex items-center justify-between"><span className="font-mono text-sm font-semibold">{c.vehicleId}</span><StatusBadge kind={c.result === "pass" ? "pass" : "fail"}>{c.result === "pass" ? t("Pass") : t("Fail")}</StatusBadge></div><p className="mt-1 text-sm">{POINTS[c.point].label}</p><p className="mt-0.5 text-xs text-muted">{fmtDT(c.ts)} · {c.employeeId}</p><p className="mt-1.5 flex items-center gap-3 text-xs text-muted">VAC {mark(c.clarity === "fail" || c.sediment === "fail" || c.freeWater === "fail" ? "fail" : "pass")} CWD {mark(c.cwd)}</p></li>))}</ul>
+          <ul className="space-y-2 md:hidden">{shown.map((c) => (<li key={c.id} className="rounded-xl bg-hi p-3.5"><div className="flex items-center justify-between"><span className="font-mono text-sm font-semibold">{c.vehicleId}</span><StatusBadge kind={c.result === "pass" ? "pass" : "fail"}>{c.result === "pass" ? t("Pass") : t("Fail")}</StatusBadge></div><p className="mt-1 text-sm">{POINTS[c.point].label}</p><p className="mt-0.5 text-xs text-muted">{fmtDT(c.ts)} · {c.employeeId}</p><p className="mt-1.5 flex items-center gap-3 text-xs text-muted">VAC {mark(c.clarity === "fail" || c.sediment === "fail" || c.freeWater === "fail" ? "fail" : "pass")} CWD {mark(c.cwd)}</p></li>))}</ul>
           <div className="hidden overflow-x-auto md:block"><table className="tbl min-w-[52rem]">
             <thead className="text-xs text-muted"><tr>{["Report ID", "Date & Time", "Vehicle", "Sampling Point", "VAC", "CWD", "Result", "Employee"].map((h) => <th key={h} className="pb-2 pe-3 text-start font-medium">{h}</th>)}</tr></thead>
             <tbody>{shown.map((c) => (
