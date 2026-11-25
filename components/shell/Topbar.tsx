@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Bell, CalendarDays, ChevronDown, ChevronRight, MapPin, Search, TriangleAlert, Clock, Info } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { useT } from "@/lib/hooks";
-import { NAV } from "./nav";
+import { NAV, ROLE_NAV } from "./nav";
 import { targetHref } from "@/lib/links";
 import { SyncPill } from "./Controls";
 import { SafaaLogo } from "./Brand";
@@ -18,7 +18,8 @@ function Title() {
   const pathname = usePathname();
   const sp = useSearchParams();
   const t = useT();
-  const nav = NAV.find((n) => pathname.startsWith(n.href));
+  const role = useStore((s) => s.role);
+  const nav = ROLE_NAV[role].find((n) => pathname.startsWith(n.href)) ?? NAV.find((n) => pathname.startsWith(n.href));
   const open = sp.get("open");
   return (
     <div className="min-w-0 leading-tight">

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { BookLock, Grid3x3, Lock, MapPin, Nfc, Plus, Truck, Users } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { useCan, useT } from "@/lib/hooks";
@@ -11,7 +11,8 @@ import { cn } from "@/lib/utils";
 const ICON = { users: Users, locations: MapPin, vehicles: Truck, tags: Nfc, matrix: Grid3x3, jig: BookLock } as const;
 type Tab = "users" | "locations" | "vehicles" | "tags" | "matrix" | "jig";
 
-export default function AdminPage() {
+export type AdminTab = Tab;
+export function AdminConsole({ only, title, sub }: { only?: Tab; title?: string; sub?: string }) {
   const t = useT();
   const can = useCan();
   const lang = useStore((s) => s.lang);
@@ -23,8 +24,9 @@ export default function AdminPage() {
   const addVehicle = useStore((s) => s.addVehicle);
   const toast = useStore((s) => s.toast);
   const router = useRouter();
-  const [tab, setTab] = useState<Tab>("users");
-  const [vid, setVid] = useState(vehicles[0]?.id ?? "REF-001");
+  const sp = useSearchParams();
+  const [tab, setTab] = useState<Tab>(only ?? "users");
+  const [vid, setVid] = useState(sp.get("v") && vehicles.some((x) => x.id === sp.get("v")) ? (sp.get("v") as string) : vehicles[0]?.id ?? "REF-001");
   const [pt, setPt] = useState<(typeof POINT_ORDER)[number]>("filter_sump");
   const [tag, setTag] = useState("");
   const [custom, setCustom] = useState<Record<string, boolean>>({});
@@ -34,8 +36,8 @@ export default function AdminPage() {
   const tabs: [Tab, string][] = [["users", t("Users & roles")], ["locations", t("Locations")], ["vehicles", t("Vehicles")], ["tags", t("Tag management")], ["matrix", t("Matrix editor")], ["jig", "Settings · JIG version"]];
   return (
     <>
-      <PageHeader title={t("Admin")} sub="Manage locations, vehicles, users, tags and the sampling matrix." actions={!editable ? <StatusBadge kind="info">{t("Read-only for this role")}</StatusBadge> : <StatusBadge kind="locked">Submitted records stay locked</StatusBadge>} />
-      <div className="mb-5 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6" role="tablist">
+      <PageHeader title={title ?? t("Admin")} sub={sub ?? "Manage locations, vehicles, users, tags and the sampling matrix."} actions={!editable ? <StatusBadge kind="info">{t("Read-only for this role")}</StatusBadge> : <StatusBadge kind="locked">Submitted records stay locked</StatusBadge>} />
+      <div className={cn("mb-5 grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6", only && "hidden")} role="tablist">
         {tabs.map(([k, l]) => {
           const I = ICON[k];
           return (
@@ -92,3 +94,6 @@ export default function AdminPage() {
     </>
   );
 }
+
+
+export default function AdminPage() { return <AdminConsole />; }

@@ -14,12 +14,12 @@ const STEPS = ["Record", "Action", "Retest", "Close"];
 
 function Stepper({ at }: { at: number }) {
   return (
-    <ol className="flex items-center gap-2 text-xs" aria-label="Failure management progress">
+    <ol className="flex flex-wrap items-center gap-x-2 gap-y-2 text-xs" aria-label="Failure management progress">
       {STEPS.map((s, i) => (
         <li key={s} className="flex items-center gap-2">
           <span className={cn("flex size-6 items-center justify-center rounded-full border text-[11px] font-semibold", i < at ? "border-teal bg-teal text-[#04121a]" : i === at ? "border-teal text-teal" : "border-white/20 text-faint")}>{i < at ? <Check size={12} strokeWidth={3} /> : i + 1}</span>
           <span className={i <= at ? "text-fg" : "text-faint"}>{s}</span>
-          {i < STEPS.length - 1 && <span className="h-px w-5 bg-white/15" />}
+          {i < STEPS.length - 1 && <span className="h-px w-3 bg-white/15 sm:w-5" />}
         </li>
       ))}
     </ol>
@@ -31,7 +31,7 @@ function Item({ h }: { h: Hold }) {
   const at = h.state === "hold" ? 1 : h.state === "resampled" ? 2 : 3;
   const fail = h.state !== "released";
   return (
-    <div className={cn("glass space-y-4 p-5", fail && "!border-fail/40 !bg-fail/[0.07]")} style={{ borderRadius: 16 }}>
+    <div className={cn("glass min-w-0 space-y-4 p-5", fail && "!border-fail/40 !bg-fail/[0.07]")} style={{ borderRadius: 16 }}>
       <div className="flex items-start gap-3">
         <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-full", fail ? "bg-fail/20 text-fail-fg" : "bg-pass/20 text-pass-fg")}>{fail ? <X size={22} strokeWidth={2} /> : <Check size={22} strokeWidth={2} />}</span>
         <div className="min-w-0 flex-1">

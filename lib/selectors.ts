@@ -50,3 +50,19 @@ export function vehicleStatus(v: Vehicle, holds: Hold[], due: DueItem[], checks:
   if (checks.some((c) => c.vehicleId === v.id && c.status === "awaiting")) return "pending";
   return "ok";
 }
+
+/** N-day pass/fail series. The seed holds 7 real days; older days are deterministic illustrative values. */
+export function trendN(checks: Check[], days: number) {
+  const now = Date.now();
+  const real = trend(checks);
+  const avg = real.reduce((a, r) => a + r.total, 0) / Math.max(1, real.length) || 80;
+  const failRate = real.reduce((a, r) => a + r.fail, 0) / Math.max(1, real.reduce((a, r) => a + r.total, 0)) || 0.03;
+  return Array.from({ length: days }, (_, k) => {
+    const i = days - 1 - k;
+    if (i < 7) { const r = real[6 - i]; return { ...r, day: days > 14 ? new Date(now - i * DAY).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }) : r.day }; }
+    const w = Math.sin(i * 1.7) * 0.12 + Math.cos(i * 0.6) * 0.08;
+    const total = Math.round(avg * (0.92 + w));
+    const fail = Math.max(0, Math.round(total * failRate * (1 + Math.sin(i * 2.3) * 0.8)));
+    return { day: new Date(now - i * DAY).toLocaleDateString("en-GB", { day: "2-digit", month: "short" }), pass: total - fail, fail, total };
+  });
+}

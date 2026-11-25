@@ -1,6 +1,6 @@
 "use client";
 import { forwardRef, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
-import { motion, useMotionValue, useSpring, animate, AnimatePresence, type HTMLMotionProps } from "framer-motion";
+import { motion, animate, AnimatePresence, type HTMLMotionProps } from "framer-motion";
 import { createPortal } from "react-dom";
 import { Check, Clock, X, Lock, Search, X as XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -29,37 +29,37 @@ export const GlassCard = forwardRef<HTMLDivElement, HTMLMotionProps<"div"> & { l
   );
 });
 
-/* ---------- Magnetic button ---------- */
+/* ---------- Button system: primary / secondary / ghost / danger ---------- */
 type BtnProps = Omit<HTMLMotionProps<"button">, "children"> & {
-  variant?: "primary" | "glass" | "ghost" | "danger";
+  variant?: "primary" | "glass" | "secondary" | "ghost" | "danger";
   size?: "md" | "lg" | "sm";
   children?: React.ReactNode;
 };
 export function Button({ variant = "glass", size = "md", className, children, ...p }: BtnProps) {
-  const x = useMotionValue(0), y = useMotionValue(0);
-  const sx = useSpring(x, spring), sy = useSpring(y, spring);
-  const sizes = { sm: "h-9 px-3 text-sm", md: "h-11 px-5 text-sm", lg: "h-12 px-7 text-sm" };
-  const variants = {
-    primary: "cta",
-    glass: "glass hover:bg-white/10",
-    ghost: "hover:bg-hi text-muted hover:text-fg",
-    danger: "bg-fail text-white",
-  };
+  const sizes = { sm: "h-9 px-3.5 text-[13px]", md: "h-11 px-5 text-sm", lg: "h-12 px-7 text-[15px]" };
+  const variants = { primary: "cta", glass: "btn-secondary", secondary: "btn-secondary", ghost: "btn-ghost", danger: "btn-danger" };
   return (
     <motion.button
-      style={{ x: sx, y: sy, borderRadius: 12 }}
-      onPointerMove={(e) => {
-        const r = e.currentTarget.getBoundingClientRect();
-        x.set(((e.clientX - r.left) / r.width - 0.5) * 6);
-        y.set(((e.clientY - r.top) / r.height - 0.5) * 6);
-      }}
-      onPointerLeave={() => { x.set(0); y.set(0); }}
+      style={{ borderRadius: 16 }}
       whileTap={{ scale: 0.97 }}
-      className={cn("inline-flex min-h-11 items-center justify-center gap-2 rounded-xl font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-45", sizes[size], variants[variant], className)}
+      transition={spring}
+      className={cn("inline-flex min-h-9 items-center justify-center gap-2 rounded-2xl font-medium disabled:cursor-not-allowed disabled:opacity-45", sizes[size], variants[variant], className)}
       {...p}
     >
       {children}
     </motion.button>
+  );
+}
+export const GlassButton = Button;
+
+/** Round glass icon button with a tooltip. */
+export function GlassIconButton({ label, children, onClick, className, size = 44, active }: { label: string; children: React.ReactNode; onClick?: () => void; className?: string; size?: number; active?: boolean }) {
+  return (
+    <button type="button" onClick={onClick} aria-label={label} title={label}
+      className={cn("group btn-secondary relative flex shrink-0 items-center justify-center rounded-2xl", active && "!border-teal/60 text-teal", className)} style={{ width: size, height: size, borderRadius: 14 }}>
+      {children}
+      <span role="tooltip" className="pointer-events-none absolute -bottom-9 left-1/2 z-50 -translate-x-1/2 whitespace-nowrap rounded-lg border border-hair bg-[#0b1928]/95 px-2 py-1 text-[11px] text-fg opacity-0 transition-opacity duration-150 group-hover:opacity-100 max-lg:hidden">{label}</span>
+    </button>
   );
 }
 
@@ -240,10 +240,10 @@ export function Empty({ title, sub }: { title: string; sub?: string }) {
 /* ---------- Tabs: one pattern for every tabbed screen ---------- */
 export function Tabs<T extends string>({ tabs, value, onChange, className }: { tabs: readonly (readonly [T, string, number?])[]; value: T; onChange: (v: T) => void; className?: string }) {
   return (
-    <div className={cn("no-scrollbar mb-4 flex gap-1 overflow-x-auto rounded-xl bg-white/5 p-1", className)} role="tablist">
+    <div className={cn("no-scrollbar mb-4 flex max-w-full gap-1 overflow-x-auto rounded-xl bg-white/5 p-1", className)} role="tablist">
       {tabs.map(([k, l, n]) => (
         <button key={k} type="button" role="tab" aria-selected={value === k} onClick={() => onChange(k)}
-          className={cn("h-10 shrink-0 flex-1 rounded-lg px-4 text-sm font-medium transition-colors", value === k ? "bg-teal/20 text-teal" : "text-muted hover:text-fg")}>
+          className={cn("h-10 shrink-0 flex-1 whitespace-nowrap rounded-lg px-4 text-sm font-medium transition-colors", value === k ? "bg-teal/20 text-teal" : "text-muted hover:text-fg")}>
           {l}{n !== undefined ? ` (${n})` : ""}
         </button>
       ))}
@@ -285,3 +285,52 @@ export function Switch({ checked, onChange, label }: { checked: boolean; onChang
     </button>
   );
 }
+
+
+/* ---------- Extra glass primitives ---------- */
+export function GlassInput(p: React.InputHTMLAttributes<HTMLInputElement> & { icon?: React.ReactNode }) {
+  const { icon, className, ...rest } = p;
+  return (
+    <div className={cn("glass-2 flex h-12 items-center gap-2 rounded-2xl border border-hair px-3.5 focus-within:border-teal/70", className)}>
+      {icon && <span className="text-muted">{icon}</span>}
+      <input {...rest} className="h-full w-full bg-transparent text-sm text-fg placeholder:text-faint focus:outline-none" style={{ boxShadow: "none" }} />
+    </div>
+  );
+}
+
+/** Frosted dropdown that replaces the native select popup. */
+export function GlassDropdown<T extends string>({ value, onChange, options, label, icon, className }: { value: T; onChange: (v: T) => void; options: readonly (readonly [T, string])[]; label: string; icon?: React.ReactNode; className?: string }) {
+  const [open, setOpen] = useState(false);
+  const cur = options.find((o) => o[0] === value);
+  return (
+    <div className={cn("relative", className)}>
+      <button type="button" aria-haspopup="listbox" aria-expanded={open} aria-label={label} onClick={() => setOpen((o) => !o)}
+        className="btn-secondary flex h-11 w-full items-center gap-2 rounded-2xl px-3.5 text-sm">
+        {icon}<span className="min-w-0 flex-1 truncate text-start">{cur?.[1] ?? label}</span><span className="text-faint">▾</span>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <>
+            <div className="fixed inset-0 z-[55]" onClick={() => setOpen(false)} />
+            <motion.ul role="listbox" initial={{ opacity: 0, y: -6, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -4 }} transition={spring}
+              className="glass glass-strong absolute inset-x-0 top-[calc(100%+6px)] z-[56] max-h-64 overflow-y-auto p-1.5" style={{ borderRadius: 16 }}>
+              {options.map(([k, l]) => (
+                <li key={k}><button type="button" role="option" aria-selected={k === value} onClick={() => { onChange(k); setOpen(false); }}
+                  className={cn("flex w-full items-center rounded-xl px-3 py-2.5 text-start text-sm hover:bg-white/10", k === value && "bg-teal/15 text-teal")}>{l}</button></li>
+              ))}
+            </motion.ul>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export function GlassToolbar({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <div className={cn("glass-2 flex flex-wrap items-center gap-2 rounded-2xl border border-hair p-2", className)}>{children}</div>;
+}
+export const GlassBadge = StatusBadge;
+export const GlassModal = Modal;
+export function GlassBottomSheet(p: Omit<React.ComponentProps<typeof Modal>, "sheet">) { return <Modal {...p} sheet />; }
+
+export function Skeleton({ className }: { className?: string }) { return <div className={cn("skeleton", className)} aria-hidden="true" />; }

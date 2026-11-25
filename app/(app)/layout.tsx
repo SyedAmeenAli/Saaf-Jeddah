@@ -10,6 +10,7 @@ import { MobileTabs } from "@/components/shell/MobileTabs";
 import { RouteProgress } from "@/components/shell/RouteProgress";
 import { CommandPalette } from "@/components/shell/CommandPalette";
 import { Loader } from "@/components/illustrations/Vehicles";
+import { ROLE_NAV, SHARED_ROUTES } from "@/components/shell/nav";
 import { spring } from "@/lib/motion";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
@@ -20,6 +21,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const desktop = useMedia("(min-width: 1024px)");
   const t = useT();
+  const role = useStore((s) => s.role);
+  const allowed = ROLE_NAV[role].some((n) => pathname === n.href || pathname.startsWith(n.href + "/")) || SHARED_ROUTES.some((h) => pathname === h || pathname.startsWith(h + "/"));
+
+  useEffect(() => {
+    if (ready && loggedIn && !allowed) router.replace("/dashboard");
+  }, [ready, loggedIn, allowed, router]);
 
   useEffect(() => {
     if (ready && !loggedIn) router.replace(`/login?next=${encodeURIComponent(pathname + window.location.search)}`);
@@ -31,7 +38,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pad = desktop ? (collapsed ? SIDEBAR_W_COLLAPSED : SIDEBAR_W) + 24 : 0;
 
   return (
-    <div className="min-h-dvh">
+    <div className="min-h-dvh overflow-x-clip">
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[200] focus:rounded-full focus:bg-teal focus:px-4 focus:py-2 focus:text-[#04121a]">Skip to content</a>
       <RouteProgress />
       <Sidebar />

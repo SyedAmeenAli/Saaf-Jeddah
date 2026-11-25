@@ -2,7 +2,7 @@
 import { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
 import { Check, Plus, X } from "lucide-react";
-import { useStore } from "@/lib/store";
+import { useStore, currentUserId } from "@/lib/store";
 import { useScoped } from "@/lib/selectors";
 import { useCan, useT } from "@/lib/hooks";
 import { POINTS } from "@/lib/domain";
@@ -18,7 +18,10 @@ const mark = (r: string) => r === "pass" ? <Check size={14} className="text-pass
 function Inner() {
   const t = useT();
   const can = useCan();
-  const { checks } = useScoped();
+  const { checks: scoped } = useScoped();
+  const role = useStore((s) => s.role);
+  const mine = role === "operator";
+  const checks = useMemo(() => (mine ? scoped.filter((c) => c.employeeId === currentUserId("operator")) : scoped), [scoped, mine]);
   const all = useStore((s) => s.checks);
   const [tab, setTab] = useState<(typeof TABS)[number][0]>("all");
   const [q, setQ] = useState("");
@@ -32,7 +35,7 @@ function Inner() {
 
   return (
     <>
-      <PageHeader title={t("Inspections")} sub="Every sampling record. Open one to review, approve, return or amend."
+      <PageHeader title={mine ? t("My Records") : t("Inspections")} sub={mine ? "Samples you have submitted and where each one stands." : "Every sampling record. Open one to review, approve, return or amend."}
         actions={(can("sample") || can("verify")) ? <Link href="/scan" className="cta inline-flex h-11 items-center gap-2 rounded-xl px-5 text-sm"><Plus size={16} /> New inspection</Link> : undefined} />
       <Tabs tabs={TABS.map(([k, l]) => [k, l, count(k)] as const)} value={tab} onChange={setTab} />
       <div className="mb-4 flex"><SearchField value={q} onChange={setQ} placeholder="Sample ID, vehicle or employee…" /></div>

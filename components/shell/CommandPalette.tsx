@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Search, Truck, MapPin, FileBarChart, CornerDownLeft, Compass } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { useT } from "@/lib/hooks";
-import { NAV } from "./nav";
+import { ROLE_NAV } from "./nav";
 import { REPORTS } from "@/lib/reports";
 import { cn, fuzzy } from "@/lib/utils";
 import { spring } from "@/lib/motion";
@@ -41,7 +41,7 @@ export function CommandPalette() {
   }, [open]);
 
   const all = useMemo<Item[]>(() => [
-    ...NAV.filter((n) => n.roles.includes(role)).map((n): Item => ({ id: n.href, label: t(n.label), sub: "Page", href: n.href, kind: "page" })),
+    ...ROLE_NAV[role].map((n): Item => ({ id: n.href, label: t(n.label), sub: "Page", href: n.href, kind: "page" })),
     ...locations.map((l): Item => ({ id: l.id, label: l.name, sub: "Location", href: `/locations?open=${l.id}`, kind: "location" })),
     ...vehicles.map((v): Item => ({ id: v.id, label: v.id, sub: `${v.type === "refueller" ? "Refueller" : "Hydrant dispenser"} · ${v.locationId}`, href: `/fleet?open=${v.id}`, kind: "vehicle" })),
     ...REPORTS.map((r): Item => ({ id: r.id, label: r.title, sub: "Report", href: `/reports?open=${r.id}`, kind: "report" })),

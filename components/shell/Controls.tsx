@@ -1,6 +1,7 @@
 "use client";
 import { Moon, Sun, Languages, Wifi, WifiOff, RefreshCw, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { useT } from "@/lib/hooks";
 import { ROLE_META } from "@/lib/domain";
@@ -45,7 +46,9 @@ export function LangToggle({ compact }: { compact?: boolean }) {
 
 export function RoleSwitcher({ compact }: { compact?: boolean }) {
   const role = useStore((s) => s.role);
-  const setRole = useStore((s) => s.setRole);
+  const setRoleRaw = useStore((s) => s.setRole);
+  const router = useRouter();
+  const setRole = (r: Role) => { setRoleRaw(r); router.push("/dashboard"); };
   const lang = useStore((s) => s.lang);
   const t = useT();
   const roles = Object.keys(ROLE_META) as Role[];
