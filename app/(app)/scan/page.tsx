@@ -1,10 +1,11 @@
 "use client";
+import Link from "next/link";
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Beaker, Check, Keyboard, Lock, QrCode, Radio } from "lucide-react";
 import { useStore } from "@/lib/store";
-import { useCan, useT } from "@/lib/hooks";
+import { useCan, useNow, useT } from "@/lib/hooks";
 import { OCCASION_ORDER, OCCASIONS, POINTS, POINT_ORDER, applicablePoints } from "@/lib/domain";
 import type { OccasionId, PointId } from "@/lib/types";
 import { Button, Chip, Field, PageHeader, StatusBadge, inputCls } from "@/components/ui/Glass";
@@ -12,7 +13,7 @@ import { Photo } from "@/components/ui/Photo";
 import { NfcTag } from "@/components/illustrations/Doodles";
 import { InspectionSheet } from "@/components/features/Inspection";
 import { HoldBanner } from "@/components/features/Details";
-import { cn, fmtDate, DAY } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 type Phase = "ready" | "tapping" | "read";
 type Mode = "nfc" | "barcode";
@@ -59,7 +60,10 @@ function ScanInner() {
   };
 
   const dueNow = due.filter((d) => active === "all" || d.locationId === active).sort((a, b) => a.dueTs - b.dueTs).slice(0, 6);
-  const [micro] = useState(() => ({ last: Date.now() - 9 * DAY, next: Date.now() + 5 * DAY }));
+  const microAll = useStore((s) => s.micro);
+  const nowT = useNow(60000);
+  const microDue = microAll.filter((m) => m.status === "scheduled").length;
+  const microOver = microAll.filter((m) => m.status === "scheduled" && m.dueTs < nowT).length;
 
   return (
     <>
@@ -162,16 +166,16 @@ function ScanInner() {
             </ul>
           </div>
 
-          {/* Microbial monitoring: separate module, not part of the daily VAC */}
-          <div className="glass p-5" style={{ borderRadius: 16 }}>
+          {/* Microbial monitoring: its own module with its own sample records */}
+          <Link href="/microbial" className="glass sheen hover-glow block p-5" style={{ borderRadius: 20 }}>
             <div className="mb-2 flex items-center gap-2"><Beaker size={18} strokeWidth={1.5} className="text-info-fg" /><h3 className="text-base font-semibold">{t("Microbial monitoring")}</h3></div>
-            <p className="text-xs text-muted">Scheduled periodic test. Separate from the daily visual check, which records visual observations only.</p>
+            <p className="text-xs text-muted">A separate scheduled programme with its own sample records. It is not part of the visual check.</p>
             <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
-              <div className="rounded-xl bg-white/5 p-3"><dt className="text-xs text-muted">Last test</dt><dd className="font-medium">{fmtDate(micro.last)}</dd></div>
-              <div className="rounded-xl bg-white/5 p-3"><dt className="text-xs text-muted">Next due</dt><dd className="font-medium">{fmtDate(micro.next)}</dd></div>
+              <div className="rounded-xl bg-white/5 p-3"><dt className="text-xs text-muted">To collect</dt><dd className="font-medium">{microDue}</dd></div>
+              <div className="rounded-xl bg-white/5 p-3"><dt className="text-xs text-muted">Overdue</dt><dd className="font-medium">{microOver}</dd></div>
             </dl>
-            <Button className="mt-3 w-full" size="sm" onClick={() => toast("info", "Periodic microbial test logged (demo, lab results to follow)")} disabled={!canScan}><Check size={14} /> Log periodic sample</Button>
-          </div>
+            <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-teal">Open microbial monitoring →</span>
+          </Link>
         </aside>
       </div>
 

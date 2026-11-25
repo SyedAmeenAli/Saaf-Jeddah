@@ -131,3 +131,20 @@ export interface Toast {
   kind: "pass" | "fail" | "info";
   text: string;
 }
+
+/** Scheduled microbial monitoring: separate from the visual appearance check. */
+export interface MicroTest {
+  id: string;
+  vehicleId: string;
+  locationId: string;
+  dueTs: number;
+  status: "scheduled" | "collected" | "complete";
+  method: string;
+  collectedTs?: number;
+  collectedBy?: string;
+  labRef?: string;
+  result?: Res;
+  resultTs?: number;
+  reviewedBy?: string;
+  note?: string;
+}

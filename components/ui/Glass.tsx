@@ -217,7 +217,7 @@ export function Modal({ open, onClose, title, children, sheet = false, wide = fa
 }
 
 /* ---------- Form bits ---------- */
-export const inputCls = "h-12 w-full rounded-xl border border-hair-strong bg-white/5 px-4 text-sm text-fg placeholder:text-faint focus:border-teal focus:outline-none";
+export const inputCls = "h-12 w-full rounded-2xl border border-hair bg-white/[0.06] px-4 text-sm text-fg shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md placeholder:text-faint transition-colors focus:border-teal/70 focus:bg-white/[0.09] focus:outline-none";
 export function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
     <label className="block">

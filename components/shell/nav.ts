@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, MapPinned, Truck, Grid3x3, ScanLine, ClipboardCheck, OctagonAlert, FileBarChart, ScrollText, Settings2, GraduationCap, Smartphone,
-  FlaskConical, Users, SlidersHorizontal, Inbox, ShieldAlert, Activity, LineChart, Gauge, UserCog, Tags, KeyRound, Boxes, BriefcaseBusiness, History, Wrench,
+  FlaskConical, Microscope, Users, SlidersHorizontal, Inbox, ShieldAlert, Activity, LineChart, Gauge, UserCog, Tags, KeyRound, Boxes, BriefcaseBusiness, History, Wrench,
   type LucideIcon,
 } from "lucide-react";
 import type { Role } from "@/lib/types";
@@ -18,6 +18,7 @@ export const ROLE_NAV: Record<Role, NavItem[]> = {
     n("Field", "/scan", "Scan", ScanLine, "Identify a sampling point and record the check"),
     n("Field", "/records", "My Records", FlaskConical, "Samples you have submitted and their status"),
     n("Safety", "/holds", "Equipment on hold", OctagonAlert, "Do not fuel. Failures and re-samples"),
+    n("More", "/microbial", "Microbial Monitoring", Microscope, "Scheduled microbial samples to collect"),
     n("More", "/training", "Training", GraduationCap, "Your qualification and authorisation"),
     n("More", "/settings", "Settings", SlidersHorizontal, "Language, sound and display"),
   ],
@@ -27,6 +28,7 @@ export const ROLE_NAV: Record<Role, NavItem[]> = {
     n("Quality", "/holds", "Failed Samples", ShieldAlert, "Failure investigation and release"),
     n("Quality", "/equipment", "Equipment Holds", Wrench, "Vehicles that must not fuel"),
     n("Monitor", "/activity", "Sampling Activity", Activity, "Location-wise sampling and overdue checks"),
+    n("Monitor", "/microbial", "Microbial Monitoring", Microscope, "Scheduled microbial tests and lab results"),
     n("Monitor", "/records", "All Inspections", FlaskConical, "Every sampling record"),
     n("Monitor", "/scan", "Sampling", ScanLine, "Record a check in the field"),
     n("Records", "/reports", "Reports", FileBarChart, "Reports with PDF and Excel export"),
@@ -38,6 +40,7 @@ export const ROLE_NAV: Record<Role, NavItem[]> = {
     n("Intelligence", "/locations", "Locations", MapPinned, "Location 01, 02 and 03 analytics"),
     n("Intelligence", "/fleet-performance", "Fleet Performance", Gauge, "Refuellers and dispensers ranked by quality"),
     n("Intelligence", "/analytics", "Quality Analytics", LineChart, "Trends, repeat failures and occasions"),
+    n("Intelligence", "/microbial", "Microbial Monitoring", Microscope, "Microbial programme status (read-only)"),
     n("Intelligence", "/employees", "Employee Performance", BriefcaseBusiness, "Sampling activity and qualification"),
     n("Records", "/reports", "Reports", FileBarChart, "Reports with PDF and Excel export"),
     n("Records", "/audit", "Audit Viewer", ScrollText, "Read-only audit trail"),

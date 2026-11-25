@@ -1,8 +1,7 @@
 "use client";
 import { create } from "zustand";
 import type {
-  Amendment, AuditEntry, Check, DueItem, Employee, Hold, Location, Notice, OccasionId, PointId, Res, Role, Toast, Vehicle, VehicleType,
-} from "./types";
+  Amendment, AuditEntry, Check, DueItem, Employee, Hold, Location, Notice, OccasionId, PointId, Res, Role, Toast, Vehicle, VehicleType, MicroTest } from "./types";
 import { DEMO_USER, LOCATIONS, makeEmployees, makeSeed, makeVehicles, tagId } from "@/data/seed";
 import { POINTS, pointsForVehicle } from "./domain";
 import { ymd } from "./utils";
@@ -37,6 +36,8 @@ interface State {
   audit: AuditEntry[];
   notices: Notice[];
   amendments: Amendment[];
+  micro: MicroTest[];
+  perms: Record<Role, string[]>;
   toasts: Toast[];
   paletteOpen: boolean;
   noticesOpen: boolean;
@@ -72,8 +73,23 @@ interface State {
   prefs: { notifyFail: boolean; notifyOverdue: boolean; haptics: boolean; compact: boolean };
   setPref: (k: "notifyFail" | "notifyOverdue" | "haptics" | "compact", v: boolean) => void;
   resetDemo: () => void;
+  setPerm: (role: Role, cap: string, on: boolean) => void;
+  collectMicro: (id: string) => void;
+  recordMicro: (id: string, result: Res, note: string) => void;
 }
 
+function makeMicro(vehicles: Vehicle[]): MicroTest[] {
+  const now = Date.now(), D = 86_400_000;
+  return vehicles.map((v, i) => {
+    const base = { id: `MIC-${String(i + 1).padStart(4, "0")}`, vehicleId: v.id, locationId: v.locationId, method: "Membrane filtration (demo)" };
+    if (i % 5 === 0) return { ...base, status: "complete" as const, dueTs: now - (12 + (i % 4)) * D, collectedTs: now - (13 + (i % 4)) * D, collectedBy: "EMP-1024", labRef: `MB-${4100 + i}`, result: (i === 10 ? "fail" : "pass") as Res, resultTs: now - (8 + (i % 3)) * D, reviewedBy: "EMP-2001", note: i === 10 ? "Growth above action limit. Repeat sample and sanitise." : "No growth at limit." };
+    if (i % 5 === 1) return { ...base, status: "collected" as const, dueTs: now - 2 * D, collectedTs: now - (1 + (i % 3)) * D, collectedBy: "EMP-1042", labRef: `MB-${4100 + i}` };
+    if (i % 7 === 3) return { ...base, status: "scheduled" as const, dueTs: now - (1 + (i % 3)) * D };
+    return { ...base, status: "scheduled" as const, dueTs: now + (3 + (i % 20)) * D };
+  });
+}
+
+const PERSIST_KEY = "safaa.state.v1";
 const uid = () => Math.random().toString(36).slice(2, 9);
 export const currentUserId = (role: Role) => DEMO_USER[role];
 
@@ -98,6 +114,8 @@ export const useStore = create<State>((set, get) => ({
   audit: [],
   notices: [],
   amendments: [],
+  micro: [],
+  perms: { operator: ["sample"], supervisor: ["verify", "release", "amend", "export"], manager: ["export"], admin: ["admin", "export"] },
   toasts: [],
   paletteOpen: false,
   noticesOpen: false,
@@ -115,7 +133,25 @@ export const useStore = create<State>((set, get) => ({
       loggedIn = localStorage.getItem("safaa.login") === "1";
       introSeen = sessionStorage.getItem("safaa.intro") === "1";
     } catch {}
-    set({ ready: true, employees, vehicles, ...seed, notices: seed.notices, theme, lang, role, loggedIn, introSeen });
+    set({ ready: true, micro: makeMicro(vehicles), employees, vehicles, ...seed, notices: seed.notices, theme, lang, role, loggedIn, introSeen });
+    // Restore this browser's demo state (same day only, so seeded times stay relative to today), then keep saving it.
+    try {
+      const raw = localStorage.getItem(PERSIST_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw) as { day: string; data: Partial<State> };
+        if (saved.day === ymd(Date.now())) set(saved.data);
+      }
+    } catch {}
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    useStore.subscribe((st) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        try {
+          const data = { locations: st.locations, vehicles: st.vehicles, employees: st.employees, checks: st.checks, due: st.due, holds: st.holds, audit: st.audit, notices: st.notices, amendments: st.amendments, micro: st.micro, perms: st.perms };
+          localStorage.setItem(PERSIST_KEY, JSON.stringify({ day: ymd(Date.now()), data }));
+        } catch {}
+      }, 500);
+    });
   },
   login: (role) => {
     try { localStorage.setItem("safaa.login", "1"); localStorage.setItem("safaa.role", role); sessionStorage.setItem("safaa.intro", "1"); } catch {}
@@ -287,11 +323,41 @@ export const useStore = create<State>((set, get) => ({
   },
   prefs: { notifyFail: true, notifyOverdue: true, haptics: true, compact: false },
   setPref: (k, v) => set((s) => ({ prefs: { ...s.prefs, [k]: v } })),
+  setPerm: (role, cap, on) => {
+    const s = get();
+    if (s.role !== "admin") return;
+    if (role === "admin" && cap === "admin") return; // an admin cannot lock themselves out
+    if (role === "manager" && cap !== "export") return; // manager stays read-only by policy
+    const cur = s.perms[role];
+    const next = on ? [...new Set([...cur, cap])] : cur.filter((c) => c !== cap);
+    set({ perms: { ...s.perms, [role]: next } });
+    get().log({ actor: currentUserId(s.role), role: s.role, action: "config", target: role, detail: `Permission ${cap} ${on ? "granted to" : "removed from"} ${role}` });
+    get().toast("info", `${cap} ${on ? "granted to" : "removed from"} ${role}`);
+  },
+  collectMicro: (id) => {
+    const s = get();
+    const m = s.micro.find((x) => x.id === id);
+    if (!m || m.status !== "scheduled") return;
+    const by = currentUserId(s.role);
+    set({ micro: s.micro.map((x) => (x.id === id ? { ...x, status: "collected", collectedTs: Date.now(), collectedBy: by, labRef: `MB-${Date.now().toString(36).toUpperCase().slice(-6)}` } : x)) });
+    get().log({ actor: by, role: s.role, action: "submission", target: m.vehicleId, detail: `Microbial sample collected (${m.id}). Sent to laboratory.` });
+    get().toast("pass", `Microbial sample collected for ${m.vehicleId}`);
+  },
+  recordMicro: (id, result, note) => {
+    const s = get();
+    const m = s.micro.find((x) => x.id === id);
+    if (!m || m.status !== "collected") return;
+    const by = currentUserId(s.role);
+    set({ micro: s.micro.map((x) => (x.id === id ? { ...x, status: "complete", result, resultTs: Date.now(), reviewedBy: by, note } : x)) });
+    get().log({ actor: by, role: s.role, action: "approval", target: m.vehicleId, detail: `Microbial result ${result.toUpperCase()} recorded (${m.id})${note ? `: ${note}` : ""}` });
+    get().toast(result === "pass" ? "pass" : "fail", `Microbial result ${result} for ${m.vehicleId}`);
+  },
   resetDemo: () => {
+    try { localStorage.removeItem(PERSIST_KEY); } catch {}
     const employees = makeEmployees();
     const vehicles = makeVehicles();
     const seed = makeSeed(vehicles, employees);
-    set({ employees, vehicles, ...seed, notices: seed.notices, locations: LOCATIONS, amendments: [], activeLocation: "all", offline: false, queued: 0 });
+    set({ micro: makeMicro(vehicles), perms: { operator: ["sample"], supervisor: ["verify", "release", "amend", "export"], manager: ["export"], admin: ["admin", "export"] }, employees, vehicles, ...seed, notices: seed.notices, locations: LOCATIONS, amendments: [], activeLocation: "all", offline: false, queued: 0 });
     get().toast("info", "Demo data reset");
   },
   releaseHold: (holdId) => {

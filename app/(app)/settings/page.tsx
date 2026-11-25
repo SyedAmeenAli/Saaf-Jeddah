@@ -30,10 +30,13 @@ export default function SettingsPage() {
   const setActive = useStore((s) => s.setActiveLocation);
   const reset = useStore((s) => s.resetDemo);
   const logout = useStore((s) => s.logout);
+  const role = useStore((s) => s.role);
+  const admin = role === "admin";
+  const field = role === "operator" || role === "supervisor";
 
   return (
     <>
-      <PageHeader title={t("Settings")} sub="Preferences, operations and demo data." />
+      <PageHeader title={t("Settings")} sub={admin ? "Personal preferences, system operations and demo data." : "Personal preferences for your account."} />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card title="Preferences">
           <Row icon={Palette} title={t("Language")} desc="Interface language and layout direction">
@@ -51,15 +54,18 @@ export default function SettingsPage() {
         </Card>
 
         <div className="space-y-4">
-          <Card title="Operations">
-            <Row icon={Wifi} title="Offline mode (demo)" desc="Submissions queue on the device and sync when online"><Switch checked={offline} onChange={() => toggleOffline()} label="Offline mode" /></Row>
-            <Row icon={BookLock} title="JIG standard version" desc="JIG 1 Issue 13 / JIG 2 Issue 13, rule set v1. Version-controlled and configurable for future issues."><Link href="/admin" className="text-sm text-teal hover:underline">Open</Link></Row>
-          </Card>
-          <Card title="Demo data">
-            <p className="mb-3 text-sm text-muted">Everything here is illustrative. Reset to regenerate the seeded history relative to today.</p>
+          {(field || admin) && (
+            <Card title={admin ? "System operations" : "Device"}>
+              {field && <Row icon={Wifi} title="Offline mode (demo)" desc="Submissions queue on the device and sync when online"><Switch checked={offline} onChange={() => toggleOffline()} label="Offline mode" /></Row>}
+              {admin && <Row icon={BookLock} title="JIG standard version" desc="JIG 1 Issue 13 / JIG 2 Issue 13, rule set v1. Version-controlled and configurable for future issues."><Link href="/admin" className="text-sm text-teal hover:underline">Configure</Link></Row>}
+            </Card>
+          )}
+          <Card title={admin ? "Demo data and session" : "Session"}>
+            {admin && <p className="mb-3 text-sm text-muted">Everything here is illustrative. Reset to regenerate the seeded history relative to today.</p>}
+            {!admin && <p className="mb-3 text-sm text-muted">System configuration is managed by an administrator. Your role has no access to it.</p>}
             <div className="flex flex-wrap gap-2">
-              <Button onClick={reset}><RotateCcw size={16} /> Reset demo data</Button>
-              <Button onClick={() => router.push("/design")}>Design system</Button>
+              {admin && <Button onClick={reset}><RotateCcw size={16} /> Reset demo data</Button>}
+              {admin && <Button onClick={() => router.push("/design")}>Design system</Button>}
               <Button onClick={() => { logout(); router.push("/login"); }}><LogOut size={16} /> {t("Sign out")}</Button>
             </div>
           </Card>

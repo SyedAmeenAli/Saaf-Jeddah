@@ -20,6 +20,7 @@ const Ctx = createContext<{ anyOpen: boolean }>({ anyOpen: false });
 export function useExpandNav() {
   const pathname = usePathname();
   const open = useCallback((id: string) => {
+    if (new URLSearchParams(window.location.search).get("open") === id) return; // ignore rapid repeat clicks
     pushed = true;
     userNav = true;
     window.history.pushState(null, "", `${pathname}?open=${encodeURIComponent(id)}`);
@@ -113,7 +114,7 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
       </motion.div>
 
       <Portal>
-        <AnimatePresence>
+        <AnimatePresence onExitComplete={() => cardRef.current?.focus({ preventScroll: true })}>
           {isOpen && (
             <div className="fixed inset-0 z-[70]">
               <motion.div

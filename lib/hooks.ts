@@ -13,7 +13,7 @@ export function useIsRtl() {
 }
 
 export type Cap = "sample" | "verify" | "release" | "admin" | "amend" | "export";
-const CAPS: Record<Role, Cap[]> = {
+export const DEFAULT_CAPS: Record<Role, Cap[]> = {
   operator: ["sample"],
   supervisor: ["verify", "release", "amend", "export"],
   manager: ["export"],
@@ -21,7 +21,8 @@ const CAPS: Record<Role, Cap[]> = {
 };
 export function useCan() {
   const role = useStore((s) => s.role);
-  return useCallback((c: Cap) => CAPS[role].includes(c), [role]);
+  const perms = useStore((s) => s.perms);
+  return useCallback((c: Cap) => (perms[role] ?? DEFAULT_CAPS[role]).includes(c), [role, perms]);
 }
 
 export function useMedia(q: string, initial = false) {
