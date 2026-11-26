@@ -1,5 +1,10 @@
 /** Additional Arabic strings. Key = English source text. Terms to be reviewed by APSCO personnel. */
 export const AR_EXTRA: Record<string, string> = {
+  "Last sample": "آخر عينة",
+  "Ready": "جاهز",
+  "Awaiting": "بانتظار المراجعة",
+  "Sampling points": "نقاط أخذ العينات",
+
   "(demo: any 4 digits)": "(تجريبي: أي 4 أرقام)",
   ". It cannot be edited afterwards, only amended.": ". لا يمكن تعديله بعد ذلك، بل تعديله بإجراء تصحيح موثّق فقط.",
   ". This result can never be overwritten.": ". لا يمكن استبدال هذه النتيجة أبداً.",

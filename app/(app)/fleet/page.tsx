@@ -9,7 +9,9 @@ import { Button, Chip, Empty, Field, Modal, PageHeader, Rise, SearchField, Stagg
 import { ExpandCard, ExpandGroup } from "@/components/ui/Expand";
 import { HoldBanner, StatusPill, VehicleDetail } from "@/components/features/Details";
 import { DispenserSvg, TruckSvg } from "@/components/illustrations/Vehicles";
-import type { VehicleType } from "@/lib/types";
+import { Photo } from "@/components/ui/Photo";
+import { POINTS } from "@/lib/domain";
+import type { PointId, VehicleType } from "@/lib/types";
 
 export default function FleetPage() {
   const t = useT();
@@ -69,11 +71,32 @@ export default function FleetPage() {
               <ExpandCard
                 id={v.id} title={`${v.id} · ${v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")}`}
                 card={grid ? (
-                  <div className="flex h-full flex-col gap-3 p-4">
-                    <div className="flex items-center justify-between"><span className="font-display text-lg font-semibold">{v.id}</span><StatusPill s={s} /></div>
-                    <div className="rounded-2xl bg-gradient-to-b from-hi to-transparent px-3 pt-2">{v.type === "refueller" ? <TruckSvg className="h-24 w-full" /> : <DispenserSvg className="h-24 w-full" />}</div>
-                    {s === "hold" && <HoldBanner vehicleId={v.id} compact />}
-                    <div className="mt-auto flex items-center justify-between text-xs text-muted"><span>{v.locationId} · {v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")}</span><span>{last ? ago(last.ts) : "–"}</span></div>
+                  <div className="flex h-full flex-col">
+                    <Photo crop={v.type === "refueller" ? "truck" : "apron"} bloom={false} className="h-36 rounded-t-[inherit]" scrim="from-[#0d0818]/20 via-[#0d0818]/45 to-[#0d0818]/90">
+                      <div className="flex h-full flex-col justify-between p-3">
+                        <div className="flex items-start justify-between">
+                          <span className="rounded-full bg-black/35 px-2.5 py-1 text-[11px] font-medium text-[#faf7ff] backdrop-blur">{v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")}</span>
+                          <StatusPill s={s} />
+                        </div>
+                        <div className="flex items-end justify-between">
+                          <span className="font-display text-xl font-semibold text-[#faf7ff]">{v.id}</span>
+                          {v.type === "refueller" ? <TruckSvg className="h-12 w-24 opacity-90" /> : <DispenserSvg className="h-12 w-24 opacity-90" />}
+                        </div>
+                      </div>
+                    </Photo>
+                    <div className="flex flex-1 flex-col gap-3 p-4">
+                      {s === "hold" && <HoldBanner vehicleId={v.id} compact />}
+                      <div className="flex items-center gap-1.5" aria-label="Sampling points">
+                        {Object.keys(v.tags).map((p) => {
+                          const c = checks.find((x) => x.vehicleId === v.id && x.point === p);
+                          return <span key={p} title={`${POINTS[p as PointId].label}: ${c ? c.result : "no sample"}`} className={cn("h-1.5 flex-1 rounded-full", !c ? "bg-hair-strong" : c.result === "fail" ? "bg-fail" : "bg-pass")} />;
+                        })}
+                      </div>
+                      <dl className="mt-auto grid grid-cols-2 gap-2 text-xs">
+                        <div><dt className="text-muted">{t("Location")}</dt><dd className="font-medium">{v.locationId}</dd></div>
+                        <div><dt className="text-muted">{t("Last sample")}</dt><dd className="font-medium">{last ? ago(last.ts) : "–"}</dd></div>
+                      </dl>
+                    </div>
                   </div>
                 ) : (
                   <div className="flex items-center gap-4 px-4 py-3">

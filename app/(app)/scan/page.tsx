@@ -75,6 +75,26 @@ function ScanInner() {
       )}
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="space-y-4">
+          {/* Vehicle context hero + 3-step progress */}
+          <Photo crop={vehicle.type === "refueller" ? "tanker" : "apron"} className="rounded-3xl border border-hair" scrim="from-[#0d0818]/30 via-[#0d0818]/60 to-[#0d0818]/92">
+            <div className="flex flex-col gap-4 p-5">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wider text-[#d9cdee]">{vehicle.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")} · {vehicle.locationId}</p>
+                  <h2 className="font-display text-3xl font-semibold text-[#faf7ff]">{vehicle.id}</h2>
+                </div>
+                {hold ? <StatusBadge kind="fail">HOLD</StatusBadge> : <StatusBadge kind="pass">{t("Ready")}</StatusBadge>}
+              </div>
+              <ol className="grid grid-cols-3 gap-2 text-xs">
+                {[["1", t("Vehicle"), true], ["2", t("Sampling point"), !!point], ["3", t("Tag read"), phase === "read"]].map(([n, l, done]) => (
+                  <li key={String(n)} className={cn("flex items-center gap-2 rounded-xl px-3 py-2 backdrop-blur", done ? "bg-pass/25 text-[#faf7ff]" : "bg-black/30 text-[#d9cdee]")}>
+                    <span className={cn("flex size-5 items-center justify-center rounded-full text-[11px] font-semibold", done ? "bg-pass text-white" : "bg-white/15")}>{done ? <Check size={12} /> : n}</span>
+                    <span className="truncate">{l}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </Photo>
           <div className="glass grid grid-cols-1 gap-4 p-5 md:grid-cols-3" style={{ borderRadius: 16 }}>
             <Field label={t("Vehicle")}>
               <select className={inputCls} value={vehicle.id} onChange={(e) => { setVid(e.target.value); setPhase("ready"); }}>

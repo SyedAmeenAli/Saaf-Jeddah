@@ -7,6 +7,9 @@ import { HoldChain } from "./HoldChain";
 import { RecordView } from "./Record";
 import type { Check } from "@/lib/types";
 import { T } from "@/components/ui/T";
+import { Photo } from "@/components/ui/Photo";
+import { ResultBadge } from "./Details";
+import { fmtTime } from "@/lib/utils";
 
 /** Full-screen detail for a sampling record. Failed records get the investigation timeline first. */
 export function ReviewDetail({ check }: { check: Check }) {
@@ -16,6 +19,16 @@ export function ReviewDetail({ check }: { check: Check }) {
   const h = holds.find((x) => x.events.some((e) => e.checkId === live.id)) ?? holds.find((x) => x.vehicleId === live.vehicleId && x.point === live.point && x.state !== "released");
   return (
     <div className="mx-auto max-w-3xl space-y-5">
+      <Photo crop="truck" className="rounded-3xl border border-hair" scrim="from-[#0d0818]/40 via-[#0d0818]/65 to-[#0d0818]/92">
+        <div className="flex flex-wrap items-end justify-between gap-3 p-5">
+          <div>
+            <p className="font-mono text-xs text-[#d9cdee]">{live.sampleId}</p>
+            <h2 className="font-display text-2xl font-semibold text-[#faf7ff]">{live.vehicleId} · {POINTS[live.point].label}</h2>
+            <p className="text-sm text-[#d9cdee]">{fmtTime(live.ts)} · {live.employeeId}</p>
+          </div>
+          <ResultBadge c={live} />
+        </div>
+      </Photo>
       {live.result === "fail" && h && (
         <>
           {h.state !== "released" && <HoldBanner vehicleId={`${h.vehicleId} · ${POINTS[h.point].label}`} />}
