@@ -41,7 +41,11 @@ export function useOpenId() {
 
 /** Shared element: render the same <SharedHero id> inside the card and inside its detail, and it morphs between them. */
 export function SharedHero({ id, children, className }: { id: string; children: ReactNode; className?: string }) {
-  return <motion.div layoutId={`hero-${id}`} transition={spring} className={cn("overflow-hidden", className)} style={{ borderRadius: "inherit" }}>{children}</motion.div>;
+  return (
+    <motion.div layoutId={`hero-${id}`} transition={spring} className={cn("overflow-hidden", className)} style={{ borderRadius: "inherit" }}>
+      <motion.div layout="position" className="h-full w-full">{children}</motion.div>
+    </motion.div>
+  );
 }
 
 export function ExpandGroup({ children, className }: { children: ReactNode; className?: string }) {
@@ -124,7 +128,7 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
           className="glass sheen hover-glow h-full cursor-pointer text-start"
           style={{ borderRadius: 20 }}
         >
-          {card}
+          <motion.div className="h-full" animate={{ opacity: isOpen ? 0 : 1 }} transition={isOpen ? { duration: 0.1 } : { duration: 0.2, delay: 0.36 }}>{card}</motion.div>
         </motion.div>
       </motion.div>
 

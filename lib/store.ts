@@ -294,7 +294,8 @@ export const useStore = create<State>((set, get) => ({
     const s = get();
     const sup = currentUserId(s.role);
     const c = s.checks.find((x) => x.id === id);
-    if (!c) return;
+    // Record integrity: only a verifier may approve, and only a record that is awaiting review. The test result is never touched.
+    if (!c || c.status !== "awaiting" || !s.perms[s.role]?.includes("verify")) { if (c) s.toast("fail", "Not allowed: this record is locked or you lack permission"); return; }
     set({ checks: s.checks.map((x) => (x.id === id ? { ...x, status: "approved", supervisorId: sup, reviewedTs: Date.now() } : x)) });
     get().log({ actor: sup, role: s.role, action: "approval", target: c.sampleId, detail: "Verified and countersigned" });
     get().toast("pass", `Approved & locked: ${c.sampleId}`);
@@ -302,7 +303,7 @@ export const useStore = create<State>((set, get) => ({
   returnCheck: (id, reason) => {
     const s = get();
     const c = s.checks.find((x) => x.id === id);
-    if (!c) return;
+    if (!c || c.status !== "awaiting" || !s.perms[s.role]?.includes("verify")) { if (c) s.toast("fail", "Not allowed: an approved record cannot be returned"); return; }
     set({ checks: s.checks.map((x) => (x.id === id ? { ...x, status: "returned", returnReason: reason, supervisorId: currentUserId(s.role), reviewedTs: Date.now() } : x)) });
     get().log({ actor: currentUserId(s.role), role: s.role, action: "return", target: c.sampleId, detail: reason });
     get().toast("info", `Returned: ${c.sampleId}`);
@@ -310,7 +311,7 @@ export const useStore = create<State>((set, get) => ({
   amendCheck: (id, field, to, reason) => {
     const s = get();
     const c = s.checks.find((x) => x.id === id);
-    if (!c) return;
+    if (!c || !s.perms[s.role]?.includes("amend")) return;
     const from = field === "dp" ? String(c.dp) : field === "employeeId" ? c.employeeId : c.cwdBatch;
     const a: Amendment = { id: uid(), originalId: id, field, from, to, reason, by: currentUserId(s.role), ts: Date.now() };
     set({ amendments: [a, ...s.amendments] });
@@ -389,7 +390,7 @@ export const useStore = create<State>((set, get) => ({
   releaseHold: (holdId) => {
     const s = get();
     const h = s.holds.find((x) => x.id === holdId);
-    if (!h || h.state !== "resampled") return;
+    if (!h || h.state !== "resampled" || !s.perms[s.role]?.includes("release")) return;
     const actor = currentUserId(s.role);
     set({
       holds: s.holds.map((x) => (x.id === holdId ? { ...x, state: "released", events: [...x.events, { type: "release", ts: Date.now(), actor, note: "Authorised release, countersigned" }] } : x)),

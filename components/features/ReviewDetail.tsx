@@ -20,7 +20,7 @@ export function ReviewDetail({ check }: { check: Check }) {
   return (
     <div className="mx-auto max-w-3xl space-y-5">
       <div className="relative overflow-hidden rounded-3xl border border-hair">
-        <VehicleArt type={live.vehicleId.startsWith("DSP") ? "dispenser" : "refueller"} className="h-40 w-full" art="h-full w-[60%] opacity-80" />
+        <VehicleArt type={live.vehicleId.startsWith("DSP") ? "dispenser" : "refueller"} className="h-40 w-full !justify-end pe-5" art="h-full w-[48%] opacity-60" />
         <div className="absolute inset-0 flex flex-wrap items-end justify-between gap-3 bg-gradient-to-t from-[#0d0818]/90 to-transparent p-5">
           <div>
             <p className="font-mono text-xs text-[#d9cdee]">{live.sampleId}</p>

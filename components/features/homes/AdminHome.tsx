@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { ArrowRight, BookLock, Boxes, Grid3x3, Lock, MapPin, Nfc, Plus, Users } from "lucide-react";
 import { useStore } from "@/lib/store";
+const arName = (e: { name: string; nameAr: string }, lang: string) => (lang === "ar" ? e.nameAr : e.name);
 import { useApplicable, useNow, useT } from "@/lib/hooks";
 import { OCCASION_ORDER, pointsForVehicle } from "@/lib/domain";
 import { Rise, Stagger, StatusBadge, CountUp } from "@/components/ui/Glass";
@@ -14,6 +15,7 @@ import { T } from "@/components/ui/T";
 export default function AdminHome() {
   const t = useT();
   const employees = useStore((s) => s.employees);
+  const lang = useStore((s) => s.lang);
   const locations = useStore((s) => s.locations);
   const vehicles = useStore((s) => s.vehicles);
   const audit = useStore((s) => s.audit);
@@ -78,7 +80,7 @@ export default function AdminHome() {
                 <table className="tbl min-w-[28rem]"><thead><tr><th><T>{"Item"}</T></th><th><T>{"Issue"}</T></th><th /></tr></thead>
                   <tbody>
                     {stats.missing.slice(0, 5).map(({ v, n }) => <tr key={v.id}><td className="font-mono font-medium">{v.id}</td><td className="text-muted">{n} sampling point{n > 1 ? "s" : ""} without a tag</td><td className="text-end"><Link href={`/points?v=${v.id}`} className="btn-secondary inline-flex h-8 items-center rounded-xl px-3 text-xs"><T>{"Assign"}</T></Link></td></tr>)}
-                    {stats.expired.slice(0, 4).map((e) => <tr key={e.id}><td className="font-mono font-medium">{e.id}</td><td className="text-muted">{e.name}: authorisation expired</td><td className="text-end"><Link href="/users" className="btn-secondary inline-flex h-8 items-center rounded-xl px-3 text-xs"><T>{"Review"}</T></Link></td></tr>)}
+                    {stats.expired.slice(0, 4).map((e) => <tr key={e.id}><td className="font-mono font-medium">{e.id}</td><td className="text-muted">{arName(e, lang)}: authorisation expired</td><td className="text-end"><Link href="/users" className="btn-secondary inline-flex h-8 items-center rounded-xl px-3 text-xs"><T>{"Review"}</T></Link></td></tr>)}
                   </tbody>
                 </table>
               </div>

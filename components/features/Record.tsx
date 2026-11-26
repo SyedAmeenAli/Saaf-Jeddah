@@ -49,6 +49,9 @@ export function RecordView({ check: c, onChange }: { check: Check; onChange?: ()
   const lang = useStore((s) => s.lang);
   const employees = useStore((s) => s.employees);
   const amendments = useStore((s) => s.amendments).filter((a) => a.originalId === c.id);
+  const allChecks = useStore((s) => s.checks);
+  const original = c.linkedTo ? allChecks.find((x) => x.id === c.linkedTo) : undefined;
+  const followUps = allChecks.filter((x) => x.linkedTo === c.id);
   const approve = useStore((s) => s.approveCheck);
   const ret = useStore((s) => s.returnCheck);
   const amend = useStore((s) => s.amendCheck);
@@ -70,6 +73,13 @@ export function RecordView({ check: c, onChange }: { check: Check; onChange?: ()
         {c.kind === "resample" && <StatusBadge kind="info"><T>{"Re-sample"}</T></StatusBadge>}
         {locked && <StatusBadge kind="locked">{t("Locked record")}</StatusBadge>}
       </div>
+      {(original || followUps.length > 0) && (
+        <div className="space-y-1.5 rounded-2xl border border-info/40 bg-info/10 p-3 text-sm">
+          {original && <p><span className="text-muted">{t("Re-sample of failed sample")}:</span> <span className="font-mono font-semibold">{original.sampleId}</span> <StatusBadge kind="fail">{t("Failed")}</StatusBadge></p>}
+          {followUps.map((f) => <p key={f.id}><span className="text-muted">{t("Superseded by re-sample")}:</span> <span className="font-mono font-semibold">{f.sampleId}</span> <StatusBadge kind={f.result === "pass" ? "pass" : "fail"}>{f.result === "pass" ? t("Pass") : t("Failed")}</StatusBadge></p>)}
+          <p className="text-xs text-faint">{t("The original failed result is permanent and is never overwritten.")}</p>
+        </div>
+      )}
       <p className="text-sm text-muted">{OCCASIONS[c.occasion].label} · {empName(employees, c.employeeId, lang)} · signed</p>
       {c.failReason && <p className="rounded-2xl border border-fail/50 bg-fail/10 p-3 text-sm text-fail-fg">{t("Failure reason")}: {c.failReason}</p>}
       {c.returnReason && <p className="rounded-2xl border border-pending/50 bg-pending/10 p-3 text-sm text-pending-fg">{t("Returned")}: {c.returnReason}</p>}

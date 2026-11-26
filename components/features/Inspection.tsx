@@ -125,6 +125,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
     return l.includes(occ0) ? l : [occ0, ...l];
   }, [vehicle.type, point, occ0, applicable]);
 
+  const lang = useStore((s) => s.lang);
   const empRec = employees.find((e) => e.id.toLowerCase() === emp.trim().toLowerCase());
   const authorised = !!empRec && empRec.role !== "manager" && empRec.role !== "admin" && empRec.certExpiry > now;
   const empMsg = !empRec ? "Unknown employee number" : empRec.role === "manager" || empRec.role === "admin" ? "This role cannot sign sampling checks" : empRec.certExpiry <= now ? "Qualification expired: only authorised operators can sign checks" : null;
@@ -304,7 +305,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
                         <span className="text-xs text-muted">{t("Employee number")}</span>
                         <input value={emp} onChange={(e) => setEmp(e.target.value.toUpperCase())} className={cn(inputCls, "mt-1 font-mono", empMsg && "!border-fail")} aria-invalid={!!empMsg} />
                         {empMsg ? <span className="mt-1 flex items-center gap-1.5 text-xs text-fail-fg"><ShieldAlert size={13} /> {empMsg}. Try EMP-1024 (authorised) or EMP-1079 (expired).</span>
-                          : <span className="mt-1 block text-xs text-pass-fg">✓ {empRec?.name} · {t("Authorised")}</span>}
+                          : <span className="mt-1 block text-xs text-pass-fg">✓ {empRec ? (lang === "ar" ? empRec.nameAr : empRec.name) : ""} · {t("Authorised")}</span>}
                       </label>
                     </Panel>
                     {anyFail && (
@@ -347,7 +348,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
                   <Panel title="Review and submit" note="Submitting locks this record. A supervisor then verifies it.">
                     <div className="grid grid-cols-2 gap-2.5 md:grid-cols-3">
                       <Fact l={t("Location")} v={vehicle.locationId} /><Fact l={t("Vehicle")} v={vehicle.id} /><Fact l={t("Sampling point")} v={POINTS[point].label} mono={false} />
-                      <Fact l="Occasion" v={OCCASIONS[occasion].label} mono={false} /><Fact l="Employee" v={`${emp}${empRec ? ` · ${empRec.name}` : ""}`} mono={false} /><Fact l={t("Sample ID")} v={sampleId} />
+                      <Fact l="Occasion" v={OCCASIONS[occasion].label} mono={false} /><Fact l="Employee" v={`${emp}${empRec ? ` · ${lang === "ar" ? empRec.nameAr : empRec.name}` : ""}`} mono={false} /><Fact l={t("Sample ID")} v={sampleId} />
                     </div>
                     <div className="glass-2 divide-y divide-hair rounded-3xl border border-hair">
                       {([["Clarity & brightness", clarity], ["Visible sediment", sediment], ["Visible free water / haze", freeWater], ["CWD", cwd === "na" ? null : cwd]] as const).map(([l, v]) => (

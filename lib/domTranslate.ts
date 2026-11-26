@@ -8,6 +8,8 @@ const SKIP = new Set(["SCRIPT", "STYLE", "CODE", "TEXTAREA", "NOSCRIPT"]);
 const MON: Record<string, string> = { Jan: "يناير", Feb: "فبراير", Mar: "مارس", Apr: "أبريل", May: "مايو", Jun: "يونيو", Jul: "يوليو", Aug: "أغسطس", Sep: "سبتمبر", Oct: "أكتوبر", Nov: "نوفمبر", Dec: "ديسمبر" };
 const UNIT: Record<string, string> = { m: "دقيقة", h: "ساعة", d: "يوم" };
 const RULES: Array<[RegExp, (m: RegExpMatchArray) => string]> = [
+  [/^Today's samples \($/, () => `عينات اليوم (`],
+  [/^Current: (.+)$/, (m) => `الحالي: ${m[1]}`],
   [/^authorisation expired$/, () => `التفويض منتهٍ`],
   [/^User (\S+) role set to (.+)$/, (m) => `تم تعيين دور المستخدم ${m[1]} إلى ${AR[m[2]] ?? m[2]}`],
   [/^Vehicle (\S+) added to (.+)$/, (m) => `أُضيفت المركبة ${m[1]} إلى ${m[2].replace(/^Location (\d+)$/, "الموقع $1")}`],

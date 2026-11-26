@@ -25,6 +25,7 @@ export function ReportPreview({ id }: { id: string }) {
   const due = useStore((s) => s.due);
   const audit = useStore((s) => s.audit);
   const employees = useStore((s) => s.employees);
+  const lang = useStore((s) => s.lang);
   const vehicles = useStore((s) => s.vehicles);
   const [vehicleId, setVehicleId] = useState("REF-014");
   const [employeeId, setEmployeeId] = useState("EMP-1024");
@@ -65,7 +66,7 @@ export function ReportPreview({ id }: { id: string }) {
     <div className="relative space-y-4">
       <div className="flex flex-wrap items-center gap-2">
         {id === "vehicle" && <select aria-label="Vehicle" className={`${inputCls} !h-10 !w-44`} value={vehicleId} onChange={(e) => setVehicleId(e.target.value)}>{vehicles.map((v) => <option key={v.id} className="text-black">{v.id}</option>)}</select>}
-        {id === "employee" && <select aria-label="Employee" className={`${inputCls} !h-10 !w-64`} value={employeeId} onChange={(e) => setEmployeeId(e.target.value)}>{employees.filter((e) => e.role === "operator").map((e) => <option key={e.id} value={e.id} className="text-black">{e.id} · {e.name}</option>)}</select>}
+        {id === "employee" && <select aria-label="Employee" className={`${inputCls} !h-10 !w-64`} value={employeeId} onChange={(e) => setEmployeeId(e.target.value)}>{employees.filter((e) => e.role === "operator").map((e) => <option key={e.id} value={e.id} className="text-black">{e.id} · {lang === "ar" ? e.nameAr : e.name}</option>)}</select>}
         <div className="ms-auto flex gap-2">
           <Button onClick={exportPdf} disabled={!can("export")}><FileText size={16} /> {t("Export PDF")}</Button>
           <Button onClick={exportXlsx} disabled={!can("export")}><FileSpreadsheet size={16} /> {t("Export Excel")}</Button>

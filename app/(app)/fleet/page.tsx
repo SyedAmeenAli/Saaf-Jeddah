@@ -71,13 +71,13 @@ export default function FleetPage() {
                 id={v.id} title={`${v.id} · ${v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")}`}
                 card={grid ? (
                   <div className="flex h-full flex-col">
-                    <div className="relative h-36">
-                      <SharedHero id={v.id} className="h-full rounded-t-[inherit]"><VehicleArt type={v.type} className="h-full" /></SharedHero>
+                    <div className="relative h-32">
+                      <SharedHero id={v.id} className="h-full rounded-t-[inherit]"><VehicleArt type={v.type} className="h-full" art="h-[86%] w-[70%]" /></SharedHero>
                       <span className="absolute start-3 top-3 rounded-full bg-black/35 px-2.5 py-1 text-[11px] font-medium text-[#faf7ff] backdrop-blur">{v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")}</span>
                       <span className="absolute end-3 top-3"><StatusPill s={s} /></span>
-                      <span className="absolute bottom-2 start-3 font-display text-xl font-semibold text-[#faf7ff]">{v.id}</span>
                     </div>
                     <div className="flex flex-1 flex-col gap-3 p-4">
+                      <div className="flex items-center justify-between"><span className="font-display text-xl font-semibold">{v.id}</span><span className="text-xs text-muted">{v.locationId}</span></div>
                       {s === "hold" && <HoldBanner vehicleId={v.id} compact />}
                       <div className="flex items-center gap-1.5" aria-label="Sampling points">
                         {Object.keys(v.tags).map((p) => {
@@ -86,14 +86,14 @@ export default function FleetPage() {
                         })}
                       </div>
                       <dl className="mt-auto grid grid-cols-2 gap-2 text-xs">
-                        <div><dt className="text-muted">{t("Location")}</dt><dd className="font-medium">{v.locationId}</dd></div>
+                        <div><dt className="text-muted">{t("Plate")}</dt><dd className="font-medium">{v.plate}</dd></div>
                         <div><dt className="text-muted">{t("Last sample")}</dt><dd className="font-medium">{last ? ago(last.ts) : "–"}</dd></div>
                       </dl>
                     </div>
                   </div>
                 ) : (
                   <div className="flex items-center gap-3 px-3 py-2.5">
-                    <SharedHero id={v.id} className="size-12 shrink-0 rounded-xl"><VehicleArt type={v.type} className="size-12" art="h-full w-[92%]" /></SharedHero>
+                    <SharedHero id={v.id} className="size-14 shrink-0 rounded-xl"><VehicleArt compact type={v.type} className="size-14" /></SharedHero>
                     <span className="w-16 shrink-0 font-mono text-sm font-semibold">{v.id}</span>
                     <span className="min-w-0 flex-1 truncate text-sm text-muted">{v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")} · {v.locationId}</span>
                     <span className="hidden text-xs text-muted sm:block">{last ? ago(last.ts) : "–"}</span>

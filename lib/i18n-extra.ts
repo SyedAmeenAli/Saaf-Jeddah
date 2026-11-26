@@ -1,5 +1,9 @@
 /** Additional Arabic strings. Key = English source text. Terms to be reviewed by APSCO personnel. */
 export const AR_EXTRA: Record<string, string> = {
+  "Re-sample of failed sample": "إعادة أخذ عينة للعينة الفاشلة",
+  "Superseded by re-sample": "استُبدلت بإعادة العينة",
+  "The original failed result is permanent and is never overwritten.": "النتيجة الفاشلة الأصلية دائمة ولا يتم الكتابة فوقها.",
+
   "Reviewed": "تمت المراجعة",
   "In service": "في الخدمة",
   "Release pending": "بانتظار الإفراج",

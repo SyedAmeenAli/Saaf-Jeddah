@@ -132,7 +132,7 @@ function ScanInner() {
               {matches.map((v) => (
                 <li key={v.id}>
                   <button onClick={() => pickVehicle(v.id)} className={cn("flex w-full items-center gap-3 rounded-2xl bg-white/5 p-2 pe-3 text-start hover:bg-white/10", v.id === vid && "ring-1 ring-teal/60")}>
-                    <VehicleArt type={v.type} className="size-12 shrink-0 rounded-xl" art="h-full w-[92%]" />
+                    <VehicleArt compact type={v.type} className="size-12 shrink-0 rounded-xl" />
                     <span className="min-w-0 flex-1"><span className="block font-mono text-sm font-semibold">{v.id}</span><span className="block truncate text-xs text-muted">{v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")} · {v.locationId}</span></span>
                     {dueIds.has(v.id) && <StatusBadge kind="pending">{t("Due")}</StatusBadge>}
                     <ChevronRight size={16} className="text-muted rtl:rotate-180" />

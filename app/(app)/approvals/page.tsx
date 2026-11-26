@@ -17,7 +17,7 @@ function Row({ c }: { c: C }) {
   const failed = c.result === "fail";
   return (
     <div className="flex items-stretch gap-4 p-3">
-      <VehicleArt type={c.vehicleId.startsWith("DSP") ? "dispenser" : "refueller"} className={cn("size-16 shrink-0 self-center rounded-xl", failed && "ring-1 ring-fail/60")} art="h-full w-[92%]" />
+      <VehicleArt type={c.vehicleId.startsWith("DSP") ? "dispenser" : "refueller"} compact className={cn("size-16 shrink-0 self-center rounded-xl", failed && "ring-1 ring-fail/60")} />
       <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span className={cn("size-2.5 rounded-full", failed ? "bg-fail" : "bg-pending")} />
