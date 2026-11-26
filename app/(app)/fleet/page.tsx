@@ -46,7 +46,7 @@ export default function FleetPage() {
       />
       <div className="glass mb-5 flex flex-wrap items-center gap-2 p-3" style={{ borderRadius: 24 }}>
         <SearchField value={q} onChange={setQ} placeholder={`${t("Search")} REF-014…`} />
-        <div className="no-scrollbar flex gap-2 overflow-x-auto">
+        <div className="flex flex-wrap gap-2">
           <Chip active={type === "all"} onClick={() => setType("all")}>{t("All")} ({vehicles.length})</Chip>
           <Chip active={type === "refueller"} onClick={() => setType("refueller")}>{t("Refuellers")} ({vehicles.filter((v) => v.type === "refueller").length})</Chip>
           <Chip active={type === "dispenser"} onClick={() => setType("dispenser")}>{t("Hydrant dispensers")} ({vehicles.filter((v) => v.type === "dispenser").length})</Chip>

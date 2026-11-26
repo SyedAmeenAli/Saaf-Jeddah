@@ -37,10 +37,10 @@ export default function SupervisorHome() {
   const recent = [...checks].sort((a, b) => b.ts - a.ts).slice(0, 6);
 
   const tiles = [
-    { id: "sv-pending", label: "Pending approvals", v: awaiting.length, I: Inbox, tone: "text-pending-fg bg-pending/15", sub: `${awaiting.filter((c) => c.result === "fail").length} failed need investigation`, body: () => <CheckList checks={awaiting} limit={50} /> },
-    { id: "sv-failed", label: "Failed samples", v: failedToday.length, I: ShieldAlert, tone: "text-fail-fg bg-fail/15", sub: "Recorded today", body: () => <CheckList checks={failedToday} /> },
-    { id: "sv-holds", label: "Vehicles on hold", v: activeHolds.length, I: Wrench, tone: "text-fail-fg bg-fail/15", sub: "Must not fuel", body: () => <div className="space-y-4">{activeHolds.map((h) => <div key={h.id} className="space-y-3"><HoldBanner vehicleId={`${h.vehicleId} · ${POINTS[h.point].label}`} /><HoldChain hold={h} /></div>)}</div> },
-    { id: "sv-overdue", label: "Overdue checks", v: overdue.length, I: Timer, tone: "text-pending-fg bg-pending/15", sub: "Sampling not yet done", body: () => <DueListView due={overdue} /> },
+    { id: "sv-pending", label: "Pending approvals", v: awaiting.length, I: Inbox, tone: "text-pending-fg bg-[var(--warning-soft)]", sub: `${awaiting.filter((c) => c.result === "fail").length} failed need investigation`, body: () => <CheckList checks={awaiting} limit={50} /> },
+    { id: "sv-failed", label: "Failed samples", v: failedToday.length, I: ShieldAlert, tone: "text-fail-fg bg-[var(--danger-soft)]", sub: "Recorded today", body: () => <CheckList checks={failedToday} /> },
+    { id: "sv-holds", label: "Vehicles on hold", v: activeHolds.length, I: Wrench, tone: "text-fail-fg bg-[var(--danger-soft)]", sub: "Must not fuel", body: () => <div className="space-y-4">{activeHolds.map((h) => <div key={h.id} className="space-y-3"><HoldBanner vehicleId={`${h.vehicleId} · ${POINTS[h.point].label}`} /><HoldChain hold={h} /></div>)}</div> },
+    { id: "sv-overdue", label: "Overdue checks", v: overdue.length, I: Timer, tone: "text-pending-fg bg-[var(--warning-soft)]", sub: "Sampling not yet done", body: () => <DueListView due={overdue} /> },
   ];
 
   const renderDetail = (c: Check) => {
@@ -59,20 +59,41 @@ export default function SupervisorHome() {
         <Rise>
           <div className="flex flex-wrap items-end justify-between gap-3">
             <div>
-              <p className="eyebrow">{new Date().toLocaleDateString(lang === "ar" ? "ar-SA" : "en-GB", { weekday: "long", day: "numeric", month: "long" })}</p>
-              <h1 className="mt-1 text-[28px] font-semibold leading-tight md:text-[34px]">{awaiting.length ? `${awaiting.length} samples need your review` : "Review queue is clear"}, {name}</h1>
+              <p className="eyebrow !text-teal">{t("QUALITY CONTROL")}</p>
+              <h1 className="mt-1 text-[28px] font-semibold leading-tight md:text-[32px]">{t("Review Queue")}</h1>
+              <p className="mt-1 text-sm text-muted">{t("Samples requiring verification and operational attention.")} · {name} · {awaiting.length} {t("Awaiting supervisor")}</p>
             </div>
-            <Link href="/approvals" className="cta inline-flex h-11 items-center gap-2 px-5 text-sm" style={{ borderRadius: 16 }}><T>{"Open review queue"}</T> <ArrowRight size={16} className="rtl:rotate-180" /></Link>
+            <Link href="/approvals" className="cta inline-flex h-11 items-center gap-2 px-5 text-sm" style={{ borderRadius: 12 }}><T>{"Open review queue"}</T> <ArrowRight size={16} className="rtl:rotate-180" /></Link>
           </div>
         </Rise>
 
-        {activeHolds.length > 0 && <Rise><div className="grid grid-cols-1 gap-2 md:grid-cols-2">{activeHolds.map((h) => <Link key={h.id} href="/holds"><HoldBanner vehicleId={`${h.vehicleId} · ${POINTS[h.point].label}`} /></Link>)}</div></Rise>}
+        {activeHolds.length > 0 && (
+          <Rise>
+            <section aria-label="Equipment holds" className="overflow-hidden rounded-2xl border border-[#f1c3c9] bg-[var(--danger-soft)]">
+              <div className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-fail-fg"><OctagonAlert size={16} /> {activeHolds.length} {t("Vehicles on hold")} <span className="font-normal">· {t("Must not fuel")}</span><Link href="/holds" className="ms-auto text-xs font-medium text-teal hover:underline">{t("View all")}</Link></div>
+              <ul className="divide-y divide-[#f1c3c9] border-t border-[#f1c3c9] bg-white/60">
+                {activeHolds.map((h) => {
+                  const fc = allChecks.find((c) => h.events.some((e) => e.checkId === c.id) && c.result === "fail") ?? allChecks.find((c) => c.vehicleId === h.vehicleId && c.point === h.point && c.result === "fail");
+                  return (
+                    <li key={h.id} className="grid grid-cols-2 gap-x-4 gap-y-1 px-4 py-2.5 text-sm md:grid-cols-[auto_1fr_1.2fr_1.2fr_auto] md:items-center">
+                      <span className="font-mono font-semibold">{h.vehicleId}</span>
+                      <span>{POINTS[h.point].label}</span>
+                      <span className="text-muted">{fc ? `${t("Failed")} · ${fc.sampleId.slice(-14)}` : h.reason}</span>
+                      <span className="text-muted">{fmtTime(h.openedTs)}{fc ? ` · ${empName(employees, fc.employeeId, lang)}` : ""}</span>
+                      <StatusBadge kind={h.state === "hold" ? "fail" : "pending"}>{h.state === "hold" ? t("On hold") : t("Release pending")}</StatusBadge>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          </Rise>
+        )}
 
-        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           {tiles.map((d) => (
             <Rise key={d.id} className="h-full">
               <ExpandCard id={d.id} title={d.label}
-                card={<div className="flex h-full flex-col gap-3 p-4"><span className={cn("flex size-10 items-center justify-center rounded-2xl", d.tone)}><d.I size={20} strokeWidth={1.6} /></span><div><p className="text-[30px] font-semibold leading-8"><CountUp value={d.v} /></p><p className="mt-1 text-sm text-muted">{d.label}</p><p className="mt-0.5 text-xs text-faint">{d.sub}</p></div></div>}
+                card={<div className="flex h-full items-center gap-3 px-4 py-3"><span className={cn("flex size-9 shrink-0 items-center justify-center rounded-xl", d.tone)}><d.I size={17} strokeWidth={1.7} /></span><div className="min-w-0"><p className="font-display text-xl font-semibold leading-6"><CountUp value={d.v} /></p><p className="text-xs leading-4 text-muted">{t(d.label)}</p></div></div>}
                 detail={() => <div className="mx-auto max-w-3xl">{d.body()}</div>} />
             </Rise>
           ))}
@@ -111,7 +132,7 @@ export default function SupervisorHome() {
                     card={
                       <div className="p-4">
                         <div className="flex items-center justify-between text-sm"><span className="font-medium">{lang === "ar" ? l.nameAr : l.name}</span>{st.open > 0 ? <StatusBadge kind="fail">{st.open} HOLD</StatusBadge> : <StatusBadge kind="pass">OK</StatusBadge>}</div>
-                        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${st.pct * 100}%`, background: st.open ? "#e6a84a" : "linear-gradient(90deg,#b58aff,#d7bcff)" }} /></div>
+                        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[var(--surface-tertiary)]"><div className="h-full rounded-full" style={{ width: `${st.pct * 100}%`, background: st.open ? "#e5a13b" : "#4b1b87" }} /></div>
                         <p className="mt-2 text-xs text-muted">{Math.round(st.pct * 100)}% complete · {st.done} done · {st.pending} outstanding</p>
                       </div>
                     }

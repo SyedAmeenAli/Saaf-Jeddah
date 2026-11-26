@@ -84,7 +84,8 @@ function PointDiagram({ vehicle, point }: { vehicle: Vehicle; point: PointId }) 
   );
 }
 
-export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0, onDone }: {
+export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0, onDone, layoutId, origin }: {
+  layoutId?: string; origin?: { x: number; y: number } | null;
   open: boolean; onClose: () => void; vehicle: Vehicle; point: PointId; occasion: OccasionId; onDone: () => void;
 }) {
   const t = useT();
@@ -99,7 +100,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
   const [step, setStep] = useState(0);
   const [occasion, setOccasion] = useState<OccasionId>(occ0);
   const [emp, setEmp] = useState(defaultEmp);
-  const [colour, setColour] = useState<Check["colour"]>("water-white");
+  const [colour, setColour] = useState<Check["colour"] | null>(null);
   const [colourChange, setColourChange] = useState(false);
   const [clarity, setClarity] = useState<Tri>(null);
   const [sediment, setSediment] = useState<Tri>(null);
@@ -140,7 +141,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
   /** What blocks each step. Empty array = may continue. */
   const need = (s: number): string[] => {
     const m: string[] = [];
-    if (s === 3) { if (!clarity) m.push("Clarity & brightness"); if (!sediment) m.push("Sediment"); if (!freeWater) m.push("Free water / haze"); }
+    if (s === 3) { if (!colour) m.push("Colour"); if (!clarity) m.push("Clarity & brightness"); if (!sediment) m.push("Sediment"); if (!freeWater) m.push("Free water / haze"); }
     if (s === 4) { if (!cwd) m.push("CWD result"); if ((cwd === "pass" || cwd === "fail") && !batch.trim()) m.push("CWD batch / lot"); if (!dpValid) m.push("Differential pressure"); }
     if (s === 5) { if (!authorised) m.push("Authorised employee number"); if (anyFail && reason.trim().length < 5) m.push("Failure remarks (mandatory)"); if (!signed) m.push("Signature + PIN"); }
     return m;
@@ -151,7 +152,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
   const send = () => {
     if (allMissing.length) return;
     const c = submit({
-      vehicleId: vehicle.id, point, occasion, employeeId: empRec!.id, colour, colourChange,
+      vehicleId: vehicle.id, point, occasion, employeeId: empRec!.id, colour: colour!, colourChange,
       clarity: clarity!, sediment: sediment!, freeWater: freeWater!, microbialSigns: "no",
       cwd: cwd as Check["cwd"], cwdKit: kit, cwdBatch: batch || "–", cwdExpiry: exp, dp: dpNum,
       failReason: anyFail ? `${failType}: ${reason.trim()} [Actions: ${actList.join("; ") || "none"}]` : reason.trim() ? `Remarks: ${reason.trim()}` : undefined,
@@ -160,7 +161,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
   };
 
   const reset = () => {
-    setStep(0); setClarity(null); setSediment(null); setFreeWater(null); setCwd(null); setBatch(""); setReason(""); setPhoto(null); setResult(null); setColour("water-white"); setColourChange(false); setSigned(false); setOccasion(occ0);
+    setStep(0); setClarity(null); setSediment(null); setFreeWater(null); setCwd(null); setBatch(""); setReason(""); setPhoto(null); setResult(null); setColour(null); setColourChange(false); setSigned(false); setOccasion(occ0);
   };
   const close = () => { onClose(); if (result) onDone(); setTimeout(reset, 400); };
 
@@ -181,7 +182,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
   ) : undefined;
 
   return (
-    <Modal open={open} onClose={close} title={result ? t("Locked") : t("Scan & Inspect")} sheet wide footer={footer}>
+    <Modal origin={origin} layoutId={layoutId} open={open} onClose={close} title={result ? t("Locked") : (layoutId || origin !== undefined) ? `${POINTS[point].label} · ${vehicle.id}` : t("Scan & Inspect")} sheet wide footer={footer}>
       <AnimatePresence mode="wait">
         {result ? (
           <motion.div key="done" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-5 py-6 text-center">
@@ -262,7 +263,7 @@ export function InspectionSheet({ open, onClose, vehicle, point, occasion: occ0,
                   <Panel title={t("Visual appearance check")} note="Visual and clarity observations (VAC). Every result needs a deliberate choice.">
                     <div>
                       <p className="mb-1.5 text-sm font-semibold">{t("Colour")}</p>
-                      <ColorSwatchSelect value={colour} onChange={(v) => setColour(v as Check["colour"])} />
+                      <ColorSwatchSelect value={colour as string} onChange={(v) => setColour(v as Check["colour"])} />
                       <label className="mt-2 flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" checked={colourChange} onChange={(e) => setColourChange(e.target.checked)} className="size-5 accent-[var(--teal)]" /> <T>{"Colour changed compared with previous sample (flag)"}</T></label>
                     </div>
                     <div className="grid grid-cols-1 gap-3 md:grid-cols-2">

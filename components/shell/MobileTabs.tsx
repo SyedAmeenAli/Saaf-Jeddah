@@ -32,8 +32,8 @@ export function MobileTabs() {
   const tab = (href: string) => {
     const n = find(href), I = n.icon, a = on(href);
     return (
-      <Link key={href} href={href} aria-current={a ? "page" : undefined} className={cn("relative flex min-h-14 flex-1 flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors", a ? "text-white" : "text-muted")}>
-        {a && <motion.span layoutId="mtab" className="absolute inset-x-1 inset-y-1.5 rounded-2xl border border-teal/30 bg-gradient-to-b from-teal/25 to-teal/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_8px_22px_-10px_rgba(181,138,255,0.6)]" transition={spring} />}
+      <Link key={href} href={href} aria-current={a ? "page" : undefined} className={cn("relative flex min-h-14 flex-1 flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors", a ? "nav-on text-white" : "text-muted")}>
+        {a && <motion.span layoutId="mtab" className="nav-pill absolute inset-x-1 inset-y-1.5 rounded-2xl border border-teal/30 bg-gradient-to-b from-teal/25 to-teal/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_8px_22px_-10px_rgba(181,138,255,0.6)]" transition={spring} />}
         <I size={21} strokeWidth={1.6} className={cn("relative transition-transform", a && "-translate-y-px scale-110 text-teal")} />
         <span className="relative max-w-full truncate px-0.5">{t(n.label.replace("Equipment on hold", "On hold"))}</span>
       </Link>
@@ -42,12 +42,12 @@ export function MobileTabs() {
 
   return (
     <>
-      <nav aria-label="Primary" className="glass glass-strong fixed inset-x-3 bottom-3 z-40 flex items-stretch justify-between px-1.5 py-0.5 lg:hidden" style={{ borderRadius: 24, paddingBottom: "max(0.125rem, env(safe-area-inset-bottom))" }}>
+      <nav aria-label="Primary" className="glass glass-strong mobile-nav fixed inset-x-3 bottom-3 z-40 flex items-stretch justify-between px-1.5 py-0.5 lg:hidden" style={{ borderRadius: 24, paddingBottom: "max(0.125rem, env(safe-area-inset-bottom))" }}>
         {tab(cfg.left[0])}
         {tab(cfg.left[1])}
         {cfg.centre && (
           <Link href={cfg.centre} aria-label={t(find(cfg.centre).label)} className="relative -mt-5 flex w-[60px] shrink-0 flex-col items-center gap-0.5 pb-1 text-[11px] font-medium text-muted">
-            <span className="cta flex size-12 items-center justify-center rounded-2xl ring-[5px] ring-[#151025]" style={{ borderRadius: 18 }}><ScanLine size={22} strokeWidth={1.9} /></span>
+            <span className="cta flex size-12 items-center justify-center rounded-2xl ring-[5px] ring-[var(--bg)]" style={{ borderRadius: 18 }}><ScanLine size={22} strokeWidth={1.9} /></span>
             {t(find(cfg.centre).label)}
           </Link>
         )}

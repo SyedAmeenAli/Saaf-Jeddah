@@ -1,13 +1,15 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Lock, OctagonAlert, Nfc, Play, QrCode, Radio } from "lucide-react";
-import type { Check, Location, Vehicle } from "@/lib/types";
+import type { Check, Location, OccasionId, PointId, Vehicle } from "@/lib/types";
+import { OccasionFilter, SamplingPointList, VehicleDiagram, useNodeStatus } from "./VehicleDiagram";
+import { InspectionSheet } from "./Inspection";
 import { useStore, empName } from "@/lib/store";
-import { useCan, useT } from "@/lib/hooks";
-import { OCCASIONS, POINTS, pointsForVehicle } from "@/lib/domain";
+import { useApplicable, useCan, useT } from "@/lib/hooks";
+import { OCCASIONS, OCCASION_ORDER, POINTS, pointsForVehicle } from "@/lib/domain";
 import { vehicleStatus } from "@/lib/selectors";
 import { cn, fmtDT, ago } from "@/lib/utils";
 import { Button, StatusBadge, GlassCard, type StatusKind } from "@/components/ui/Glass";
@@ -54,8 +56,8 @@ export function StatusTrio({ c, className }: { c: Check; className?: string }) {
 export function HoldBanner({ vehicleId, compact = false }: { vehicleId: string; compact?: boolean }) {
   const t = useT();
   return (
-    <div className={cn("flex items-center gap-3 rounded-2xl border border-fail/60 bg-fail/20 font-semibold text-fail-fg", compact ? "px-3 py-1.5 text-xs" : "px-4 py-3 text-base")} role="alert">
-      <OctagonAlert size={compact ? 14 : 22} />
+    <div className={cn("flex items-center gap-3 rounded-xl border border-fail/30 bg-fail/10 font-semibold text-fail-fg", compact ? "px-3 py-1.5 text-xs" : "px-4 py-2.5 text-sm")} role="alert">
+      <OctagonAlert size={compact ? 14 : 18} />
       HOLD — {t("HOLD: Do not fuel").replace("HOLD: ", "").replace("إيقاف: ", "")}
       {!compact && <span className="ms-auto font-mono text-xs opacity-80">{vehicleId}</span>}
     </div>
@@ -64,91 +66,81 @@ export function HoldBanner({ vehicleId, compact = false }: { vehicleId: string; 
 
 /* ---------------------------------------------------------------- vehicle */
 export function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
-  const router = useRouter();
   const t = useT();
   const can = useCan();
-  const lang = useStore((s) => s.lang);
   const checks = useStore((s) => s.checks);
   const holds = useStore((s) => s.holds);
-  const employees = useStore((s) => s.employees);
-  const [sel, setSel] = useState(pointsForVehicle(vehicle.type)[0]);
+  const toast = useStore((s) => s.toast);
   const vh = holds.filter((h) => h.vehicleId === vehicle.id);
   const activeHold = vh.find((h) => h.state !== "released");
   const hist = checks.filter((c) => c.vehicleId === vehicle.id);
-  const last = (p: typeof sel) => hist.find((c) => c.point === p);
-  const lc = last(sel);
-  const hs = HOTSPOTS[vehicle.type];
   const pts = pointsForVehicle(vehicle.type);
+  const due = useStore((s) => s.due);
+  const applicable = useApplicable();
+  const [occ, setOcc] = useState<OccasionId | null>(null);
+  const [active, setActive] = useState<PointId | null>(() => {
+    if (typeof window === "undefined") return null;
+    const p = new URLSearchParams(window.location.search).get("pt") as PointId | null;
+    return p && pts.includes(p) ? p : null;
+  });
+  const st = useNodeStatus(vehicle, occ);
+  const nextDue = due.filter((d) => d.vehicleId === vehicle.id).sort((a, b) => a.dueTs - b.dueTs)[0];
+  const lastCheck = hist[0];
+  const canSample = can("sample") || can("verify");
+
+  // Node -> inspection: history entry so browser Back reverses the transition.
+  useEffect(() => {
+    const onPop = () => { if (!new URLSearchParams(window.location.search).get("pt")) setActive(null); };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+  const [origin, setOrigin] = useState<{ x: number; y: number } | null>(null);
+  const openPoint = (p: PointId, el?: HTMLElement | null) => {
+    if (!canSample) { toast("info", "Read-only for this role"); return; }
+    if (!st[p].enabled) return;
+    const r = el?.getBoundingClientRect();
+    setOrigin(r ? { x: ((r.left + r.width / 2) / window.innerWidth) * 100, y: ((r.top + r.height / 2) / window.innerHeight) * 100 } : null);
+    const u = new URL(window.location.href); u.searchParams.set("pt", p);
+    window.history.pushState(null, "", u.pathname + u.search);
+    setActive(p);
+  };
+  const closePoint = () => {
+    if (new URLSearchParams(window.location.search).get("pt")) window.history.back(); else setActive(null);
+  };
+  const occFor = (p: PointId): OccasionId => occ && applicable(occ, vehicle.type).includes(p) ? occ : (OCCASION_ORDER.find((o) => applicable(o, vehicle.type).includes(p)) ?? "start_shift");
 
   return (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.25fr_1fr]">
-      <div className="space-y-5">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.35fr_1fr]">
+      <div className="min-w-0 space-y-5">
         {activeHold && <HoldBanner vehicleId={vehicle.id} />}
-        <SharedHero id={vehicle.id} className="h-36 rounded-3xl md:h-44"><VehicleArt type={vehicle.type} className="h-full" art="h-full w-[60%]" /></SharedHero>
-        <div className="glass relative overflow-hidden p-4 md:p-6" style={{ borderRadius: 20 }}>
-          <div className="mb-2 flex items-center justify-between">
+        <div className="glass p-4 md:p-5" style={{ borderRadius: 20 }}>
+          <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-muted">{vehicle.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")} · {vehicle.locationId}</p>
               <p className="font-display text-3xl font-semibold">{vehicle.id}</p>
+              <p className="mt-0.5 font-mono text-xs text-muted">{vehicle.plate}</p>
             </div>
-            
+            <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs sm:grid-cols-3">
+              <div><p className="text-muted">{t("Last sample")}</p><p className="font-semibold">{lastCheck ? ago(lastCheck.ts) : "–"}</p></div>
+              <div><p className="text-muted">{t("Next scheduled")}</p><p className="font-semibold">{nextDue ? `${POINTS[nextDue.point].label} · ${fmtDT(nextDue.dueTs)}` : "–"}</p></div>
+              <div><p className="text-muted">{t("Open holds")}</p><p className="font-semibold">{vh.filter((h) => h.state !== "released").length}</p></div>
+            </div>
           </div>
-          <div className="relative mx-auto max-w-xl">
-            {vehicle.type === "refueller" ? <TruckSvg className="w-full" /> : <DispenserSvg className="w-full" />}
-            {pts.map((p) => {
-              const pos = hs[p]!;
-              const lr = last(p);
-              const failed = lr?.result === "fail";
-              const hot = sel === p;
-              return (
-                <button
-                  key={p}
-                  onClick={() => setSel(p)}
-                  aria-label={`${POINTS[p].label}${lr ? `, last result ${lr.result}` : ""}`}
-                  aria-pressed={hot}
-                  className="group absolute flex size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center"
-                  style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
-                >
-                  <span className={cn("absolute size-7 rounded-full opacity-25", failed ? "bg-fail" : "bg-teal")} />
-                  <motion.span animate={{ scale: hot ? 1.25 : 1 }} transition={spring}
-                    className={cn("relative size-5 rounded-full border-2 border-white shadow-lg", failed ? "bg-fail" : lr ? "bg-pass" : "bg-pending")} />
-                </button>
-              );
-            })}
-          </div>
-          <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {pts.map((p) => {
-              const lr = last(p);
-              return (
-                <button key={p} onClick={() => setSel(p)} className={cn("flex items-center gap-3 rounded-2xl border px-3 py-2.5 text-start transition-colors", sel === p ? "border-teal bg-teal/10" : "border-hair bg-hi")}>
-                  <span className="flex-1">
-                    <span className="block text-sm font-semibold">{lang === "ar" ? POINTS[p].labelAr : POINTS[p].label}</span>
-                    <span className="block text-xs text-muted">{lr ? ago(lr.ts) : t("No result yet")}</span>
-                  </span>
-                  {lr && <ResultBadge c={lr} />}
-                </button>
-              );
-            })}
-            {vehicle.type === "dispenser" && (
-              <div className="flex items-center gap-3 rounded-2xl border border-dashed border-hair px-3 py-2.5 text-sm text-faint sm:col-span-2">Tank sump / tank drain: {t("Not applicable")} (no tank on hydrant dispensers)</div>
-            )}
-          </div>
-
-          <AnimatePresence mode="wait">
-            <motion.div key={sel} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
-              className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-hi p-4">
-              <div>
-                <p className="text-xs uppercase tracking-wider text-muted">{t("Last result")} · {lang === "ar" ? POINTS[sel].labelAr : POINTS[sel].label}</p>
-                {lc ? (
-                  <p className="mt-1 text-sm"><span className="font-mono">{lc.sampleId}</span><br /><span className="text-muted">{fmtDT(lc.ts)} · {empName(employees, lc.employeeId, lang)}</span></p>
-                ) : <p className="mt-1 text-sm text-muted">{t("No result yet")}</p>}
-              </div>
-              {can("sample") || can("verify") ? (
-                <Button variant="primary" onClick={() => router.push(`/scan?v=${vehicle.id}&p=${sel}`)}><Play size={16} /> {t("Start check")}</Button>
-              ) : <span className="inline-flex items-center gap-1.5 text-xs text-muted"><Lock size={13} /> {t("Read-only for this role")}</span>}
-            </motion.div>
-          </AnimatePresence>
         </div>
+
+        <div className="glass space-y-3 p-2 sm:p-3 md:p-4" style={{ borderRadius: 20 }}>
+          <div className="flex items-center justify-between gap-3 px-1">
+            <h3 className="font-display text-lg font-semibold">{t("Sampling points")}</h3>
+            <span className="text-xs text-muted">{canSample ? t("Tap a node to start sampling") : t("Read-only for this role")}</span>
+          </div>
+          <OccasionFilter value={occ} onChange={setOcc} type={vehicle.type} />
+          <VehicleDiagram vehicle={vehicle} occasion={occ} activePoint={active} onSelect={openPoint} />
+          <SamplingPointList vehicle={vehicle} occasion={occ} activePoint={active} onSelect={openPoint} />
+        </div>
+        {active && (
+          <InspectionSheet open vehicle={vehicle} point={active} occasion={occFor(active)} origin={origin}
+            onClose={closePoint} onDone={() => {}} />
+        )}
 
         {vh.length > 0 && (
           <div className="glass p-5 md:p-6" style={{ borderRadius: 20 }}>

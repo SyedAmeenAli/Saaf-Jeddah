@@ -21,7 +21,7 @@ export default function AuditPage() {
       <PageHeader title={t("Audit log")} sub="Append-only. Entries cannot be edited or deleted." actions={<StatusBadge kind="locked"><T>{"Append-only"}</T></StatusBadge>} />
       <div className="glass mb-4 flex flex-wrap items-center gap-2 p-3" style={{ borderRadius: 24 }}>
         <SearchField value={q} onChange={setQ} placeholder="Actor, target, detail…" />
-        <div className="no-scrollbar flex gap-2 overflow-x-auto">{ACTIONS.map((x) => <Chip key={x} active={a === x} onClick={() => setA(x)} className="capitalize">{x === "all" ? t("All") : x}</Chip>)}</div>
+        <div className="flex flex-wrap gap-2">{ACTIONS.map((x) => <Chip key={x} active={a === x} onClick={() => setA(x)} className="capitalize">{x === "all" ? t("All") : x}</Chip>)}</div>
       </div>
       <div className="glass p-3 md:p-5" style={{ borderRadius: 20 }}>
         <p className="mb-2 flex items-center gap-2 px-2 text-xs text-muted"><Lock size={12} /> {rows.length} entries</p>

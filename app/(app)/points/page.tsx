@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Button, Chip, Field, GlassDropdown, PageHeader, SearchField, StatusBadge, inputCls } from "@/components/ui/Glass";
 import type { PointId } from "@/lib/types";
 import { T } from "@/components/ui/T";
+import { VehicleDiagram } from "@/components/features/VehicleDiagram";
 
 type Kind = "NFC" | "BAR";
 const kindOf = (tag?: string): Kind | null => (tag ? (tag.toUpperCase().startsWith("BAR") ? "BAR" : "NFC") : null);
@@ -30,6 +31,10 @@ export default function PointsPage() {
   const [q, setQ] = useState("");
   const [f, setF] = useState<"all" | "unassigned">("all");
   const editable = can("admin");
+  const hotspots = useStore((s) => s.hotspots);
+  const resetHotspots = useStore((s) => s.resetHotspots);
+  const [dtype, setDtype] = useState<"refueller" | "dispenser">("refueller");
+  const dv = vehicles.find((x) => x.type === dtype) ?? vehicles[0];
 
   const all = useMemo(() => vehicles.flatMap((x) => pointsForVehicle(x.type).map((p) => ({ v: x, p, tag: x.tags[p] }))), [vehicles]);
   const used = useMemo(() => new Map(all.filter((r) => r.tag).map((r) => [r.tag!.toUpperCase(), `${r.v.id} · ${POINTS[r.p].label}`])), [all]);
@@ -44,6 +49,23 @@ export default function PointsPage() {
     <>
       <PageHeader title={t("Sampling Points & Tags")} sub="Assign NFC and barcode tags to each sampling point. Hydrant dispensers have no tank points."
         actions={editable ? <StatusBadge kind="locked"><Lock size={11} className="me-1" /><T>{"Changes are audited"}</T></StatusBadge> : <StatusBadge kind="info">{t("Read-only for this role")}</StatusBadge>} />
+      {editable && (
+        <section className="glass mb-5 space-y-3 p-5" style={{ borderRadius: 20 }}>
+          <div className="flex flex-wrap items-center gap-2">
+            <h2 className="me-auto text-base font-semibold"><T>{"Diagram node positions"}</T></h2>
+            <Chip active={dtype === "refueller"} onClick={() => setDtype("refueller")}><T>{"Refueller"}</T></Chip>
+            <Chip active={dtype === "dispenser"} onClick={() => setDtype("dispenser")}><T>{"Hydrant dispenser"}</T></Chip>
+            <Button variant="secondary" onClick={resetHotspots}><T>{"Reset to defaults"}</T></Button>
+          </div>
+          <p className="text-xs text-muted"><T>{"Initial positions are placeholders. APSCO Engineering / Quality Control must validate them against the real sampling ports before operational use."}</T></p>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
+            <VehicleDiagram vehicle={dv} editable />
+            <ul className="space-y-2 text-sm">
+              {pointsForVehicle(dtype).map((p) => { const h = hotspots[dtype][p]; return h ? <li key={p} className="flex items-center justify-between rounded-xl bg-hi px-3 py-2"><span>{POINTS[p].label}</span><span className="font-mono text-xs text-muted" data-pos={p}>x {h.x}% · y {h.y}%</span></li> : null; })}
+            </ul>
+          </div>
+        </section>
+      )}
       <div className="grid grid-cols-1 gap-5 xl:grid-cols-5">
         <section className="glass space-y-4 p-5 xl:col-span-2" style={{ borderRadius: 20 }}>
           <h2 className="text-base font-semibold"><T>{"Assign tag"}</T></h2>

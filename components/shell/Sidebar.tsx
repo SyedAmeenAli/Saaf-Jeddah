@@ -65,8 +65,8 @@ export function Sidebar() {
                 const Icon = n.icon;
                 return (
                   <Link key={n.href} href={n.href} aria-current={on ? "page" : undefined} title={t(n.label)}
-                    className={cn("group relative flex h-10 items-center gap-3 rounded-[14px] px-3 text-sm font-medium transition-colors", on ? "text-white" : "text-muted hover:bg-white/[0.06] hover:text-fg", collapsed && "justify-center px-0")}>
-                    {on && <motion.span layoutId="navpill" className="absolute inset-0 rounded-[14px] border border-teal/35 bg-gradient-to-b from-teal/25 to-teal/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_8px_24px_-10px_rgba(181,138,255,0.55)]" transition={spring} />}
+                    className={cn("group relative flex h-10 items-center gap-3 rounded-[14px] px-3 text-sm font-medium transition-colors", on ? "nav-on text-white" : "text-muted hover:bg-white/[0.06] hover:text-fg", collapsed && "justify-center px-0")}>
+                    {on && <motion.span layoutId="navpill" className="nav-pill absolute inset-0 rounded-[14px] border border-teal/35 bg-gradient-to-b from-teal/25 to-teal/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_8px_24px_-10px_rgba(181,138,255,0.55)]" transition={spring} />}
                     <Icon size={18} strokeWidth={1.5} className={cn("relative shrink-0 transition-transform duration-200 group-hover:scale-110", on && "text-teal")} />
                     {!collapsed && <span className="relative truncate">{t(n.label)}</span>}
                   </Link>

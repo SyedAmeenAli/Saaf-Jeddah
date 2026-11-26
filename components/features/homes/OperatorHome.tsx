@@ -2,7 +2,6 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { ArrowRight, CalendarClock, Clock, MapPin, OctagonAlert, ScanLine, Sun, Moon, Truck } from "lucide-react";
-import { Photo } from "@/components/ui/Photo";
 import { useStore, empName, currentUserId } from "@/lib/store";
 import { useNow, useT } from "@/lib/hooks";
 import { OCCASIONS, POINTS } from "@/lib/domain";
@@ -45,17 +44,13 @@ export default function OperatorHome() {
     <ExpandGroup>
       <Stagger className="mx-auto max-w-5xl space-y-4">
         <Rise>
-          <div className="relative overflow-hidden" style={{ borderRadius: 28 }}>
-            <Photo crop="plane" className="!absolute inset-0" scrim="from-[#0d0818]/15 via-[#0d0818]/35 to-[#0d0818]/88" />
-            <div className="relative px-5 pb-6 pt-5 text-[#faf7ff] md:px-8 md:pb-8 md:pt-7">
-              <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-medium uppercase tracking-[0.12em] text-[#d9cdee]">
-                <span>{t(greet)}, {name}</span>
-                <span className="inline-flex items-center gap-1.5 normal-case tracking-normal"><MapPin size={12} className="text-[#b58aff]" />{loc ? (lang === "ar" ? loc.nameAr : loc.name) : locId}</span>
-                <span className="inline-flex items-center gap-1.5 normal-case tracking-normal">{night ? <Moon size={12} className="text-[#d7bcff]" /> : <Sun size={12} className="text-pending-fg" />}{shift}</span>
-              </p>
-              <h1 className="mt-3 max-w-[14ch] text-[34px] font-semibold leading-[1.05] md:text-[46px]">{t("Your Shift,")} <em className="block bg-gradient-to-r from-[#e6d4ff] via-[#b58aff] to-[#ff7a8e] bg-clip-text font-medium not-italic text-transparent">{t("in Control.")}</em></h1>
-              <p className="mt-2 max-w-[32ch] text-[13px] leading-5 text-[#d9cdee]">{t("Maintain fuel quality. Ensure safe operations.")}</p>
-            </div>
+          <div className="px-1 pb-1 pt-1">
+            <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium text-muted">
+              <span className="inline-flex items-center gap-1.5"><MapPin size={13} className="text-teal" />{loc ? (lang === "ar" ? loc.nameAr : loc.name) : locId}</span>
+              <span className="inline-flex items-center gap-1.5">{night ? <Moon size={13} className="text-teal" /> : <Sun size={13} className="text-pending-fg" />}{shift}</span>
+            </p>
+            <h1 className="mt-2 text-[28px] font-semibold leading-tight md:text-[34px]">{t(greet)}, {name}</h1>
+            <p className="mt-1 text-sm text-muted">{t("Maintain fuel quality. Ensure safe operations.")}</p>
           </div>
         </Rise>
 

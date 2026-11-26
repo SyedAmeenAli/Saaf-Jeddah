@@ -83,7 +83,7 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
     if (!isOpen) return;
     const prev = cardRef.current;
     const raf = requestAnimationFrame(() => panelRef.current?.focus({ preventScroll: true }));
-    const k = (e: KeyboardEvent) => e.key === "Escape" && close();
+    const k = (e: KeyboardEvent) => e.key === "Escape" && !new URLSearchParams(window.location.search).get("pt") && close();
     window.addEventListener("keydown", k);
     document.body.style.overflow = "hidden";
     return () => {
@@ -128,7 +128,7 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
           className="glass sheen hover-glow h-full cursor-pointer text-start"
           style={{ borderRadius: 20 }}
         >
-          <motion.div className="h-full" animate={{ opacity: isOpen ? 0 : 1 }} transition={isOpen ? { duration: 0.1 } : { duration: 0.2, delay: 0.36 }}>{card}</motion.div>
+          <motion.div className="h-full" animate={{ opacity: isOpen ? 0 : 1 }} transition={isOpen ? { duration: 0.1 } : { duration: 0.22, delay: 0.2 }}>{card}</motion.div>
         </motion.div>
       </motion.div>
 
@@ -154,7 +154,7 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
                 style={{ borderRadius: wide ? 24 : 0 }}
               >
                 <motion.div
-                  initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.12, duration: 0.25 } }} exit={{ opacity: 0, transition: { duration: 0.1 } }}
+                  initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.12, duration: 0.25 } }} exit={{ opacity: 0, transition: { duration: 0.22, delay: 0.05 } }}
                   className="flex min-h-0 flex-1 flex-col"
                 >
                   <div className="flex shrink-0 items-center gap-3 px-4 pb-2 pt-[max(0.75rem,env(safe-area-inset-top))] md:px-6 md:pt-5">

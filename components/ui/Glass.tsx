@@ -72,7 +72,7 @@ export function Chip({ active, children, onClick, className, icon }: { active?: 
       aria-pressed={active}
       className={cn(
         "inline-flex min-h-10 items-center gap-1.5 whitespace-nowrap rounded-full border px-4 text-sm font-medium transition-all",
-        active ? "border-teal bg-teal/20 text-fg shadow-[0_0_20px_-6px_var(--teal)]" : "border-hair bg-hi text-muted hover:text-fg",
+        active ? "chip-on border-teal bg-teal/20 text-fg shadow-[0_0_20px_-6px_var(--teal)]" : "border-hair bg-hi text-muted hover:text-fg",
         className,
       )}
     >
@@ -138,11 +138,12 @@ export function Ring({ value, size = 160, stroke = 14, children, color = "url(#r
 }
 
 /* ---------- Page header ---------- */
-export function PageHeader({ title, sub, actions, visible = false }: { title: string; sub?: string; actions?: React.ReactNode; visible?: boolean }) {
+export function PageHeader({ title, sub, actions, visible = false, eyebrow }: { eyebrow?: string; title: string; sub?: string; actions?: React.ReactNode; visible?: boolean }) {
   const t = useT();
   return (
     <div className={cn("mb-5 flex flex-wrap items-end justify-between gap-4", !visible && !actions && "lg:hidden")}>
       <div className={cn(!visible && "lg:sr-only")}>
+        {eyebrow && <p className="eyebrow mb-1 !text-teal">{eyebrow}</p>}
         <h1 className="text-[28px] font-semibold leading-8 tracking-tight">{t(title)}</h1>
         {sub && <p className="mt-1 max-w-2xl text-sm text-muted">{t(sub)}</p>}
       </div>
@@ -173,8 +174,9 @@ export function Portal({ children }: { children: React.ReactNode }) {
 }
 
 /* ---------- Modal + bottom sheet ---------- */
-export function Modal({ open, onClose, title, children, sheet = false, wide = false, footer }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode; sheet?: boolean; wide?: boolean; footer?: React.ReactNode }) {
+export function Modal({ open, onClose, title, children, sheet = false, wide = false, footer, layoutId, origin }: { origin?: { x: number; y: number } | null; layoutId?: string; open: boolean; onClose: () => void; title: string; children: React.ReactNode; sheet?: boolean; wide?: boolean; footer?: React.ReactNode }) {
   const t = useT();
+  const grow = origin !== undefined;
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -194,13 +196,15 @@ export function Modal({ open, onClose, title, children, sheet = false, wide = fa
             <motion.div className="absolute inset-0 bg-black/50 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} />
             <motion.div
               ref={ref} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby={id}
-              initial={sheet ? { y: "100%" } : { opacity: 0, scale: 0.94, y: 12 }}
+              layoutId={layoutId}
+              initial={grow ? { opacity: 0, scale: 0.88, y: 14 } : layoutId ? { opacity: 0 } : sheet ? { y: "100%" } : { opacity: 0, scale: 0.94, y: 12 }}
               animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={sheet ? { y: "100%" } : { opacity: 0, scale: 0.96 }}
-              transition={spring}
-              className={cn("glass glass-strong relative flex max-h-[92dvh] w-full flex-col overflow-hidden outline-none", wide ? "max-w-3xl" : "max-w-lg", sheet && "rounded-b-none md:rounded-b-[28px]")}
-              style={{ borderRadius: 20 }}
+              exit={grow ? { opacity: 0, scale: 0.9, y: 10, transition: { duration: 0.22, ease: [0.4, 0, 0.2, 1] } } : layoutId ? { opacity: 0, transition: { duration: 0.18, delay: 0.1 } } : sheet ? { y: "100%" } : { opacity: 0, scale: 0.96 }}
+              transition={grow ? { type: "spring", stiffness: 340, damping: 34, mass: 0.9 } : spring}
+              className={cn("glass glass-strong relative flex w-full flex-col overflow-hidden outline-none", (layoutId || grow) ? "h-[100dvh] max-h-[100dvh] md:h-auto md:max-h-[92dvh]" : "max-h-[92dvh]", wide ? "max-w-3xl" : "max-w-lg", sheet && !layoutId && !grow && "rounded-b-none md:rounded-b-[28px]")}
+              style={{ borderRadius: (layoutId || grow) ? 20 : 20, transformOrigin: origin ? `${origin.x}% ${origin.y}%` : undefined }}
             >
+              <motion.div className="flex min-h-0 flex-1 flex-col" initial={(layoutId || grow) ? { opacity: 0, y: 8 } : false} animate={{ opacity: 1, y: 0, transition: { delay: (layoutId || grow) ? 0.14 : 0, duration: 0.28 } }} exit={{ opacity: 0, transition: { duration: 0.1 } }}>
               <div className="flex items-center justify-between gap-3 px-6 pb-3 pt-5">
                 <h2 id={id} className="text-xl font-semibold">{t(title)}</h2>
                 <button onClick={onClose} aria-label={t("Close")} className="flex size-10 items-center justify-center rounded-full bg-hi text-muted hover:text-fg">
@@ -209,6 +213,7 @@ export function Modal({ open, onClose, title, children, sheet = false, wide = fa
               </div>
               <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6">{children}</div>
               {footer && <div className="shrink-0 border-t border-hair px-6 py-4">{footer}</div>}
+              </motion.div>
             </motion.div>
           </div>
         )}
@@ -243,7 +248,7 @@ export function Empty({ title, sub }: { title: string; sub?: string }) {
 /* ---------- Tabs: one pattern for every tabbed screen ---------- */
 export function Tabs<T extends string>({ tabs, value, onChange, className }: { tabs: readonly (readonly [T, string, number?])[]; value: T; onChange: (v: T) => void; className?: string }) {
   return (
-    <div className={cn("no-scrollbar mb-4 flex max-w-full gap-1 overflow-x-auto rounded-xl bg-white/5 p-1", className)} role="tablist">
+    <div className={cn("mb-4 flex max-w-full flex-wrap gap-1 rounded-xl bg-white/5 p-1", className)} role="tablist">
       {tabs.map(([k, l, n]) => (
         <button key={k} type="button" role="tab" aria-selected={value === k} onClick={() => onChange(k)}
           className={cn("h-10 shrink-0 flex-1 whitespace-nowrap rounded-lg px-4 text-sm font-medium transition-colors", value === k ? "bg-teal/20 text-teal" : "text-muted hover:text-fg")}>

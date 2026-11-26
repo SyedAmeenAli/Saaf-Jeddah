@@ -3,6 +3,7 @@ import { create } from "zustand";
 import type {
   Amendment, AuditEntry, Check, DueItem, Employee, Hold, Location, Notice, OccasionId, PointId, Res, Role, Toast, Vehicle, VehicleType, MicroTest } from "./types";
 import { DEMO_USER, LOCATIONS, makeEmployees, makeSeed, makeVehicles, tagId } from "@/data/seed";
+import { defaultHotspots, type HotspotConfig } from "./hotspots";
 import { POINTS, pointsForVehicle, defaultMatrix, type MatrixConfig } from "./domain";
 import { ymd } from "./utils";
 import type { Lang } from "./i18n";
@@ -39,6 +40,9 @@ interface State {
   micro: MicroTest[];
   perms: Record<Role, string[]>;
   matrix: MatrixConfig;
+  hotspots: HotspotConfig;
+  setHotspot: (type: VehicleType, point: PointId, x: number, y: number) => void;
+  resetHotspots: () => void;
   toasts: Toast[];
   paletteOpen: boolean;
   noticesOpen: boolean;
@@ -99,7 +103,7 @@ export const currentUserId = (role: Role) => DEMO_USER[role];
 export const useStore = create<State>((set, get) => ({
   ready: false,
   loggedIn: false,
-  theme: "dark",
+  theme: "light",
   lang: "en",
   role: "operator",
   sidebarCollapsed: false,
@@ -120,6 +124,7 @@ export const useStore = create<State>((set, get) => ({
   micro: [],
   perms: { operator: ["sample"], supervisor: ["verify", "release", "amend", "export"], manager: ["export"], admin: ["admin", "export"] },
   matrix: defaultMatrix(),
+  hotspots: defaultHotspots(),
   toasts: [],
   paletteOpen: false,
   noticesOpen: false,
@@ -129,13 +134,14 @@ export const useStore = create<State>((set, get) => ({
     const employees = makeEmployees();
     const vehicles = makeVehicles();
     const seed = makeSeed(vehicles, employees);
-    let theme: Theme = "dark", lang: Lang = "en", role: Role = "operator", loggedIn = false, introSeen = false;
+    let theme: Theme = "light", lang: Lang = "en", role: Role = "operator", loggedIn = false, introSeen = false;
     try {
-      theme = localStorage.getItem("safaa.theme") === "light" ? "light" : "dark";
+      theme = localStorage.getItem("safaa.theme") === "dark" ? "dark" : "light";
       lang = (localStorage.getItem("safaa.lang") as Lang) || "en";
       role = (localStorage.getItem("safaa.role") as Role) || "operator";
       loggedIn = localStorage.getItem("safaa.login") === "1";
       introSeen = sessionStorage.getItem("safaa.intro") === "1";
+      const hs = localStorage.getItem("safaa.hotspots"); if (hs) set({ hotspots: { ...defaultHotspots(), ...JSON.parse(hs) } });
     } catch {}
     set({ ready: true, micro: makeMicro(vehicles), employees, vehicles, ...seed, notices: seed.notices, theme, lang, role, loggedIn, introSeen });
     // Restore this browser's demo state (same day only, so seeded times stay relative to today), then keep saving it.
@@ -342,6 +348,21 @@ export const useStore = create<State>((set, get) => ({
   },
   prefs: { notifyFail: true, notifyOverdue: true, haptics: true, compact: false },
   setPref: (k, v) => set((s) => ({ prefs: { ...s.prefs, [k]: v } })),
+  setHotspot: (type, point, x, y) => {
+    const s = get();
+    if (!s.perms[s.role]?.includes("admin")) { get().toast("fail", "Only an administrator can move sampling-point nodes"); return; }
+    const cl = (n: number) => Math.min(98, Math.max(2, Math.round(n * 10) / 10));
+    const hotspots = { ...s.hotspots, [type]: { ...s.hotspots[type], [point]: { ...s.hotspots[type][point], x: cl(x), y: cl(y) } } };
+    try { localStorage.setItem("safaa.hotspots", JSON.stringify(hotspots)); } catch {}
+    set({ hotspots });
+  },
+  resetHotspots: () => {
+    const s = get();
+    if (!s.perms[s.role]?.includes("admin")) return;
+    try { localStorage.removeItem("safaa.hotspots"); } catch {}
+    set({ hotspots: defaultHotspots() });
+    get().log({ actor: currentUserId(s.role), role: s.role, action: "config", target: "diagram", detail: "Sampling-point node positions reset to defaults" });
+  },
   toggleMatrix: (occasion, point) => {
     const s = get();
     if (s.role !== "admin") return;
