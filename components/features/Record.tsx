@@ -7,7 +7,7 @@ import { useCan, useT } from "@/lib/hooks";
 import { OCCASIONS, POINTS } from "@/lib/domain";
 import { cn, fmtDT } from "@/lib/utils";
 import { Button, Field, Modal, StatusBadge, inputCls } from "@/components/ui/Glass";
-import { ResultBadge, StateBadge } from "./Details";
+import { StatusTrio } from "./Details";
 import { SignModal } from "./Sign";
 import { T } from "@/components/ui/T";
 
@@ -66,7 +66,7 @@ export function RecordView({ check: c, onChange }: { check: Check; onChange?: ()
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-2">
-        <ResultBadge c={c} /><StateBadge status={c.status} />
+        <StatusTrio c={c} className="me-auto" />
         {c.kind === "resample" && <StatusBadge kind="info"><T>{"Re-sample"}</T></StatusBadge>}
         {locked && <StatusBadge kind="locked">{t("Locked record")}</StatusBadge>}
       </div>

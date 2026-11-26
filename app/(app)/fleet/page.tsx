@@ -6,10 +6,9 @@ import { useCan, useT } from "@/lib/hooks";
 import { vehicleStatus } from "@/lib/selectors";
 import { cn, ago } from "@/lib/utils";
 import { Button, Chip, Empty, Field, Modal, PageHeader, Rise, SearchField, Stagger, inputCls } from "@/components/ui/Glass";
-import { ExpandCard, ExpandGroup } from "@/components/ui/Expand";
+import { ExpandCard, ExpandGroup, SharedHero } from "@/components/ui/Expand";
 import { HoldBanner, StatusPill, VehicleDetail } from "@/components/features/Details";
-import { DispenserSvg, TruckSvg } from "@/components/illustrations/Vehicles";
-import { Photo } from "@/components/ui/Photo";
+import { VehicleArt } from "@/components/illustrations/VehicleArt";
 import { POINTS } from "@/lib/domain";
 import type { PointId, VehicleType } from "@/lib/types";
 
@@ -72,18 +71,12 @@ export default function FleetPage() {
                 id={v.id} title={`${v.id} · ${v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")}`}
                 card={grid ? (
                   <div className="flex h-full flex-col">
-                    <Photo crop={v.type === "refueller" ? "truck" : "apron"} bloom={false} className="h-36 rounded-t-[inherit]" scrim="from-[#0d0818]/20 via-[#0d0818]/45 to-[#0d0818]/90">
-                      <div className="flex h-full flex-col justify-between p-3">
-                        <div className="flex items-start justify-between">
-                          <span className="rounded-full bg-black/35 px-2.5 py-1 text-[11px] font-medium text-[#faf7ff] backdrop-blur">{v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")}</span>
-                          <StatusPill s={s} />
-                        </div>
-                        <div className="flex items-end justify-between">
-                          <span className="font-display text-xl font-semibold text-[#faf7ff]">{v.id}</span>
-                          {v.type === "refueller" ? <TruckSvg className="h-12 w-24 opacity-90" /> : <DispenserSvg className="h-12 w-24 opacity-90" />}
-                        </div>
-                      </div>
-                    </Photo>
+                    <div className="relative h-36">
+                      <SharedHero id={v.id} className="h-full rounded-t-[inherit]"><VehicleArt type={v.type} className="h-full" /></SharedHero>
+                      <span className="absolute start-3 top-3 rounded-full bg-black/35 px-2.5 py-1 text-[11px] font-medium text-[#faf7ff] backdrop-blur">{v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")}</span>
+                      <span className="absolute end-3 top-3"><StatusPill s={s} /></span>
+                      <span className="absolute bottom-2 start-3 font-display text-xl font-semibold text-[#faf7ff]">{v.id}</span>
+                    </div>
                     <div className="flex flex-1 flex-col gap-3 p-4">
                       {s === "hold" && <HoldBanner vehicleId={v.id} compact />}
                       <div className="flex items-center gap-1.5" aria-label="Sampling points">
@@ -99,10 +92,10 @@ export default function FleetPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-4 px-4 py-3">
-                    <span className="hidden w-20 shrink-0 sm:block">{v.type === "refueller" ? <TruckSvg className="h-10 w-full" /> : <DispenserSvg className="h-10 w-full" />}</span>
-                    <span className="w-20 font-mono text-sm font-semibold">{v.id}</span>
-                    <span className="flex-1 text-sm text-muted">{v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")} · {v.locationId}</span>
+                  <div className="flex items-center gap-3 px-3 py-2.5">
+                    <SharedHero id={v.id} className="size-12 shrink-0 rounded-xl"><VehicleArt type={v.type} className="size-12" art="h-full w-[92%]" /></SharedHero>
+                    <span className="w-16 shrink-0 font-mono text-sm font-semibold">{v.id}</span>
+                    <span className="min-w-0 flex-1 truncate text-sm text-muted">{v.type === "refueller" ? t("Refueller") : t("Hydrant dispenser")} · {v.locationId}</span>
                     <span className="hidden text-xs text-muted sm:block">{last ? ago(last.ts) : "–"}</span>
                     <StatusPill s={s} />
                   </div>

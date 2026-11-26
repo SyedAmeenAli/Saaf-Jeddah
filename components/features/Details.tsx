@@ -13,17 +13,42 @@ import { cn, fmtDT, ago } from "@/lib/utils";
 import { Button, StatusBadge, GlassCard, type StatusKind } from "@/components/ui/Glass";
 import { DispenserSvg, HOTSPOTS, TruckSvg } from "@/components/illustrations/Vehicles";
 import { HoldChain } from "./HoldChain";
+import { SharedHero } from "@/components/ui/Expand";
+import { VehicleArt } from "@/components/illustrations/VehicleArt";
 import { spring } from "@/lib/motion";
 import { T } from "@/components/ui/T";
 
 export function ResultBadge({ c }: { c: Pick<Check, "result" | "status"> }) {
   const t = useT();
-  return <StatusBadge kind={c.result === "pass" ? "pass" : "fail"}>{c.result === "pass" ? t("Pass") : t("Fail")}</StatusBadge>;
+  return <StatusBadge kind={c.result === "pass" ? "pass" : "fail"}>{c.result === "pass" ? t("Pass") : t("Failed")}</StatusBadge>;
 }
+/** Supervisor review status only. Never implies the test result. */
 export function StateBadge({ status }: { status: Check["status"] }) {
   const t = useT();
-  const k: Record<Check["status"], [StatusKind, string]> = { awaiting: ["pending", t("Awaiting supervisor")], approved: ["locked", t("Approved")], returned: ["info", t("Returned")] };
+  const k: Record<Check["status"], [StatusKind, string]> = { awaiting: ["pending", t("Awaiting review")], approved: ["locked", t("Reviewed")], returned: ["info", t("Returned")] };
   return <StatusBadge kind={k[status][0]}>{k[status][1]}</StatusBadge>;
+}
+/** Operational status of the equipment, derived from the hold chain this sample belongs to. */
+export function EquipmentBadge({ c }: { c: Pick<Check, "id" | "vehicleId" | "point" | "result"> }) {
+  const t = useT();
+  const holds = useStore((s) => s.holds);
+  const h = holds.find((x) => x.events.some((e) => e.checkId === c.id)) ?? holds.find((x) => x.vehicleId === c.vehicleId && x.point === c.point && x.state !== "released" && c.result === "fail");
+  if (!h) return <StatusBadge kind="pass">{t("In service")}</StatusBadge>;
+  if (h.state === "released") return <StatusBadge kind="pass">{t("Released")}</StatusBadge>;
+  if (h.state === "resampled") return <StatusBadge kind="pending">{t("Release pending")}</StatusBadge>;
+  return <StatusBadge kind="fail">{t("On hold")}</StatusBadge>;
+}
+/** Three independent facts: test result, review status, equipment status. */
+export function StatusTrio({ c, className }: { c: Check; className?: string }) {
+  const t = useT();
+  const cell = (label: string, el: React.ReactNode) => <span className="flex flex-col items-start gap-1"><span className="text-[10px] font-medium uppercase tracking-wider text-faint">{label}</span>{el}</span>;
+  return (
+    <div className={cn("flex flex-wrap gap-x-5 gap-y-2", className)}>
+      {cell(t("Test result"), <ResultBadge c={c} />)}
+      {cell(t("Review status"), <StateBadge status={c.status} />)}
+      {cell(t("Equipment status"), <EquipmentBadge c={c} />)}
+    </div>
+  );
 }
 
 export function HoldBanner({ vehicleId, compact = false }: { vehicleId: string; compact?: boolean }) {
@@ -59,6 +84,7 @@ export function VehicleDetail({ vehicle }: { vehicle: Vehicle }) {
     <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.25fr_1fr]">
       <div className="space-y-5">
         {activeHold && <HoldBanner vehicleId={vehicle.id} />}
+        <SharedHero id={vehicle.id} className="h-36 rounded-3xl md:h-44"><VehicleArt type={vehicle.type} className="h-full" art="h-full w-[60%]" /></SharedHero>
         <div className="glass relative overflow-hidden p-4 md:p-6" style={{ borderRadius: 20 }}>
           <div className="mb-2 flex items-center justify-between">
             <div>

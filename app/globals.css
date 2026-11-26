@@ -280,3 +280,6 @@ html[dir="rtl"] .tbl th, html[dir="rtl"] .tbl td { padding: 11px 0 11px 12px; }
 }
 ::selection { background: rgba(181, 138, 255, 0.35); }
 
+
+/* Keep focused / anchored content clear of the sticky header and floating nav */
+html { scroll-padding-top: 6rem; scroll-padding-bottom: 9rem; }

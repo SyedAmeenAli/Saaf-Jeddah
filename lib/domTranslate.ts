@@ -8,6 +8,14 @@ const SKIP = new Set(["SCRIPT", "STYLE", "CODE", "TEXTAREA", "NOSCRIPT"]);
 const MON: Record<string, string> = { Jan: "يناير", Feb: "فبراير", Mar: "مارس", Apr: "أبريل", May: "مايو", Jun: "يونيو", Jul: "يوليو", Aug: "أغسطس", Sep: "سبتمبر", Oct: "أكتوبر", Nov: "نوفمبر", Dec: "ديسمبر" };
 const UNIT: Record<string, string> = { m: "دقيقة", h: "ساعة", d: "يوم" };
 const RULES: Array<[RegExp, (m: RegExpMatchArray) => string]> = [
+  [/^Vehicle added to (\S+)$/, (m) => `أُضيفت مركبة إلى ${m[1]}`],
+  [/^Location (\S+) added$/, (m) => `أُضيف الموقع ${m[1]}`],
+  [/^User (\S+) added$/, (m) => `أُضيف المستخدم ${m[1]}`],
+  [/^User role changed.*$/, () => `تم تغيير دور المستخدم`],
+  [/^Expired (.+)$/, (m) => `منتهٍ ${m[1]}`],
+  [/^Valid to (.+)$/, (m) => `صالح حتى ${m[1]}`],
+  [/^expired$/, () => `منتهٍ`],
+  [/^authorisation$/, () => `التفويض`],
   [/^(\d+)([mhd]) ago$/, (m) => `قبل ${m[1]} ${UNIT[m[2]]}`],
   [/^result (\d+)([mhd]) ago$/, (m) => `النتيجة قبل ${m[1]} ${UNIT[m[2]]}`],
   [/^due (.+)$/, (m) => `الاستحقاق ${m[1]}`],

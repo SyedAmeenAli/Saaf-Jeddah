@@ -39,6 +39,11 @@ export function useOpenId() {
   return { id: sp.get("open"), open, close };
 }
 
+/** Shared element: render the same <SharedHero id> inside the card and inside its detail, and it morphs between them. */
+export function SharedHero({ id, children, className }: { id: string; children: ReactNode; className?: string }) {
+  return <motion.div layoutId={`hero-${id}`} transition={spring} className={cn("overflow-hidden", className)} style={{ borderRadius: "inherit" }}>{children}</motion.div>;
+}
+
 export function ExpandGroup({ children, className }: { children: ReactNode; className?: string }) {
   const sp = useSearchParams();
   const anyOpen = !!sp.get("open");
@@ -68,6 +73,7 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
   const cardRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const titleId = useId();
+  const wide = typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches;
 
   useEffect(() => {
     if (!isOpen) return;
@@ -127,7 +133,7 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
           {isOpen && (
             <div className="fixed inset-0 z-[70]">
               <motion.div
-                className="absolute inset-0 bg-black/55 backdrop-blur-md"
+                className="absolute inset-0 bg-black/55 backdrop-blur-xl"
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                 onClick={close}
               />
@@ -140,21 +146,14 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
                 aria-labelledby={titleId}
                 tabIndex={-1}
                 transition={spring}
-                className="glass glass-strong absolute inset-x-0 bottom-0 top-6 flex flex-col overflow-hidden outline-none md:inset-6 lg:inset-x-[6%] lg:inset-y-6"
-                style={{ borderRadius: 20 }}
+                className="glass glass-strong absolute inset-0 flex flex-col overflow-hidden outline-none md:inset-6 lg:inset-x-[6%] lg:inset-y-6"
+                style={{ borderRadius: wide ? 24 : 0 }}
               >
-                <motion.div
-                  className="flex shrink-0 cursor-grab touch-none flex-col items-center pt-2 md:hidden"
-                  onPanEnd={(_, info) => { if (info.offset.y > 90) close(); }}
-                  aria-hidden="true"
-                >
-                  <span className="h-1.5 w-10 rounded-full bg-fg/25" />
-                </motion.div>
                 <motion.div
                   initial={{ opacity: 0 }} animate={{ opacity: 1, transition: { delay: 0.12, duration: 0.25 } }} exit={{ opacity: 0, transition: { duration: 0.1 } }}
                   className="flex min-h-0 flex-1 flex-col"
                 >
-                  <div className="flex shrink-0 items-center gap-3 px-4 pb-2 pt-3 md:px-6 md:pt-5">
+                  <div className="flex shrink-0 items-center gap-3 px-4 pb-2 pt-[max(0.75rem,env(safe-area-inset-top))] md:px-6 md:pt-5">
                     <button onClick={close} className="glass inline-flex h-11 items-center gap-2 rounded-full ps-3 pe-4 text-sm font-semibold hover:bg-hi" style={{ borderRadius: 9999 }}>
                       <ArrowLeft size={18} className="rtl:rotate-180" />
                       {t("Back")}
@@ -162,7 +161,7 @@ export function ExpandCard({ id, title, card, detail, className, headerRight }: 
                     <h2 id={titleId} className="min-w-0 flex-1 truncate font-display text-lg font-semibold md:text-xl">{title}</h2>
                     {headerRight}
                   </div>
-                  <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-8 md:px-6">{detail()}</div>
+                  <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.32, ease: [0.22, 1, 0.36, 1] } }} className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-[max(2rem,env(safe-area-inset-bottom))] md:px-6">{detail()}</motion.div>
                 </motion.div>
               </motion.div>
             </div>

@@ -44,10 +44,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <Sidebar />
       <motion.div initial={false} animate={{ paddingInlineStart: pad }} transition={spring} className="flex min-h-dvh flex-col">
         <Topbar />
-        <main id="main" className="mx-auto w-full max-w-[1500px] flex-1 px-3 pb-32 pt-6 md:px-6 lg:pb-12">
+        <main id="main" className="mx-auto w-full max-w-[1500px] flex-1 px-3 pb-[calc(8.5rem+env(safe-area-inset-bottom))] pt-6 md:px-6 lg:pb-12">
           <Suspense fallback={null}>{children}</Suspense>
         </main>
-        <footer className="px-6 pb-28 text-center text-xs leading-relaxed text-faint lg:pb-8">
+        <footer className="px-6 pb-[calc(7rem+env(safe-area-inset-bottom))] text-center text-xs leading-relaxed text-faint lg:pb-8">
           {t("Illustrative demo data. Final checklist and acceptance criteria to be approved by APSCO Quality Control against controlled copies of the applicable standards.")}
           <span className="mx-1">·</span>JIG-aligned (JIG 1 / JIG 2)
         </footer>

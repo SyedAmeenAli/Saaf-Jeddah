@@ -1,14 +1,14 @@
 "use client";
 import { useState } from "react";
 import { AlertTriangle, CheckCircle2, Clock, Lock, RotateCcw } from "lucide-react";
-import { Photo } from "@/components/ui/Photo";
+import { VehicleArt } from "@/components/illustrations/VehicleArt";
 import { useScoped } from "@/lib/selectors";
 import { useCan, useT } from "@/lib/hooks";
 import { POINTS } from "@/lib/domain";
 import { fmtTime, ago, cn } from "@/lib/utils";
 import { Chip, Empty, PageHeader, Rise, Stagger, StatusBadge } from "@/components/ui/Glass";
 import { ExpandCard, ExpandGroup } from "@/components/ui/Expand";
-import { ResultBadge, StateBadge } from "@/components/features/Details";
+import { EquipmentBadge, ResultBadge, StateBadge } from "@/components/features/Details";
 import { ReviewDetail } from "@/components/features/ReviewDetail";
 import type { Check as C } from "@/lib/types";
 import { T } from "@/components/ui/T";
@@ -17,7 +17,7 @@ function Row({ c }: { c: C }) {
   const failed = c.result === "fail";
   return (
     <div className="flex items-stretch gap-4 p-3">
-      <Photo crop={c.point === "tank_sump" || c.point === "tank_drain" ? "tanker" : "truck"} bloom={false} className="hidden w-24 shrink-0 rounded-xl sm:block" scrim={failed ? "from-[#ff405c]/30 to-[#0d0818]/85" : "from-[#0d0818]/30 to-[#0d0818]/80"}>{null}</Photo>
+      <VehicleArt type={c.vehicleId.startsWith("DSP") ? "dispenser" : "refueller"} className={cn("size-16 shrink-0 self-center rounded-xl", failed && "ring-1 ring-fail/60")} art="h-full w-[92%]" />
       <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span className={cn("size-2.5 rounded-full", failed ? "bg-fail" : "bg-pending")} />
@@ -68,7 +68,7 @@ export default function ApprovalsPage() {
       <div className="space-y-2">
         {locked.map((c) => (
           <ExpandCard key={c.id} id={c.id} title={`${c.vehicleId} · ${POINTS[c.point].label}`}
-            card={<div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3"><Lock size={14} className="text-muted" /><span className="min-w-24 font-mono text-sm font-semibold">{c.vehicleId}</span><span className="min-w-0 flex-1 truncate text-sm text-muted">{POINTS[c.point].label} · {c.sampleId}</span><ResultBadge c={c} /><StateBadge status={c.status} /></div>}
+            card={<div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3"><Lock size={14} className="text-muted" /><span className="min-w-24 font-mono text-sm font-semibold">{c.vehicleId}</span><span className="min-w-0 flex-1 truncate text-sm text-muted">{POINTS[c.point].label} · {c.sampleId}</span><ResultBadge c={c} /><StateBadge status={c.status} /><EquipmentBadge c={c} /></div>}
             detail={() => <ReviewDetail check={c} />} />
         ))}
       </div>

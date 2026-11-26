@@ -11,7 +11,7 @@ import { Empty, PageHeader, SearchField, StatusBadge, Tabs } from "@/components/
 import { ExpandCard, ExpandGroup } from "@/components/ui/Expand";
 import { useSearchParams } from "next/navigation";
 import { ReviewDetail } from "@/components/features/ReviewDetail";
-import { StateBadge } from "@/components/features/Details";
+import { EquipmentBadge, StateBadge } from "@/components/features/Details";
 import { T } from "@/components/ui/T";
 
 const TABS = [["all", "All"], ["awaiting", "Awaiting supervisor"], ["failed", "Failed"], ["approved", "Locked"], ["returned", "Returned"]] as const;
@@ -47,20 +47,20 @@ function Inner() {
 
       {rows.length === 0 ? <div className="glass" style={{ borderRadius: 20 }}><Empty title={t("No records")} sub="Try another tab or clear the search." /></div> : (
         <div className="space-y-2">
-          <div className="hidden grid-cols-[1.7fr_1.2fr_.8fr_1fr_.6fr_.6fr_.7fr_1fr_.8fr] gap-3 px-5 text-xs text-muted xl:grid"><span><T>{"Sample ID"}</T></span><span><T>{"Date & Time"}</T></span><span><T>{"Vehicle"}</T></span><span><T>{"Sampling Point"}</T></span><span>VAC</span><span>CWD</span><span><T>{"Result"}</T></span><span><T>{"Status"}</T></span><span><T>{"Employee"}</T></span></div>
+          <div className="hidden grid-cols-[1.6fr_1.1fr_.8fr_1fr_.5fr_.5fr_.7fr_1fr_.9fr_.8fr] gap-3 px-5 text-xs text-muted xl:grid"><span><T>{"Sample ID"}</T></span><span><T>{"Date & Time"}</T></span><span><T>{"Vehicle"}</T></span><span><T>{"Sampling Point"}</T></span><span>VAC</span><span>CWD</span><span><T>{"Result"}</T></span><span><T>{"Review status"}</T></span><span><T>{"Equipment status"}</T></span><span><T>{"Employee"}</T></span></div>
           {shown.map((c) => (
             <ExpandCard key={c.id} id={c.id} title={`${c.vehicleId} · ${POINTS[c.point].label}`}
               card={
                 <>
-                  <div className="hidden grid-cols-[1.7fr_1.2fr_.8fr_1fr_.6fr_.6fr_.7fr_1fr_.8fr] items-center gap-3 px-5 py-3.5 text-sm xl:grid">
+                  <div className="hidden grid-cols-[1.6fr_1.1fr_.8fr_1fr_.5fr_.5fr_.7fr_1fr_.9fr_.8fr] items-center gap-3 px-5 py-3.5 text-sm xl:grid">
                     <span className="truncate font-mono text-xs">{c.sampleId}</span><span className="tnum text-muted">{fmtDT(c.ts)}</span><span className="font-mono text-[13px]">{c.vehicleId}</span><span>{POINTS[c.point].label}</span>
                     <span>{mark(c.clarity === "fail" || c.sediment === "fail" || c.freeWater === "fail" ? "fail" : "pass")}</span><span>{mark(c.cwd)}</span>
-                    <span><StatusBadge kind={c.result === "pass" ? "pass" : "fail"}>{c.result === "pass" ? t("Pass") : t("Fail")}</StatusBadge></span><span><StateBadge status={c.status} /></span><span className="font-mono text-xs text-muted">{c.employeeId}</span>
+                    <span><StatusBadge kind={c.result === "pass" ? "pass" : "fail"}>{c.result === "pass" ? t("Pass") : t("Failed")}</StatusBadge></span><span><StateBadge status={c.status} /></span><span><EquipmentBadge c={c} /></span><span className="font-mono text-xs text-muted">{c.employeeId}</span>
                   </div>
                   <div className="flex flex-col gap-1 px-4 py-3 xl:hidden">
-                    <span className="flex items-center justify-between"><span className="font-mono text-sm font-semibold">{c.vehicleId}</span><StatusBadge kind={c.result === "pass" ? "pass" : "fail"}>{c.result === "pass" ? t("Pass") : t("Fail")}</StatusBadge></span>
+                    <span className="flex items-center justify-between"><span className="font-mono text-sm font-semibold">{c.vehicleId}</span><StatusBadge kind={c.result === "pass" ? "pass" : "fail"}>{c.result === "pass" ? t("Pass") : t("Failed")}</StatusBadge></span>
                     <span className="text-sm">{POINTS[c.point].label}</span>
-                    <span className="flex items-center justify-between text-xs text-muted"><span>{fmtDT(c.ts)} · {c.employeeId}</span><StateBadge status={c.status} /></span>
+                    <span className="text-xs text-muted">{fmtDT(c.ts)} · {c.employeeId}</span><span className="mt-1 flex flex-wrap gap-1.5"><StateBadge status={c.status} /><EquipmentBadge c={c} /></span>
                   </div>
                 </>
               }
